@@ -9,10 +9,10 @@
         "schema": "repository/prisma/schema.prisma"
     },
     "scripts": {
-        "test": "jest",
-        "start": "npm run dev",
-        "build": "next build",
-        "dev": "next dev -p 8080"
+        "start": "node dist/app.js",
+        "dev": "nodemon app.ts",
+        "build": "tsc",
+        "test": "jest"
     },
     "nodemonConfig": {
         "ext": "ts",
