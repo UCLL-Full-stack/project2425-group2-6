@@ -1,7 +1,10 @@
+import { Employee } from "./employee";
+
 export class Vehicle {
     private id : number;
     private domain : string;
     private name : string;
+    private employee : Employee | null = null;
 
     constructor(id : number, domain : string, name : string){
         this.id = id;
@@ -19,6 +22,10 @@ export class Vehicle {
 
     public getName() : string {
         return this.name;
+    }
+
+    public getEmployee() : Employee | null {
+        return this.employee;
     }
 
     public setId(id : number) {

@@ -1,3 +1,7 @@
+import { Room } from "./room";
+import { Tool } from "./tool";
+import { Vehicle } from "./vehicle";
+
 export class Employee {
     private id : number;
     private firstName: string;  
@@ -6,6 +10,9 @@ export class Employee {
     private experience: number;
     private domain : string;
     private licenseType : string;
+    private tools : Array<Tool> = [];
+    private vehicles : Array<Vehicle> = [];
+    private rooms : Array<Room> = [];
 
     constructor(id: number, firstName: string, lastName: string, email: string, experience: number, domain: string, licenseType: string) {
         this.id = id;
@@ -45,6 +52,18 @@ export class Employee {
         return this.licenseType;
     }
 
+    public getTools() : Array<Tool> {
+        return this.tools;
+    }
+
+    public getVehicles() : Array<Vehicle> {
+        return this.vehicles;
+    }
+
+    public getRooms() : Array<Room> {
+        return this.rooms;
+    }
+
     public setId(id: number) {
         this.id = id;
     }
@@ -71,6 +90,30 @@ export class Employee {
 
     public setLicenseType(licenseType: string) {
         this.licenseType = licenseType;
+    }
+
+    public setTools(tool : Array<Tool>){
+        this.tools = tool;
+    }
+
+    public setVehicles(vehicle : Array<Vehicle>){
+        this.vehicles = vehicle;
+    }
+
+    public setRooms(room : Array<Room>){
+        this.rooms = room;
+    }
+
+    public addTool(tool : Tool){    
+        this.tools.push(tool);
+    }
+
+    public addVehicle(vehicle : Vehicle){
+        this.vehicles.push(vehicle);
+    }
+
+    public addRoom(room : Room){
+        this.rooms.push(room);
     }
 
     public toString() : string {
