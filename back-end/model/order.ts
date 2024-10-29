@@ -3,7 +3,7 @@ import { House } from "./house";
 
 export class Order{
     private id : number;
-    private customer : Customer;
+    private customer! : Customer;
     private orderDate : Date;
     private startDate : Date;
     private price : number;

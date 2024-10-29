@@ -1,6 +1,6 @@
 import { Customer } from "../model/customer";
 
-let currentId = 0;
+let currentId = 1;
 
 const customers: Array<Customer> = [
     new Customer(currentId++, "John", "Doe", "john.doe@example.com"),
@@ -12,10 +12,10 @@ const getAllCustomers = () : Array<Customer> => {
     return customers;
 }
 
-const getCustomerById = (id : number) : Customer | undefined => {
-    return customers.find(customer => customer.getId() === id);
+const getCustomerById = (id : number) : Customer | [] => {
+    return customers.find(customer => customer.getId() === id) ??  [];
 }
 
 export default {
-    getAllCustomers, getCustomerById,
+    getAllCustomers, getCustomerById, customers,
 }

@@ -5,8 +5,6 @@ export class House{
     private id : number;
     private address : string;
     private type : string;
-    private orders : Array<Order> = [];
-    private rooms : Array<Room> = [];
 
     constructor(id : number, address : string, type : string){
         this.id = id;
@@ -26,14 +24,6 @@ export class House{
         return this.type;
     }
 
-    public getOrders() : Array<Order> {
-        return this.orders;
-    }
-
-    public getRooms() : Array<Room> {
-        return this.rooms;
-    }
-
     public setId(id : number) {
         this.id = id;
     }
@@ -44,22 +34,6 @@ export class House{
 
     public setType(type : string) {
         this.type = type;
-    }
-
-    public setOrders(orders : Array<Order>) {
-        this.orders = orders;
-    }
-
-    public setRooms(rooms : Array<Room>) {
-        this.rooms = rooms;
-    }
-
-    public addOrder(order : Order) {
-        this.orders.push(order);
-    }
-
-    public addRoom(room : Room) {
-        this.rooms.push(room);
     }
 
     public toString() : string {
