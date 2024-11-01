@@ -1,6 +1,7 @@
 import { Customer } from "../model/customer";
 import CustomerDb from "../repository/Customer.db";
 import OrderDb from "../repository/Order.db";
+import { CreateCustomerDto, LoginCustomerDto } from "../types/createCustomerDto";
 
 const getAllCustomers = async () : Promise<Array<Customer>> => {
     return await CustomerDb.getAllCustomers();
@@ -19,6 +20,31 @@ const getCustomerOrderById = async (id : number) => {
     return filtered;
 }
 
+const createCustomer = async (customerData: CreateCustomerDto): Promise<Customer> => {
+    return CustomerDb.addCustomer(customerData.firstName, customerData.lastName, customerData.email, customerData.password);
+};
+
+const attemptSignin = async (attemptedCustomer : LoginCustomerDto): Promise<Customer | Error> => {
+    const response = await getAllCustomers();
+    for (const customer of response) {
+        if (customer.getEmail() === attemptedCustomer.email && customer.getPassword() === attemptedCustomer.password) {
+            return customer;
+        }
+    }
+    return new Error("Invalid email or password");
+}
+
+const getCustomerIndexById = async (id: number): Promise<number> => {
+    const customers = await getAllCustomers();
+    for (let i = 0; i < customers.length; i++) {
+        if (customers[i].getId() === id) {
+            return i;
+        }
+    }
+    return -1;
+};
+
+
 export default {
-    getAllCustomers, getCustomerById, getCustomerOrderById,
+    getAllCustomers, getCustomerById, getCustomerOrderById, createCustomer, attemptSignin, getCustomerIndexById
 }

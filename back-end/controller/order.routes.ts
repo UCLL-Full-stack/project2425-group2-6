@@ -15,6 +15,19 @@ orderRouter.get("/", async (req: Request, res: Response) => {
     }
 })
 
+orderRouter.post("/", async (req: Request, res: Response) => {
+    try {
+        const orderData = req.body;
+        const newOrder = await orderService.createOrder(orderData);
+        res.status(201).json(newOrder);
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json({error : "error", errorMessage : error.message});
+        }
+    }
+});
+
 export {
     orderRouter,
 }

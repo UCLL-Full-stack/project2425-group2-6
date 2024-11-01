@@ -5,12 +5,15 @@ export class Customer {
     private firstName : string;
     private lastName : string;
     private email : string;
+    private password : string;
 
-    constructor(id: number, firstName: string, lastName: string, email: string) {
+    constructor(id: number, firstName: string, lastName: string, email: string, password : string) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.password = password;
+
     }
 
     public getId() : number {
@@ -28,6 +31,10 @@ export class Customer {
     public getEmail() : string {
         return this.email;
     }
+    
+    public getPassword() : string {
+        return this.password;
+    }
 
     public setId(id: number) {
         this.id = id;
@@ -43,6 +50,10 @@ export class Customer {
 
     public setEmail(email: string) {
         this.email = email;
+    }
+
+    public setPassword(password: string) {
+        this.password = password;
     }
 
     public toString() : string {

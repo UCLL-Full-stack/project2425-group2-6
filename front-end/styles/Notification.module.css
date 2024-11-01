@@ -1,0 +1,51 @@
+.notification-container {
+    display: flex;
+    justify-content: center;
+}
+.notification {
+    position: fixed; /* Keeps it in view */
+    top: 30px; /* Distance from the top */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Center horizontally */
+    background-color: #FDFD96; /* Background color */
+    color: white;
+    font-weight: bold;
+    padding: 15px;
+    border-radius: 5px;
+    z-index: 9999; /* Ensure it is on top of other content */
+    opacity: 0; /* Initial state: hidden */
+    transform: translateY(-20px) translateX(-50%); /* Center horizontally and slightly move up */
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    width: 30rem; /* Width of the notification */
+    text-align: center;
+    box-sizing: border-box;
+}
+.notification.show {
+    opacity: 1; /* Make visible */
+    transform: translateY(0) translateX(-50%); /* Move to its normal position and center horizontally */
+}
+
+.success {
+    background-color: rgb(122,193,67); /* Background color */
+}
+
+.error {
+    background-color: red; /* Background color */
+}
+
+.info {
+    background-color: #87CEFA; /* Background color */
+}
+
+.warning {
+    background-color: #FFD700; /* Background color */
+}
+
+@media screen and (max-width: 750px) {
+.notification {
+width: 20rem;
+}
+.notificationMessage {
+font-size: 0.75rem;
+}
+}

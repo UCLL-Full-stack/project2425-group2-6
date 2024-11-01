@@ -5,13 +5,12 @@ import { Room } from "./room";
 export class Tool{
     private id : number;
     private name : string;
-    private employees : Array<Employee> = [];
-    private material : Array<Material> = [];
-    private rooms : Array<Room> = [];
+    private quantity : number;
 
-    constructor(id : number, name : string){
+    constructor(id : number, name : string, quantity : number){
         this.id = id;
         this.name = name;
+        this.quantity = quantity;
     }
 
     public getId() : number {
@@ -21,41 +20,9 @@ export class Tool{
     public getName() : string {
         return this.name;
     }
-
-    public getEmployees() : Array<Employee> {
-        return this.employees;
-    }
-
-    public getMaterial() : Array<Material> {
-        return this.material;
-    }
-
-    public getRooms() : Array<Room> {
-        return this.rooms;
-    }
-
-    public addEmployee(employee : Employee) {
-        this.employees.push(employee);
-    }
-
-    public addMaterial(material : Material) {
-        this.material.push(material);
-    }
-
-    public addRoom(room : Room) {
-        this.rooms.push(room);
-    }
-
-    public removeEmployee(employee : Employee) {
-        this.employees.splice(this.employees.indexOf(employee), 1);
-    }
-
-    public removeMaterial(material : Material) {
-        this.material.splice(this.material.indexOf(material), 1);
-    }
-
-    public removeRoom(room : Room) {
-        this.rooms.splice(this.rooms.indexOf(room), 1);
+    
+    public getQuantity() : number {
+        return this.quantity;
     }
 
     public setId(id : number) {
@@ -66,16 +33,8 @@ export class Tool{
         this.name = name;
     }
 
-    public setEmployees(employees : Array<Employee>) {
-        this.employees = employees;
-    }
-
-    public setMaterial(material : Array<Material>) {
-        this.material = material;
-    }
-
-    public setRooms(rooms : Array<Room>) {
-        this.rooms = rooms;
+    public setQuantity(quantity : number) {
+        this.quantity = quantity;
     }
 
     public toString() : string {
