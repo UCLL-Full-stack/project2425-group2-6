@@ -16,7 +16,7 @@ const AccountOrders: React.FC<{ accountOrders: Array<orderInput> }> = ({ account
                             <p>Order ID: {order.id}</p>
                             <p>Order Date: {new Date(order.orderDate).toLocaleDateString()}</p>
                             <p>Start Date: {new Date(order.startDate).toLocaleDateString()}</p>
-                            <p>Price: ${order.price}</p>
+                            <p>Price: {order.price}€</p>
                             {/* Add other order details as needed */}
                         </div>
                     ))}
