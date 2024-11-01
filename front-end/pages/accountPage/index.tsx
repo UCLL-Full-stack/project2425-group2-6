@@ -1,12 +1,12 @@
+import HandleAccount from '@/components/handleAccount';
 import Header from '@/components/header';
-import RegisterAccountForm from '@/components/registerAccountForm';
 import React, { useState } from 'react';
 
 const AccountPage: React.FC = () => {
     return (
         <>
         <Header/>
-        <RegisterAccountForm formType = "signin"/>
+        <HandleAccount formType = "signin"/>
         </>
     )
 };

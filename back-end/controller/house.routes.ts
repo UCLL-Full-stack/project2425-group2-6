@@ -36,6 +36,19 @@ houseRouter.get("/rooms/:id", async (req: Request, res: Response) => {
     }
 })
 
+houseRouter.post("/", async (req: Request, res: Response) => {
+    try {
+        const houseData = req.body;
+        const newHouse = await houseService.addHouse(houseData.address, houseData.type);
+        res.status(201).json(newHouse);
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json({error : "error", errorMessage : error.message});
+        }
+    }
+});
+
 export {
     houseRouter,
 }

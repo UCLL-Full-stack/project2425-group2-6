@@ -8,3 +8,12 @@ export interface orderInput {
     price : number,
     house : houseInput,
 }
+
+export interface orderInputWithHouseId {
+    customerId : number,
+    orderDate : Date,
+    startDate : Date,
+    price : number,
+    houseId : number,
+}
+

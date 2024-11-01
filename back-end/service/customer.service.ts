@@ -1,4 +1,6 @@
+import { log } from "console";
 import { Customer } from "../model/customer";
+import { Order } from "../model/order";
 import CustomerDb from "../repository/Customer.db";
 import OrderDb from "../repository/Order.db";
 import { CreateCustomerDto, LoginCustomerDto } from "../types/createCustomerDto";
@@ -14,11 +16,14 @@ const getCustomerById = async (id : number) : Promise<Customer | []> => {
     return await CustomerDb.getCustomerById(id);
 }
 
-const getCustomerOrderById = async (id : number) => {
+const getCustomerOrderById = async (id: number): Promise<Array<Order>> => {
     const data = await OrderDb.getAllOrders();
     const filtered = data.filter(order => order.getCustomer().getId() === id);
-    return filtered;
-}
+    log("getCustomerOrderById")
+    log(filtered);
+    return filtered || []; // Use || instead of | to ensure it defaults to an array
+};
+
 
 const createCustomer = async (customerData: CreateCustomerDto): Promise<Customer> => {
     return CustomerDb.addCustomer(customerData.firstName, customerData.lastName, customerData.email, customerData.password);

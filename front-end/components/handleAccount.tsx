@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "../styles/RegisterAccountForm.module.css";
+import styles from "../styles/HandleAccount.module.css";
 import CustomerService from "@/services/customer.service";
 import { LoginCustomer, CustomerInput } from "@/types/customerType";
 import Notification from "./Notification";
@@ -11,7 +11,7 @@ type Props = {
 
 let response: any;
 
-const RegisterAccountForm: React.FC<Props> = ({ formType: initialFormType }) => {
+const HandleAccount: React.FC<Props> = ({ formType: initialFormType }) => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('danieljaurell@gmail.com');
@@ -41,6 +41,7 @@ const RegisterAccountForm: React.FC<Props> = ({ formType: initialFormType }) => 
             if (response && response.firstName) {
                 
                 const firstNameMessage = response.firstName ? response.firstName : "User";
+                // console.log(`Signed in: ${response.id}`)
                 setSuccessfullySignedIn(true); // Set to true on successful sign-in
 
                 setNotification({
@@ -172,4 +173,4 @@ const RegisterAccountForm: React.FC<Props> = ({ formType: initialFormType }) => 
     );
 };
 
-export default RegisterAccountForm;
+export default HandleAccount;

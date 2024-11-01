@@ -1,15 +1,16 @@
-import React, { useState } from "react";
-import styles from "../styles/OrderDashboard.module.css"; // Import a new CSS module for styles
-import { orderInput, houseInput } from "@/types/orderType"; // Import the types for orders
+import React, { useState, useEffect } from "react";
+import styles from "../styles/OrderDashboard.module.css";
+import { orderInput } from "@/types/orderType";
 import { CustomerInput } from "@/types/customerType";
+import OrderService from "@/services/order.service";
+import AccountOrders from "./AccountOrders";
+import CustomerService from "@/services/customer.service";
 
 const OrderDashboard: React.FC<{ customer: CustomerInput }> = ({ customer }) => {
+    const [accountOrders, setAccountOrders] = useState<Array<orderInput>>([]);
+
     const [order, setOrder] = useState<orderInput>({
-        customer: {
-            firstName: customer.firstName,
-            lastName: customer.lastName, // Assuming we get the last name from the login response or input
-            email: customer.email, // Assuming email is handled elsewhere
-        },
+        customerId: customer.id,
         orderDate: new Date(),
         startDate: new Date(),
         price: 0,
@@ -19,15 +20,24 @@ const OrderDashboard: React.FC<{ customer: CustomerInput }> = ({ customer }) => 
         },
     });
 
+    const fetchCustomerOrders = async () => {
+        const orders = await CustomerService.getCustomerOrderById(customer.id);
+        setAccountOrders(orders || []);
+    };
+
+    useEffect(() => {
+        fetchCustomerOrders();
+    }, []);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setOrder(prevOrder => ({
             ...prevOrder,
-            [name]: value,
+            [name]: name === "startDate" ? new Date(value) : value,
         }));
     };
 
-    const handleHouseChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleHouseChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setOrder(prevOrder => ({
             ...prevOrder,
@@ -38,10 +48,10 @@ const OrderDashboard: React.FC<{ customer: CustomerInput }> = ({ customer }) => 
         }));
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("Order submitted:", order);
-        // Handle order submission logic here (e.g., API call)
+        await OrderService.createOrder(order);
+        fetchCustomerOrders(); // Refresh orders after submission
     };
 
     return (
@@ -49,29 +59,17 @@ const OrderDashboard: React.FC<{ customer: CustomerInput }> = ({ customer }) => 
             <h2 className={styles.dashboardTitle}>Create an Order</h2>
             <form className={styles.orderForm} onSubmit={handleSubmit}>
                 <div className={styles.formGroup}>
-                    <label htmlFor="orderDate">Order Date:</label>
-                    <input
-                        type="date"
-                        name="orderDate"
-                        value={order.orderDate.toISOString().split('T')[0]} // Format date for input
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
-                <div className={styles.formGroup}>
                     <label htmlFor="startDate">Start Date:</label>
                     <input
                         type="date"
                         name="startDate"
-                        value={order.startDate.toISOString().split('T')[0]} // Format date for input
+                        value={order.startDate.toISOString().split('T')[0]}
                         onChange={handleChange}
                         required
                     />
                 </div>
-
                 <div className={styles.formGroup}>
-                    <label htmlFor="price">Price:</label>
+                    <label htmlFor="price">Budget:</label>
                     <input
                         type="number"
                         name="price"
@@ -80,7 +78,6 @@ const OrderDashboard: React.FC<{ customer: CustomerInput }> = ({ customer }) => 
                         required
                     />
                 </div>
-
                 <h3>House Details</h3>
                 <div className={styles.formGroup}>
                     <label htmlFor="address">Address:</label>
@@ -90,9 +87,9 @@ const OrderDashboard: React.FC<{ customer: CustomerInput }> = ({ customer }) => 
                         value={order.house.address}
                         onChange={handleHouseChange}
                         required
+                        autoComplete="off"
                     />
                 </div>
-
                 <div className={styles.formGroup}>
                     <label htmlFor="type">House Type:</label>
                     <select name="type" value={order.house.type} onChange={handleHouseChange} required>
@@ -102,9 +99,10 @@ const OrderDashboard: React.FC<{ customer: CustomerInput }> = ({ customer }) => 
                         <option value="cottage">Cottage</option>
                     </select>
                 </div>
-
                 <button type="submit" className={styles.submitButton}>Submit Order</button>
             </form>
+
+            <AccountOrders accountOrders={accountOrders} />
         </div>
     );
 };

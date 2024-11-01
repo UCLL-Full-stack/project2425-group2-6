@@ -1,5 +1,6 @@
+import { log } from "console";
 import { Order } from "../model/order";
-import { orderInput } from "../types/orderDto";
+import { orderInput, orderInputWithHouseId } from "../types/orderDto";
 import CustomerDb from "./Customer.db";
 import HouseDb from "./House.db";
 
@@ -15,14 +16,28 @@ const getAllOrders = () => {
     return orders;
 }
 
-const addOrder = (orderData : orderInput) => {
-    const newOrder = new Order(currentId++, CustomerDb.customers[orderData.customerId], orderData.checkIn, orderData.checkOut, orderData.price, HouseDb.houses[orderData.houseId]);
+const addOrder = (orderData: orderInputWithHouseId): Order => {
+    log("\nRepository")
+    const newOrder = new Order(
+        currentId++,
+        CustomerDb.customers[CustomerDb.getCustomerIndexById(orderData.customerId)],
+        orderData.orderDate,
+        orderData.startDate,
+        orderData.price,
+        HouseDb.houses[orderData.houseId - 1]
+    );
+    log(newOrder);
     orders.push(newOrder);
     return newOrder;
+}
+
+const getOrdersByCustomerId = (customerId: number): Array<Order> => {
+    return orders.filter(order => order.getCustomer().getId() === customerId);
 }
 
 export default {
     orders,
     getAllOrders,
     addOrder,
+    getOrdersByCustomerId
 };

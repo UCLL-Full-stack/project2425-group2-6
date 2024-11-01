@@ -17,8 +17,15 @@ const getHouseById = (id : number) : House | [] => {
     return houses.find(house => house.getId() === id) || [];
 }
 
+const addHouse = (address: string, type: string): House => {
+    const newHouse = new House(currentId++, address, type);
+    houses.push(newHouse);
+    return newHouse;
+}
+
 export default {
     houses,
     getAllHouses,
-    getHouseById
+    getHouseById,
+    addHouse
 };

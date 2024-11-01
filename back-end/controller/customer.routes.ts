@@ -32,7 +32,9 @@ customerRouter.get("/orders/:id", async (req: Request, res: Response) => {
         res.status(200).json(await customerService.getCustomerOrderById(parseInt(req.params.id)));
     }
     catch (error) {
-
+        if (error instanceof Error) {
+            res.status(400).json({ error: "error", errorMessage: error.message });
+        }
     }
 })
 
@@ -54,6 +56,17 @@ customerRouter.post("/login", async(req: Request, res: Response) => {
     }
     catch (error) {
         if (error instanceof Error && error.message === "Invalid email or password") {
+            res.status(400).json({ error: "error", errorMessage: error.message });
+        }
+    }
+});
+
+customerRouter.get("/:id/orders", async (req: Request, res: Response) => {
+    try {
+        res.status(200).json(await customerService.getCustomerOrderById(parseInt(req.params.id)));
+    }
+    catch (error) {
+        if (error instanceof Error) {
             res.status(400).json({ error: "error", errorMessage: error.message });
         }
     }

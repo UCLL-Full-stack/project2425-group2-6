@@ -1,4 +1,5 @@
 import { orderInput } from "@/types/orderType";
+import { create } from "domain";
 
 const createOrder = async (orderInput : orderInput) => {
     return fetch(
@@ -11,3 +12,9 @@ const createOrder = async (orderInput : orderInput) => {
         }
     );
 }
+
+const OrderService = {
+    createOrder
+  };
+
+export default OrderService;

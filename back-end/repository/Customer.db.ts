@@ -1,3 +1,4 @@
+import { log } from "console";
 import { Customer } from "../model/customer";
 
 let currentId = 1;
@@ -22,6 +23,18 @@ const getCustomerById = (id : number) : Customer | [] => {
     return customers.find(customer => customer.getId() === id) ??  [];
 }
 
+const getCustomerIndexById = (id: number): number => {
+    for (let i = 0; i < customers.length; i++) {
+        if (customers[i].getId() === id) {
+            // log("getCustomerIndexById");
+            // log(id);
+            // log(i);
+            return i;
+        }
+    }
+    return -1;
+}
+
 export default {
-    getAllCustomers, getCustomerById, customers, addCustomer,
+    getAllCustomers, getCustomerById, customers, addCustomer, getCustomerIndexById
 }
