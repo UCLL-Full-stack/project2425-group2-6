@@ -53,3 +53,52 @@
 .submitButton:hover {
     background-color: #0056b3;
 }
+
+.orderItem {
+    display: block;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.orderHeading {
+    margin: 1rem;
+    text-align: center;
+}
+
+/* styles/OrderDashboard.module.css */
+
+.editableField {
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.editableField button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #666;
+}
+
+.editableField button:hover {
+    color: #000;
+}
+
+.confirmButton {
+    margin-top: 1rem;
+    background-color: #4CAF50;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.confirmButton:hover {
+    background-color: #45a049;
+}
+
+

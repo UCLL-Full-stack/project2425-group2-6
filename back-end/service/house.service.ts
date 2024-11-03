@@ -1,7 +1,6 @@
 import { House } from "../model/house";
 import HouseDb from "../repository/House.db"
-import { houseInput } from "../types/houseDto";
-import roomService from "./room.service";
+import roomService from "./#room.service";
 
 const getAllHouses = async () : Promise <Array<House>> => {
     return await HouseDb.getAllHouses();

@@ -1,42 +1,53 @@
-import { Order } from "./order";
-import { Room } from "./room";
+export class House {
+    private id!: number;
+    private address!: string;
+    private type!: string;
 
-export class House{
-    private id : number;
-    private address : string;
-    private type : string;
-
-    constructor(id : number, address : string, type : string){
-        this.id = id;
-        this.address = address;
-        this.type = type;
+    constructor(id: number, address: string, type: string) {
+        this.setId(id);
+        this.setAddress(address);
+        this.setType(type);
     }
 
-    public getId() : number {
+    public setAddress(address: string): void {
+        if (!address || address.trim().length < 5) { // Ensuring at least 5 characters
+            throw new Error("Address must not be blank and should be at least 5 characters long.");
+        }
+        this.address = address.trim();
+    }
+
+    public setId(id: number): void {
+        if (id <= 0) {
+            throw new Error("ID must be a positive integer."); // This is the current message
+        }
+        this.id = id;
+    }
+
+    // Getters
+    public getId(): number {
         return this.id;
     }
 
-    public getAddress() : string {
+    public getAddress(): string {
         return this.address;
     }
 
-    public getType() : string {
+    public getType(): string {
         return this.type;
     }
 
-    public setId(id : number) {
-        this.id = id;
+    // Setters with validation
+
+    public setType(type: string): void {
+        const validTypes = ["apartment", "detached", "semi-detached", "terraced", "bungalow", "townhouse"];
+        if (!type || !validTypes.includes(type.toLowerCase())) {
+            throw new Error(`Type must be one of the following: ${validTypes.join(", ")}.`);
+        }
+        this.type = type.toLowerCase();
     }
 
-    public setAddress(address : string) {
-        this.address = address;
-    }
-
-    public setType(type : string) {
-        this.type = type;
-    }
-
-    public toString() : string {
-        return "House [id=" + this.id + ", address=" + this.address + ", type=" + this.type + "]";
+    // Utility method for string representation
+    public toString(): string {
+        return `House [id=${this.id}, address=${this.address}, type=${this.type}]`;
     }
 }

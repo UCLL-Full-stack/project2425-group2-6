@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
-import roomService from '../service/room.service';
+import roomService from '../service/#room.service';
 
 const roomRouter = express.Router();
 

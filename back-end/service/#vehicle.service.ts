@@ -1,5 +1,5 @@
-import { Vehicle } from "../model/vehicle";
-import VehicleDb from "../repository/Vehicle.db"
+import { Vehicle } from "../model/#vehicle";
+import VehicleDb from "../repository/#Vehicle.db"
 
 const getAllVehicles = async () : Promise<Array<Vehicle>> => {
     return await VehicleDb.getAllVehicles();

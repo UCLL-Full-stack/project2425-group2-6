@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from '../styles/Spotlight.module.css';
 import Hero from "../public/renovy.png";
+import Link from 'next/link';
 
 const Spotlight: React.FC = () => {
     return (
@@ -12,7 +13,7 @@ const Spotlight: React.FC = () => {
                         Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ex nulla facere tempore in unde sunt consectetur minima voluptatum error id quae aut nam asperiores excepturi molestias, fugiat adipisci blanditiis dolorem?
                     </p>
                     <p>
-                        <a href="/about-us" className={styles.leftAboutHyperlink}>Read more about us</a>
+                        <Link href="/about-us" className={styles.leftAboutHyperlink}>Read more about us</Link>
                     </p>
                 </div>
             </div>

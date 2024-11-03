@@ -4,9 +4,9 @@ import { Customer } from "../model/customer";
 let currentId = 1;
 
 const customers: Array<Customer> = [
-    new Customer(currentId++, "John", "Doe", "john.doe@example.com", "1"),
-    new Customer(currentId++, "Jane", "Smith", "jane.smith@example.com", "1"),
-    new Customer(currentId++, "Alice", "Johnson", "alice.johnson@example.com", "1")
+    new Customer(currentId++, "John", "Doe", "john.doe@example.com", "1111111111"),
+    new Customer(currentId++, "Jane", "Smith", "jane.smith@example.com", "11111111111"),
+    new Customer(currentId++, "Alice", "Johnson", "alice.johnson@example.com", "11111111111")
 ];
 
 const addCustomer = (firstName: string, lastName: string, email: string, password : string): Customer => {

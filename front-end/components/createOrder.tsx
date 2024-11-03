@@ -94,9 +94,12 @@ const OrderDashboard: React.FC<{ customer: CustomerInput }> = ({ customer }) => 
                     <label htmlFor="type">House Type:</label>
                     <select name="type" value={order.house.type} onChange={handleHouseChange} required>
                         <option value="">Select Type</option>
-                        <option value="apartment">Apartment</option>
-                        <option value="villa">Villa</option>
-                        <option value="cottage">Cottage</option>
+                        <option value="apartment">apartment</option>
+                        <option value="detached">detached</option>
+                        <option value="semi-detached">semi-detached</option>
+                        <option value="terraced">terraced</option>
+                        <option value="bungalow">bugalow</option>
+                        <option value="townhouse">townhouse</option>
                     </select>
                 </div>
                 <button type="submit" className={styles.submitButton}>Submit Order</button>

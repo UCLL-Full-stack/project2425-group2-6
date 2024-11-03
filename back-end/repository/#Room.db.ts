@@ -1,5 +1,5 @@
 // RoomDb.ts
-import { Room } from "../model/room";
+import { Room } from "../model/#room";
 import HouseDb from "./House.db";
 
 let currentId: number = 1;

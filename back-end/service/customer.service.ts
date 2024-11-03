@@ -3,7 +3,7 @@ import { Customer } from "../model/customer";
 import { Order } from "../model/order";
 import CustomerDb from "../repository/Customer.db";
 import OrderDb from "../repository/Order.db";
-import { CreateCustomerDto, LoginCustomerDto } from "../types/createCustomerDto";
+import { CreateCustomerDto, LoginCustomerDto } from "../types";
 
 const getAllCustomers = async () : Promise<Array<Customer>> => {
     return await CustomerDb.getAllCustomers();

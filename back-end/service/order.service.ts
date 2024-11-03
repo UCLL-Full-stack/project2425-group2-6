@@ -1,8 +1,8 @@
 import { log } from "console";
 import { Order } from "../model/order";
-import OrderDb from "../repository/Order.db"
-import { orderInput, orderInputWithHouseId } from "../types/orderDto";
+import OrderDb from "../repository/Order.db";
 import houseService from "./house.service";
+import { modifyOrderById, orderInput, orderInputWithHouseId } from "../types";
 
 const getAllOrders = () : Array<Order> => {
     return OrderDb.getAllOrders();
@@ -16,6 +16,10 @@ const createOrder = async (orderData: orderInput): Promise<Order> => {
     return OrderDb.addOrder(newOrderData);
 }
 
+const modifyOrderById = async (orderData: modifyOrderById): Promise<Order | undefined> => {
+    return await OrderDb.modifyOrderById(orderData);
+};
+
 export default {
-    getAllOrders, createOrder,
+    getAllOrders, createOrder, modifyOrderById
 }

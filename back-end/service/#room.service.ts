@@ -1,6 +1,6 @@
 import { House } from "../model/house";
-import { Room } from "../model/room";
-import RoomDb from "../repository/Room.db";
+import { Room } from "../model/#room";
+import RoomDb from "../repository/#Room.db";
 
 const getAllRooms = () : Array<Room> => {
         return RoomDb.getAllRooms();

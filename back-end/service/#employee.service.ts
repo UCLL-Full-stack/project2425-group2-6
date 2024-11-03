@@ -1,5 +1,5 @@
-import { Employee } from "../model/employee";
-import EmployeeDb from "../repository/Employee.db"
+import { Employee } from "../model/#employee";
+import EmployeeDb from "../repository/#Employee.db"
 
 const getAllEmployees = async () : Promise<Array<Employee>> => {
     return await EmployeeDb.getAllEmployees();

@@ -1,6 +1,6 @@
-import { Employee } from "./employee";
-import { Material } from "./material";
-import { Room } from "./room";
+import { Employee } from "./#employee";
+import { Material } from "./#material";
+import { Room } from "./#room";
 
 export class Tool{
     private id : number;
