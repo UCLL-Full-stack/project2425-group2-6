@@ -28,11 +28,11 @@ const Header: React.FC = () => {
                     {/* Add any left-side navigation items if needed */}
                 </div>
                 <ul className={styles.rightNavigation}>
-                    <li><a href="about-us">About Us</a></li>
-                    <li><Link href="/services">Services</Link></li>
-                    <li><a href="contact">Projects</a></li>
+                    <li><Link href = "/aboutUs">About Us</Link></li>
+                    <li><Link href = "/services">Services</Link></li>
+                    <li><Link href = "/projects">Projects</Link></li>
                     <li><Link href = "/orders">Order</Link></li>
-                    <Link href="/account"><li><img src={AccountIcon.src} alt="Account Icon"/></li></Link>
+                    <Link href = "/account"><li><img src={AccountIcon.src} alt="Account Icon"/></li></Link>
                 </ul>
             </nav>
         </div>

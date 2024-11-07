@@ -181,14 +181,20 @@ const CreateOrder: React.FC<Props> = ({ customerId }: Props) => {
                     </div>
                     <div className={styles.formGroup}>
                         <label htmlFor="houseType">House Type:</label>
-                        <input
-                            type="text"
+                        <select
                             id="houseType"
                             value={houseType}
                             onChange={(e) => setHouseType(e.target.value)}
                             required
-                            autoComplete="off"
-                        />
+                        >
+                            <option value="">Select a house type</option>
+                            <option value="apartment">Apartment</option>
+                            <option value="detached">Detached</option>
+                            <option value="semi-detached">Semi-Detached</option>
+                            <option value="terraced">Terraced</option>
+                            <option value="bungalow">Bungalow</option>
+                            <option value="townhouse">Townhouse</option>
+                        </select>
                     </div>
                     <div className={styles.formGroup}>
                         <label htmlFor="budget">Budget:</label>

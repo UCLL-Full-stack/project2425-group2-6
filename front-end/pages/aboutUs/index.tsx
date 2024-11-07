@@ -1,13 +1,17 @@
 import Header from "@/components/header";
 
-const ServicesPage: React.FC = () => {
+
+
+const AboutUs: React.FC = () => {
+
+
     return (
         <>
 
-        <Header/>
+            <Header/>
 
         </>
     )
 }
 
-export default ServicesPage;
+export default AboutUs;
