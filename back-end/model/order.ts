@@ -1,5 +1,7 @@
 import { Customer } from "./customer";
+import { Employee } from "./employee";
 import { House } from "./house";
+import { Room } from "./room";
 
 export class Order {
     private id!: number;
@@ -8,6 +10,9 @@ export class Order {
     private startDate!: Date;
     private price!: number;
     private house!: House;
+    private rooms: Array<Room> = [];
+    private Employee! : Array<Employee>;
+    private status: string = "pending";
 
     constructor(id: number, customer: Customer, orderDate: Date, startDate: Date, price: number, house: House) {
         this.setId(id);
@@ -20,6 +25,25 @@ export class Order {
 
     public getId(): number {
         return this.id;
+    }
+
+    getRooms(): Array<Room> {
+        return this.rooms;
+    }
+
+    addRoom(room: Room): this {
+        this.rooms.push(room);
+        return this;
+    }
+
+    getStatus(): string {
+        return this.status;
+    }
+
+    setStatus(status: number): this {
+        const statusLevel = ["pending", "in progress", "completed"];
+        this.status = statusLevel[status];
+        return this;
     }
 
     public getCustomer(): Customer {
@@ -57,8 +81,10 @@ export class Order {
 
     setOrderDate(orderDate: Date): this {
         const today = new Date();
-        today.setHours(0, 0, 0, 0); // Normalize to midnight
-        if (orderDate > today) {
+        const todayWithoutTime = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const orderDateWithoutTime = new Date(orderDate.getFullYear(), orderDate.getMonth(), orderDate.getDate());
+    
+        if (orderDateWithoutTime > todayWithoutTime) {
             throw new Error("Order date cannot be in the future.");
         }
         this.orderDate = orderDate;
@@ -85,6 +111,23 @@ export class Order {
 
     public setHouse(house: House): this {
         this.house = house;
+        return this;
+    }
+
+    getEmployee(): Array<Employee> {
+        return this.Employee;
+    }
+
+    setEmployee(employee: Array<Employee>): this {
+        this.Employee = employee;
+        return this;
+    }
+
+    addEmployee(employee: Employee): this {
+        if (!this.Employee) {
+            this.Employee = [];
+        }
+        this.Employee.push(employee);
         return this;
     }
 

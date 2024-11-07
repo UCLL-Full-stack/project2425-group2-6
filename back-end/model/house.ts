@@ -1,26 +1,39 @@
+import { Address } from "./address";
+import { Room } from "./room";
+
 export class House {
     private id!: number;
-    private address!: string;
+    private address!: Address;
     private type!: string;
+    private rooms: Array<Room> = [];
 
-    constructor(id: number, address: string, type: string) {
+    constructor(id: number, address: Address, type: string, rooms: Array<Room> = []) {
         this.setId(id);
         this.setAddress(address);
         this.setType(type);
-    }
 
-    public setAddress(address: string): void {
-        if (!address || address.trim().length < 5) { // Ensuring at least 5 characters
-            throw new Error("Address must not be blank and should be at least 5 characters long.");
+        if (rooms.length > 0) {
+            this.setRooms(rooms);
         }
-        this.address = address.trim();
     }
 
     public setId(id: number): void {
         if (id <= 0) {
-            throw new Error("ID must be a positive integer."); // This is the current message
+            throw new Error("ID must be a positive integer."); 
         }
         this.id = id;
+    }
+
+    getRooms(): Array<Room> {
+        return this.rooms;
+    }
+
+    setRooms(rooms: Array<Room>): void {
+        this.rooms = rooms;
+    }
+
+    addRoom(room: Room): void {
+        this.rooms.push(room);
     }
 
     // Getters
@@ -28,8 +41,15 @@ export class House {
         return this.id;
     }
 
-    public getAddress(): string {
+    public getAddress(): Address {
         return this.address;
+    }
+
+    public setAddress(address: Address): void {
+        if (!address) { 
+            throw new Error("Address is required.");
+        }
+        this.address = address;
     }
 
     public getType(): string {

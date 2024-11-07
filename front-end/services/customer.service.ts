@@ -1,5 +1,5 @@
-import { LoginCustomer } from "@/types/customerType";
-import { CustomerInput } from "@/types/customerType";
+import { LoginCustomer , CustomerInput } from "../types/customerType.js";
+
 
 const getAllCustomers = async () => {
   return fetch(

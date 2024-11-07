@@ -1,11 +1,11 @@
-import { Employee } from "./#employee";
+import { Employee } from "./employee";
 import { House } from "./house";
-import { Material } from "./#material";
-import { Tool } from "./#tool";
+import { Material } from "./material";
+import { Tool } from "./tool";
 
 export class Room {
     private id: number;
-    private house!: House; // Use definite assignment assertion
+    private house!: House; 
     private name: string;
     private workDescription: string;
     private employees: Array<Employee> = [];
@@ -14,7 +14,7 @@ export class Room {
 
     constructor(id: number, house: House, name: string, workDescription: string) {
         this.id = id;
-        this.setHouse(house); // Assign house in constructor via setHouse
+        this.setHouse(house); 
         this.name = name;
         this.workDescription = workDescription;
     }

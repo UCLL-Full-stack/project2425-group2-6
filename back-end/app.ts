@@ -5,11 +5,11 @@ import * as bodyParser from 'body-parser';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { customerRouter } from './controller/customer.routes';
-import { employeeRouter } from './controller/#employee.routes';
-import { vehicleRouter } from './controller/#vehicle.routes';
-import { houseRouter } from './controller/house.routes';
-import { roomRouter } from './controller/#room.routes';
-import { orderRouter } from './controller/order.routes';
+import { employeeRouter } from './controller/employee.routes';
+import houseRouter from './controller/house.routes';
+import orderRouter from './controller/order.routes';
+import roomRouter from './controller/room.routes';
+import addressRouter from './controller/address.routes';
 
 const app = express();
 dotenv.config();
@@ -37,15 +37,17 @@ app.get('/status', (req, res) => {
 
 app.use('/customers', customerRouter);
 
-// app.use('/employees', employeeRouter);
+app.use('/employees', employeeRouter);
 
 // app.use ('/vehicles', vehicleRouter);
 
 app.use('/houses', houseRouter);
 
-// app.use('/rooms', roomRouter);
+app.use('/rooms', roomRouter);
 
 app.use('/orders', orderRouter);
+
+app.use('/addresses', addressRouter);
 
 app.listen(port || 3000, () => {
     console.log(`Back-end is running on port ${port}.`);

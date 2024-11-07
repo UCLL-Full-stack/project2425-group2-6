@@ -1,4 +1,4 @@
-import { orderInput } from "@/types/orderType";
+import { orderInput } from "../types/orderType.js";
 import { create } from "domain";
 
 const createOrder = async (orderInput : orderInput) => {

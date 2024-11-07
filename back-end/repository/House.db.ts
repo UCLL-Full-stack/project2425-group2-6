@@ -1,31 +1,41 @@
 import { House } from "../model/house";
-import RoomDb from "./#Room.db";
+import { createHouseDto } from "../types";
+import AddressDb from "./Address.db";
 
-let currentId: number = 1;
+let currentId : number = 1;
 
-const houses: Array<House> = [
-    new House(currentId++, "123 Main St", "Apartment"),
-    new House(currentId++, "456 Elm St", "Detached"),
-    new House(currentId++, "789 Oak St", "Townhouse"),
+let houses : House[] = [
+    new House (currentId++, AddressDb.getAllAddresses()[0], "apartment"),
+    new House (currentId++, AddressDb.getAllAddresses()[1], "detached"),
+    new House (currentId++, AddressDb.getAllAddresses()[2], "semi-detached"),
+    new House (currentId++, AddressDb.getAllAddresses()[3], "terraced"),
+    new House (currentId++, AddressDb.getAllAddresses()[4], "bungalow"),
 ];
+
+houses.forEach(house => {console.log(`${house.toString()}\n\n`)});
 
 const getAllHouses = () => {
     return houses;
 }
 
-const getHouseById = (id : number) : House | [] => {
-    return houses.find(house => house.getId() === id) || [];
+const getHouseById = (id : number) : House | Error => {
+    return houses.find(house => house.getId() === id) || new Error("House not found.");
 }
 
-const addHouse = (address: string, type: string): House => {
-    const newHouse = new House(currentId++, address, type);
+const addHouse = (house : createHouseDto) => {
+    const address = AddressDb.getAddressById(house.addressId);
+    if (address instanceof Error) {
+        throw address;
+    }
+    const newHouse = new House(currentId++, address, house.type);
     houses.push(newHouse);
     return newHouse;
 }
 
+
 export default {
     houses,
+    addHouse,
     getAllHouses,
     getHouseById,
-    addHouse
-};
+}

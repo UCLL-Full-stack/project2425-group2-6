@@ -1,26 +1,20 @@
-import { House } from "../model/house";
-import HouseDb from "../repository/House.db"
-import roomService from "./#room.service";
+import HouseDb from "../repository/House.db";
+import { createHouseDto } from "../types";
 
-const getAllHouses = async () : Promise <Array<House>> => {
-    return await HouseDb.getAllHouses();
-}
+const getAllHouses = async () => {
+    return HouseDb.getAllHouses();
+};
 
-const getHouseById = async (id : number) : Promise<House | []> => {
-    return await HouseDb.getHouseById(id);
-}
+const getHouseById = async (id: number) => {
+    return HouseDb.getHouseById(id);
+};
 
-const getHouseRoomsById = async (id : number) => {
-    return await roomService.getHouseRoomsById(id);
-}
-
-const addHouse = async (address : string, type : string) : Promise<House> => {
-    return await HouseDb.addHouse(address, type);
-}
+const addHouse = async (houseData: createHouseDto) => {
+    return HouseDb.addHouse(houseData);
+};
 
 export default {
     getAllHouses,
     getHouseById,
-    getHouseRoomsById,
     addHouse,
-}
+};

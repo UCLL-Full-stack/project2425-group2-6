@@ -1,6 +1,5 @@
 import express, { Request, Response } from 'express';
 import customerService from "../service/customer.service";
-import { CreateCustomerDto } from '../types';
 
 const customerRouter = express.Router();
 
@@ -125,16 +124,16 @@ customerRouter.get("/:id", async (req: Request, res: Response) => {
  *       400:
  *         description: Error retrieving customer orders
  */
-customerRouter.get("/orders/:id", async (req: Request, res: Response) => {
-    try {
-        res.status(200).json(await customerService.getCustomerOrderById(parseInt(req.params.id)));
-    }
-    catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: "error", errorMessage: error.message });
-        }
-    }
-});
+// customerRouter.get("/orders/:id", async (req: Request, res: Response) => {
+//     try {
+//         res.status(200).json(await customerService.getCustomerOrderById(parseInt(req.params.id)));
+//     }
+//     catch (error) {
+//         if (error instanceof Error) {
+//             res.status(400).json({ error: "error", errorMessage: error.message });
+//         }
+//     }
+// });
 
 /**
  * @swagger
@@ -158,17 +157,17 @@ customerRouter.get("/orders/:id", async (req: Request, res: Response) => {
  *       400:
  *         description: Error creating customer
  */
-customerRouter.post("/", async (req: Request, res: Response) => {
-    try {
-        const customerData: CreateCustomerDto = req.body;
-        const newCustomer = await customerService.createCustomer(customerData);
-        res.status(201).json(newCustomer);
-    } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: "error", errorMessage: error.message });
-        }
-    }
-});
+// customerRouter.post("/", async (req: Request, res: Response) => {
+//     try {
+//         const customerData: CreateCustomerDto = req.body;
+//         const newCustomer = await customerService.createCustomer(customerData);
+//         res.status(201).json(newCustomer);
+//     } catch (error) {
+//         if (error instanceof Error) {
+//             res.status(400).json({ error: "error", errorMessage: error.message });
+//         }
+//     }
+// });
 
 /**
  * @swagger
@@ -202,16 +201,16 @@ customerRouter.post("/", async (req: Request, res: Response) => {
  *       400:
  *         description: Invalid email or password
  */
-customerRouter.post("/login", async(req: Request, res: Response) => {
-    try {
-        res.status(200).json(await customerService.attemptSignin(req.body));
-    }
-    catch (error) {
-        if (error instanceof Error && error.message === "Invalid email or password") {
-            res.status(400).json({ error: "error", errorMessage: error.message });
-        }
-    }
-});
+// customerRouter.post("/login", async(req: Request, res: Response) => {
+//     try {
+//         res.status(200).json(await customerService.attemptSignin(req.body));
+//     }
+//     catch (error) {
+//         if (error instanceof Error && error.message === "Invalid email or password") {
+//             res.status(400).json({ error: "error", errorMessage: error.message });
+//         }
+//     }
+// });
 
 /**
  * @swagger

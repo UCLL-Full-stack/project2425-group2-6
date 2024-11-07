@@ -1,4 +1,4 @@
-export interface houseInput {
-    address : string;
+export type houseInput = {
+    addressId : number;
     type : string;
 }

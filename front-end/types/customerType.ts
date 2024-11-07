@@ -1,12 +1,12 @@
 // types.ts
-export interface CustomerInput {
+export type CustomerInput = {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
 };
 
-export interface LoginCustomer {
+export type LoginCustomer = {
   email: string;
   password: string;
 }

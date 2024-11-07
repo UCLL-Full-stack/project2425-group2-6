@@ -1,0 +1,35 @@
+.ordersHeading{
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.orderList {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 4rem;
+    margin-bottom: 10rem;
+}
+
+.orderItem{
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 60%;
+    gap: 2rem;
+}
+
+.orderItem div {
+    margin-bottom: 2rem;
+}
+
+.orderItem p {
+    margin: 1rem 0;
+}
+
+.noOrders{
+    text-align: center;
+    margin-top: 2rem;
+    margin-bottom: 10rem;
+}

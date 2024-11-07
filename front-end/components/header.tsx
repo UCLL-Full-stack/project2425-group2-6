@@ -29,9 +29,10 @@ const Header: React.FC = () => {
                 </div>
                 <ul className={styles.rightNavigation}>
                     <li><a href="about-us">About Us</a></li>
-                    <li><a href="services">Services</a></li>
+                    <li><Link href="/services">Services</Link></li>
                     <li><a href="contact">Projects</a></li>
-                    <Link href="/accountPage"><li><img src={AccountIcon.src} alt="Account Icon"/></li></Link>
+                    <li><Link href = "/orders">Order</Link></li>
+                    <Link href="/account"><li><img src={AccountIcon.src} alt="Account Icon"/></li></Link>
                 </ul>
             </nav>
         </div>

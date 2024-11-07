@@ -1,5 +1,5 @@
-import { Room } from "./#room";
-import { Tool } from "./#tool";
+import { Room } from "./room";
+import { Tool } from "./tool";
 
 export class Material {
     private id : number;
