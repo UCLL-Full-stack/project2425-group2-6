@@ -17,6 +17,7 @@ const customerRouter = express.Router();
  *       properties:
  *         id:
  *           type: number
+ *           format: int64
  *           description: Unique identifier for the customer.
  *         name:
  *           type: string
@@ -99,31 +100,7 @@ customerRouter.get("/:id", async (req: Request, res: Response) => {
     }
 });
 
-/**
- * @swagger
- * /customers/orders/{id}:
- *   get:
- *     summary: Retrieve all orders for a specific customer by customer ID
- *     tags: [Orders]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: integer
- *         required: true
- *         description: Numeric ID of the customer
- *     responses:
- *       200:
- *         description: Orders of the specified customer
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Customer'  # Define an Order schema if needed
- *       400:
- *         description: Error retrieving customer orders
- */
+
 // customerRouter.get("/orders/:id", async (req: Request, res: Response) => {
 //     try {
 //         res.status(200).json(await customerService.getCustomerOrderById(parseInt(req.params.id)));

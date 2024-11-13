@@ -4,6 +4,8 @@ import { log } from 'console';
 
 const orderRouter = express.Router();
 
+
+
 orderRouter.get("/", async (req: Request, res: Response) => {
     try {
         res.status(200).json(await orderService.getAllOrders());
@@ -15,6 +17,32 @@ orderRouter.get("/", async (req: Request, res: Response) => {
     }
 });
 
+
+/**
+ * @swagger
+ * /customers/orders/{id}:
+ *   get:
+ *     summary: Retrieve all orders for a specific customer by customer ID
+ *     tags: [Orders]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Numeric ID of the customer
+ *     responses:
+ *       200:
+ *         description: Orders of the specified customer
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Customer'  # Define an Order schema if needed
+ *       400:
+ *         description: Error retrieving customer orders
+ */
 orderRouter.get("/:id", async (req: Request, res: Response) => {
     try {
         res.status(200).json(await orderService.getOrderById(parseInt(req.params.id)));
@@ -25,6 +53,7 @@ orderRouter.get("/:id", async (req: Request, res: Response) => {
         }
     }
 });
+
 
 orderRouter.post("/", async (req, res) => {
     try {
