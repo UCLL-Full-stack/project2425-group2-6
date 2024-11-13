@@ -19,21 +19,41 @@ const customerRouter = express.Router();
  *           type: number
  *           format: int64
  *           description: Unique identifier for the customer.
- *         name:
+ *         firstName:
  *           type: string
- *           description: Customer's full name.
- *         email:
+ *           description: Customer's first name.
+ *         lastName:
  *           type: string
- *           description: Customer's email address.
- *     CreateCustomerDto:
- *       type: object
- *       properties:
- *         name:
- *           type: string
- *           description: Name of the new customer.
+ *           description: Customer's last name.
  *         email:
  *           type: string
  *           description: Email address of the new customer.
+ *         birthDate:
+ *           type: string
+ *           format: date
+ *           description: Customer's birth date.
+ *         password:
+ *           type: string
+ *           description: Customer's password.
+ *     CreateCustomerDto:
+ *       type: object
+ *       properties:
+ *         firstName:
+ *           type: string
+ *           description: Customer's first name.
+ *         lastName:
+ *           type: string
+ *           description: Customer's last name.
+ *         email:
+ *           type: string
+ *           description: Email address of the new customer.
+ *         birthDate:
+ *           type: string
+ *           format: date
+ *           description: Customer's birth date.
+ *         password:
+ *           type: string
+ *           description: Customer's password.
  */
 
 /**

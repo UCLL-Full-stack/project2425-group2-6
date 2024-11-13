@@ -33,6 +33,9 @@ const addressRouter = express.Router();
  *     CreateAddressDto:
  *       type: object
  *       properties:
+ *         city:
+ *           type: string
+ *           description: Address's city detail.
  *         houseNumber:
  *           type: number
  *           format: int64
@@ -40,9 +43,6 @@ const addressRouter = express.Router();
  *         street:
  *           type: string
  *           description: Address's street detail.
- *         city:
- *           type: string
- *           description: Address's city detail.
  *         state:
  *           type: string
  *           description: Address's state detail.

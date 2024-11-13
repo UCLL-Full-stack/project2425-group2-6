@@ -95,31 +95,16 @@ const roomRouter = express.Router();
  *     CreateRoomDto:
  *       type: object
  *       properties:
+ *         workDescription:
+ *           type: string
+ *           description: Description of the work to be done in the room.
+ *         name:
+ *           type: string
+ *           description: Name of the room.
  *         houseId:
  *           type: number
  *           format: int64
  *           description: ID of the house to which the room belongs.
- *         name:
- *           type: string
- *           description: Name of the room.
- *         workDescription:
- *           type: string
- *           description: Description of the work to be done in the room.
- *         employeeIds:
- *           type: array
- *           items:
- *             type: number
- *           description: List of employee IDs assigned to the room.
- *         toolIds:
- *           type: array
- *           items:
- *             type: number
- *           description: List of tool IDs used in the room.
- *         materialIds:
- *           type: array
- *           items:
- *             type: number
- *           description: List of material IDs used in the room.
  */
 
 /**

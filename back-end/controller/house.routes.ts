@@ -52,18 +52,12 @@ const houseRouter = express.Router();
  *     CreateHouseDto:
  *       type: object
  *       properties:
- *         addressId:
- *           type: number
- *           format: int64
- *           description: ID of the address.
  *         type:
  *           type: string
  *           description: Type of the house.
- *         roomIds:
- *           type: array
- *           items:
- *             type: number
- *           description: List of room IDs in the house.
+ *         addressId:
+ *           type: number
+ *           description: ID of the address.
  */
 
 /**
