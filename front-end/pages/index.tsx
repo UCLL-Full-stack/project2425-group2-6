@@ -1,23 +1,41 @@
 import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "next/font/google";
-import styles from "@/styles/Home.module.css";
+import styles from "../styles/Home.module.css";
 import Header from "@/components/header";
 import Spotlight from "@/components/spotlight";
+
 
 export default function Home() {
   return (
     <>
-    <Header/>
-    <div id="body-container">
-    <Spotlight/>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui, obcaecati cupiditate nemo voluptas quod accusantium autem optio maiores sequi temporibus fuga modi facilis animi esse a rerum adipisci facere? Earum illum ipsam quas dignissimos, accusantium id perferendis deleniti beatae voluptatum delectus placeat fugiat iusto voluptate tempore aspernatur nobis, mollitia provident quasi quo at doloribus sit quod. Hic at impedit explicabo, ullam rem, debitis saepe iure quos sunt atque libero dolorem ratione tempore illum voluptates. Repudiandae beatae hic consectetur corrupti harum accusantium exercitationem at facilis? Repellendus minus numquam iusto. Tempore, porro! Ipsam placeat repellendus dolores dolorum distinctio, nesciunt deserunt sit voluptate!</p>
-    </div>
+      <Header />
+      <div id="body-container" className={styles["body-container"]}>
+        <Spotlight />
+        <h1>Welcome to Renovy</h1>
+        <p>
+          At Renovy, we specialize in transforming old buildings into modern and classy homes. Our team of experienced professionals is dedicated to delivering high-quality workmanship and exceptional customer service. We take pride in our ability to preserve the unique character of historic buildings while incorporating contemporary design elements and state-of-the-art amenities.
+        </p>
+        <p>
+          Our renovation services include:
+        </p>
+        <ul>
+          <li>Comprehensive structural assessments and repairs</li>
+          <li>Modernizing electrical, plumbing, and HVAC systems</li>
+          <li>Custom interior and exterior design solutions</li>
+          <li>Energy-efficient upgrades and sustainable building practices</li>
+          <li>Restoration of historical features and architectural details</li>
+        </ul>
+        <p>
+          We understand that every project is unique, and we work closely with our clients to ensure their vision is brought to life. From initial consultation to project completion, we are committed to exceeding expectations and delivering results that stand the test of time.
+        </p>
+        <p>
+          Choose Renovy for your next renovation project and experience the perfect blend of tradition and innovation. Let us help you create a home that is not only beautiful but also functional and sustainable for years to come.
+        </p>
+      </div>
     </>
   );
 }
-
-
 
 
 

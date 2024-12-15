@@ -10,10 +10,10 @@ const Spotlight: React.FC = () => {
                 <div className={styles.leftContent}>
                     <h1>Renovy</h1>
                     <p>
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ex nulla facere tempore in unde sunt consectetur minima voluptatum error id quae aut nam asperiores excepturi molestias, fugiat adipisci blanditiis dolorem?
+                        Renovy: Building Dreams, Restoring Trust.                    
                     </p>
                     <p>
-                        <Link href="/about-us" className={styles.leftAboutHyperlink}>Read more about us</Link>
+                        <Link href="/aboutUs" className={styles.leftAboutHyperlink}>Read more about us</Link>
                     </p>
                 </div>
             </div>
