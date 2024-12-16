@@ -1,77 +1,74 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
-
-const main = async () => {
-    await prisma.customer.deleteMany({});
-    await prisma.employee.deleteMany({});
-    await prisma.house.deleteMany({});
-    await prisma.order.deleteMany({});
-
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const client_1 = require("@prisma/client");
+const prisma = new client_1.PrismaClient();
+const main = () => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma.customer.deleteMany({});
+    yield prisma.employee.deleteMany({});
+    yield prisma.house.deleteMany({});
+    yield prisma.order.deleteMany({});
     // ----------------- Customer -----------------
-
-    const JohnDoe = await prisma.customer.create({
+    const JohnDoe = yield prisma.customer.create({
         data: {
             firstName: 'John',
             lastName: 'Doe',
             email: 'john.doe@example.com',
             birthday: new Date('1990-01-01'),
-            // password: 'securePassword123',
-            password: '$2b$12$5UmJRtK5F01rxUyCUurneuWuK355hhFjwYosJv6LhvkhHG/wXynIi',
+            password: 'password',
         }
     });
-
-    const JaneSmith = await prisma.customer.create({
+    const JaneSmith = yield prisma.customer.create({
         data: {
             firstName: "Jane",
             lastName: "Smith",
             email: "jane.smith@example.com",
             birthday: new Date("1985-05-15"),
             password: "securePassword2",
-
         }
     });
-
-    const AliceJohnson = await prisma.customer.create({
+    const AliceJohnson = yield prisma.customer.create({
         data: {
             firstName: "Alice",
             lastName: "Johnson",
             email: "alice.johnson@example.com",
             birthday: new Date("1992-09-10"),
             password: "securePassword3",
-
         }
     });
-
-    const BobBrown = await prisma.customer.create({
+    const BobBrown = yield prisma.customer.create({
         data: {
             firstName: "Bob",
             lastName: "Brown",
             email: "bobbrown@example.com",
             birthday: new Date("1980-12-25"),
             password: "securePassword4",
-
         }
     });
-
     // ----------------- Employees -----------------
-
-    const employee1 = await prisma.employee.create({
+    const employee1 = yield prisma.employee.create({
         data: {
             firstName: "Michael",
             lastName: "Scott",
             email: "michael.scott@example.com",
             birthday: new Date("1964-03-15"),
             password: "dundermifflin",
-            role: "admin",  
+            role: "admin",
             experience: 20,
             domain: "Sales",
             licenseType: "B",
             workPosition: "Manager"
         }
     });
-
-    const employee2 = await prisma.employee.create({
+    const employee2 = yield prisma.employee.create({
         data: {
             firstName: "Dwight",
             lastName: "Schrute",
@@ -85,8 +82,7 @@ const main = async () => {
             workPosition: "Assistant to the Regional Manager"
         }
     });
-
-    const employee3 = await prisma.employee.create({
+    const employee3 = yield prisma.employee.create({
         data: {
             firstName: "Jim",
             lastName: "Halpert",
@@ -99,8 +95,7 @@ const main = async () => {
             workPosition: "Sales Representative"
         }
     });
-
-    const employee4 = await prisma.employee.create({
+    const employee4 = yield prisma.employee.create({
         data: {
             firstName: "Pam",
             lastName: "Beesly",
@@ -113,8 +108,7 @@ const main = async () => {
             workPosition: "Receptionist"
         }
     });
-
-    const employee5 = await prisma.employee.create({
+    const employee5 = yield prisma.employee.create({
         data: {
             firstName: "Stanley",
             lastName: "Hudson",
@@ -127,24 +121,22 @@ const main = async () => {
             workPosition: "Sales Representative"
         }
     });
-
-// ----------------- Addresses and Houses -----------------
-const house1 = await prisma.house.create({
-    data: {
-        houseNumber: "123",
-        street: "Main St",
-        city: "Springfield",
-        zip: "62701",
-        country: "USA",
-        type: "detached",
-        createdAt: new Date(),
-    },
-    include: {
-        rooms: true, // Include the related rooms in the response
-    },
-});
-
-    const house2 = await prisma.house.create({
+    // ----------------- Addresses and Houses -----------------
+    const house1 = yield prisma.house.create({
+        data: {
+            houseNumber: "123",
+            street: "Main St",
+            city: "Springfield",
+            zip: "62701",
+            country: "USA",
+            type: "detached",
+            createdAt: new Date(),
+        },
+        include: {
+            rooms: true, // Include the related rooms in the response
+        },
+    });
+    const house2 = yield prisma.house.create({
         data: {
             houseNumber: "456",
             street: "Elm St",
@@ -158,8 +150,7 @@ const house1 = await prisma.house.create({
             rooms: true, // Include the related rooms in the response
         },
     });
-
-    const house3 = await prisma.house.create({
+    const house3 = yield prisma.house.create({
         data: {
             houseNumber: "789",
             street: "Oak St",
@@ -173,8 +164,7 @@ const house1 = await prisma.house.create({
             rooms: true, // Include the related rooms in the response
         },
     });
-
-    const house4 = await prisma.house.create({
+    const house4 = yield prisma.house.create({
         data: {
             houseNumber: "101",
             street: "Pine St",
@@ -188,8 +178,7 @@ const house1 = await prisma.house.create({
             rooms: true, // Include the related rooms in the response
         },
     });
-
-    const house5 = await prisma.house.create({
+    const house5 = yield prisma.house.create({
         data: {
             houseNumber: "202",
             street: "Cedar St",
@@ -203,8 +192,7 @@ const house1 = await prisma.house.create({
             rooms: true, // Include the related rooms in the response
         },
     });
-
-    const house6 = await prisma.house.create({
+    const house6 = yield prisma.house.create({
         data: {
             houseNumber: "303",
             street: "Maple St",
@@ -218,8 +206,7 @@ const house1 = await prisma.house.create({
             rooms: true, // Include the related rooms in the response
         },
     });
-
-    const house7 = await prisma.house.create({
+    const house7 = yield prisma.house.create({
         data: {
             houseNumber: "404",
             street: "Birch St",
@@ -233,8 +220,7 @@ const house1 = await prisma.house.create({
             rooms: true, // Include the related rooms in the response
         },
     });
-
-    const house8 = await prisma.house.create({
+    const house8 = yield prisma.house.create({
         data: {
             houseNumber: "505",
             street: "Pineapple St",
@@ -248,9 +234,8 @@ const house1 = await prisma.house.create({
             rooms: true, // Include the related rooms in the response
         },
     });
-
     // ----------------- Rooms -----------------
-    await prisma.room.create({
+    yield prisma.room.create({
         data: {
             name: "Living Room",
             workDescription: "Spacious and well-lit living area",
@@ -259,8 +244,7 @@ const house1 = await prisma.house.create({
             },
         },
     });
-
-    await prisma.room.create({
+    yield prisma.room.create({
         data: {
             name: "Kitchen",
             workDescription: "Modern kitchen with appliances",
@@ -269,8 +253,7 @@ const house1 = await prisma.house.create({
             },
         },
     });
-
-    await prisma.room.create({
+    yield prisma.room.create({
         data: {
             name: "Bedroom 1",
             workDescription: "Cozy bedroom with a balcony",
@@ -279,8 +262,7 @@ const house1 = await prisma.house.create({
             },
         },
     });
-
-    await prisma.room.create({
+    yield prisma.room.create({
         data: {
             name: "Bedroom 2",
             workDescription: "Guest bedroom",
@@ -289,8 +271,7 @@ const house1 = await prisma.house.create({
             },
         },
     });
-
-    await prisma.room.create({
+    yield prisma.room.create({
         data: {
             name: "Living Room",
             workDescription: "Open-plan living area",
@@ -299,8 +280,7 @@ const house1 = await prisma.house.create({
             },
         },
     });
-
-    await prisma.room.create({
+    yield prisma.room.create({
         data: {
             name: "Master Bedroom",
             workDescription: "Spacious master bedroom",
@@ -309,8 +289,7 @@ const house1 = await prisma.house.create({
             },
         },
     });
-
-    await prisma.room.create({
+    yield prisma.room.create({
         data: {
             name: "Bathroom",
             workDescription: "Full bathroom with shower and tub",
@@ -319,8 +298,7 @@ const house1 = await prisma.house.create({
             },
         },
     });
-
-    await prisma.room.create({
+    yield prisma.room.create({
         data: {
             name: "Living Room",
             workDescription: "Sunlit living room",
@@ -329,8 +307,7 @@ const house1 = await prisma.house.create({
             },
         },
     });
-
-    await prisma.room.create({
+    yield prisma.room.create({
         data: {
             name: "Bedroom",
             workDescription: "Cozy single bedroom",
@@ -339,8 +316,7 @@ const house1 = await prisma.house.create({
             },
         },
     });
-
-    await prisma.room.create({
+    yield prisma.room.create({
         data: {
             name: "Living Room",
             workDescription: "Stylish living space",
@@ -349,8 +325,7 @@ const house1 = await prisma.house.create({
             },
         },
     });
-
-    await prisma.room.create({
+    yield prisma.room.create({
         data: {
             name: "Bedroom 1",
             workDescription: "Master bedroom with en-suite",
@@ -359,8 +334,7 @@ const house1 = await prisma.house.create({
             },
         },
     });
-
-    await prisma.room.create({
+    yield prisma.room.create({
         data: {
             name: "Bedroom 2",
             workDescription: "Children's bedroom",
@@ -369,8 +343,7 @@ const house1 = await prisma.house.create({
             },
         },
     });
-
-    await prisma.room.create({
+    yield prisma.room.create({
         data: {
             name: "Living Room",
             workDescription: "Open-plan living area",
@@ -379,8 +352,7 @@ const house1 = await prisma.house.create({
             },
         },
     });
-
-    await prisma.room.create({
+    yield prisma.room.create({
         data: {
             name: "Kitchen",
             workDescription: "Fully equipped kitchen",
@@ -389,8 +361,7 @@ const house1 = await prisma.house.create({
             },
         },
     });
-
-    await prisma.room.create({
+    yield prisma.room.create({
         data: {
             name: "Bedroom",
             workDescription: "Compact bedroom",
@@ -399,8 +370,7 @@ const house1 = await prisma.house.create({
             },
         },
     });
-
-    await prisma.room.create({
+    yield prisma.room.create({
         data: {
             name: "Bathroom",
             workDescription: "Modern bathroom",
@@ -409,8 +379,7 @@ const house1 = await prisma.house.create({
             },
         },
     });
-
-    await prisma.room.create({
+    yield prisma.room.create({
         data: {
             name: "Living Room",
             workDescription: "Terraced living room",
@@ -419,8 +388,7 @@ const house1 = await prisma.house.create({
             },
         },
     });
-
-    await prisma.room.create({
+    yield prisma.room.create({
         data: {
             name: "Bedroom",
             workDescription: "Large bedroom with terrace access",
@@ -429,12 +397,9 @@ const house1 = await prisma.house.create({
             },
         },
     });
-
-
     // ----------------- Create Orders -----------------
-
     // Order 1: John Doe for House 1, managed by Michael Scott
-    await prisma.order.create({
+    yield prisma.order.create({
         data: {
             houseId: house1.id,
             customerId: JohnDoe.id,
@@ -445,9 +410,8 @@ const house1 = await prisma.house.create({
             orderDate: new Date('2023-12-01'),
         }
     });
-
     // Order 2: Jane Smith for House 2, managed by Dwight Schrute
-    await prisma.order.create({
+    yield prisma.order.create({
         data: {
             houseId: house2.id,
             customerId: JaneSmith.id,
@@ -458,9 +422,8 @@ const house1 = await prisma.house.create({
             orderDate: new Date('2023-12-05')
         }
     });
-
     // Order 3: Alice Johnson for House 1, managed by Michael Scott
-    await prisma.order.create({
+    yield prisma.order.create({
         data: {
             houseId: house1.id,
             customerId: AliceJohnson.id,
@@ -471,15 +434,12 @@ const house1 = await prisma.house.create({
             orderDate: new Date('2023-12-10')
         }
     });
-
-}
-
-
+});
 main()
     .catch(e => {
-        console.error(e);
-        process.exit(1);
-    })
-    .finally(async () => {
-        await prisma.$disconnect();
-    });
+    console.error(e);
+    process.exit(1);
+})
+    .finally(() => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma.$disconnect();
+}));
