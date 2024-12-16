@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import customerService from "../service/customer.service";
 
 const customerRouter = express.Router();
@@ -108,17 +108,17 @@ customerRouter.get("/", async (req: Request, res: Response) => {
  *       400:
  *         description: Error retrieving customer
  */
-customerRouter.get("/:id", async (req: Request, res: Response) => {
-    try {
-        const id: number = parseInt(req.params.id, 10);      
-        res.status(200).json(await customerService.getCustomerById(id));
-    }
-    catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: "error", errorMessage: error.message });
-        }
-    }
-});
+// customerRouter.get("/:id", async (req: Request, res: Response) => {
+//     try {
+//         const id: number = parseInt(req.params.id, 10);      
+//         res.status(200).json(await customerService.getCustomerById(id));
+//     }
+//     catch (error) {
+//         if (error instanceof Error) {
+//             res.status(400).json({ error: "error", errorMessage: error.message });
+//         }
+//     }
+// });
 
 
 // customerRouter.get("/orders/:id", async (req: Request, res: Response) => {
@@ -234,15 +234,43 @@ customerRouter.get("/:id", async (req: Request, res: Response) => {
  *       400:
  *         description: Error retrieving customer orders
  */
-customerRouter.get("/:id/orders", async (req: Request, res: Response) => {
+// customerRouter.get("/:id/orders", async (req: Request, res: Response) => {
+//     try {
+//         res.status(200).json(await customerService.getCustomerOrderById(parseInt(req.params.id)));
+//     }
+//     catch (error) {
+//         if (error instanceof Error) {
+//             res.status(400).json({ error: "error", errorMessage: error.message });
+//         }
+//     }
+// });
+
+customerRouter.post("/signup", async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.status(200).json(await customerService.getCustomerOrderById(parseInt(req.params.id)));
-    }
-    catch (error) {
+        res.status(200).json(await customerService.createCustomer(req.body));
+    } catch (error) {
         if (error instanceof Error) {
-            res.status(400).json({ error: "error", errorMessage: error.message });
+                        res.status(400).json({ error: "error", errorMessage: error.message });
+                    }
+    }
+});
+
+customerRouter.post("/login", async (req: Request, res: Response) => {
+    try {
+        const { email, password } = req.body;
+        res.status(200).json(await customerService.authenticate(email, password));
+    } catch (error) {
+        if (error instanceof Error) {
+            if (error.message === "Invalid email or password" || error.message === "Customer does not exist.") {
+                res.status(400).json({ error: "error", errorMessage: error.message });
+            } else {
+                res.status(500).json({ error: "Internal server", errorMessage: error.message });
+            }
+        } else {
+            res.status(500).json({ error: "error", errorMessage: "Unexpected error" });
         }
     }
 });
+
 
 export { customerRouter };

@@ -1,39 +1,16 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
 import styles from "@/styles/HelloMessage.module.css";
 
-type Props = {
-    customerId: number;
-}
+type HelloMessageProps = {
+    firstName: string;
+};
 
-const HelloMessage: React.FC<Props> = ({ customerId }: Props) => {
-    const [customerName, setCustomerName] = useState<string>('');
-
-    const getCustomerById = async (customerId: number) => {
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/customers/${customerId}`);
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            const customerData = await response.json();
-            setCustomerName(customerData.firstName); // Assuming the API returns an object with a 'name' field
-        } catch (error) {
-            console.error("Failed to fetch customer:", error);
-        }
-    }
-
-    useEffect(() => {
-        getCustomerById(customerId);
-    }, [customerId]);
-
+const HelloMessage: React.FC<HelloMessageProps> = ({ firstName }) => {
     return (
-        <>
-            {customerName ? (
-                <h1 className={styles.welcomeMessage}>Welcome {customerName}</h1>
-            ) : (
-                <h1 className={styles.welcomeMessage}>No user found</h1>
-            )}
-        </>
-    )
-}
+        <div className={styles.helloMessage}>
+            {firstName ? <h2 className='font-bold text-center'>Hello, {firstName}!</h2> : <h2 className='font-bold text-center'>To display page content you must be signed in!</h2>}
+        </div>
+    );
+};
 
 export default HelloMessage;

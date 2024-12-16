@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* :root {
   --max-width: 1100px;
   --border-radius: 12px;
@@ -134,7 +138,6 @@ body {
 #header-item5 {
   background-color: rgb(45,49,145); /* Example color 
 } */
-
 
 /* Spotlight
 #spotlight-container {

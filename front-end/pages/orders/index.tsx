@@ -1,23 +1,37 @@
-import PastOrders from "@/components/pastOrders";
+import { useEffect, useState } from "react";
 import Header from "@/components/header";
 import HelloMessage from "@/components/helloMessage";
 import CreateOrder from "@/components/createOrder";
-
+import OrderHistory from "@/components/orderHistory";
 
 const Orders: React.FC = () => {
+    const [customerName, setCustomerName] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
 
-    const customerId = 1;
+    useEffect(() => {
+        const user = JSON.parse(sessionStorage.getItem('loggedInUser') || '{}');
+        const fullName = user.fullname;
+        if (fullName) {
+            const firstNameFromStorage = fullName.split(" ")[0];
+            setCustomerName(firstNameFromStorage);
+        }
+        setEmail(user.email);
+    }, []);
 
     return (
         <>
-
             <Header/>
+            
+            <HelloMessage firstName={customerName} />
 
-            <HelloMessage customerId = {customerId}/>
+            {customerName &&
+            <CreateOrder emailProp={email}/>
+            }
 
-            <CreateOrder customerId = {customerId}/>
+            {customerName &&
+            <OrderHistory email={email}/>
+            }
 
-            <PastOrders customerId = {customerId}/>
         </>
     )
 }
