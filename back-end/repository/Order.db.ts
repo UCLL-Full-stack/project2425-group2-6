@@ -46,7 +46,6 @@ const getOrderByCustomerEmail = async (email: string): Promise<Array<Order>> => 
         include: {
             customer: true,
             house: true,
-            // rooms : true
         }
     });
     console.log("Orders fetched from database:", ordersPrisma);

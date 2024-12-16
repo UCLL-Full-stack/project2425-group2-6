@@ -3,10 +3,12 @@ import Header from "@/components/header";
 import HelloMessage from "@/components/helloMessage";
 import CreateOrder from "@/components/createOrder";
 import OrderHistory from "@/components/orderHistory";
+import AllOrders from "@/components/allOrders";
 
 const Orders: React.FC = () => {
     const [customerName, setCustomerName] = useState<string>('');
     const [email, setEmail] = useState<string>('');
+    const [role, setRole] = useState<string>('');
 
     useEffect(() => {
         const user = JSON.parse(sessionStorage.getItem('loggedInUser') || '{}');
@@ -15,6 +17,7 @@ const Orders: React.FC = () => {
             const firstNameFromStorage = fullName.split(" ")[0];
             setCustomerName(firstNameFromStorage);
         }
+        setRole(user.role);
         setEmail(user.email);
     }, []);
 
@@ -24,11 +27,16 @@ const Orders: React.FC = () => {
             
             <HelloMessage firstName={customerName} />
 
-            {customerName &&
+            {role === 'admin' &&
+            
+                <AllOrders/>
+    }
+
+            {customerName && role === 'customer' &&
             <CreateOrder emailProp={email}/>
             }
 
-            {customerName &&
+            {customerName && role === 'customer' &&
             <OrderHistory email={email}/>
             }
 

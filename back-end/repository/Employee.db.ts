@@ -1,24 +1,49 @@
 import { Employee } from "../model/employee";
+import { createEmployeeDto } from "../types";
+import database from "../util/database";
 
-let currentId = 1;
+const getAllEmployees = async (): Promise<Array<Employee>> => {
+    const employees = await database.employee.findMany();
 
-const employees: Array<Employee> = [
-    // new Employee(currentId++, "John", "Doe", "john.doe@example.com", "securePassword1", 5, "Engineering", "Class A"),
-    // new Employee(currentId++, "Jane", "Smith", "jane.smith@example.com", "securePassword2", 3, "Marketing", "Class B"),
-    // new Employee(currentId++, "Alice", "Johnson", "alice.johnson@example.com", "securePassword3", 7, "Finance", "Class C")
-];
+    return employees.map((employee) => Employee.from(employee));
+};
 
-employees.forEach(employee => {console.log(`${employee.toString()}\n\n`)});
+const createEmployee = async (employee: Employee): Promise<Employee> => {
+    const newEmployee = await database.employee.create({
+        data: {
+            firstName: employee.getFirstName(),
+            lastName: employee.getLastName(),
+            email: employee.getEmail(),
+            password: employee.getPassword(),
+            role: employee.getRole(),
+            experience: employee.getExperience(),
+            domain: employee.getDomain(),
+            licenseType: employee.getLicenseType(),
+            workPosition: employee.getWorkPosition(),
+            createdOn: employee.getCreatedOn(),
+            birthday: employee.getBirthday(),
+        },
+    });
 
-const getAllEmployees = (): Array<Employee> => {
-    return employees;
-}
+    return Employee.from(newEmployee);
+};
 
-const getEmployeeById = (id: number): Employee | null => {
-    return employees.find(employee => employee.getId() === id) ?? null;
-}
+const getEmployeeExists = async (email: string): Promise<Employee | null> => {
+    const employee = await database.employee.findUnique({
+        where: {
+            email: email,
+        },
+    });
+
+    if (!employee) {
+        return null;
+    }
+
+    return Employee.from(employee);
+};
 
 export default {
     getAllEmployees,
-    getEmployeeById,
+    getEmployeeExists,
+    createEmployee,
 };

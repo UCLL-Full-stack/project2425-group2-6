@@ -33,6 +33,20 @@ export type createCustomerDto = {
   createdAt: Date
 };
 
+export type createEmployeeDto = {
+  firstName: string,
+  lastName: string,
+  email: string,
+  birthday: Date,
+  password: string,
+  role : Role,
+  experience: number,
+  domain: string,
+  licenseType: string,
+  workPosition: string,
+  createdOn: Date
+}
+
 export type prepOrderDto = {
   email: string,
   startDate: Date,

@@ -120,31 +120,31 @@ export class Order {
     }
 
     static from({
-        id,
-        customer,
-        house,
-        orderDate,
-        startDate,
-        price,
-    }: OrderPrisma & { customer: CustomerPrisma } & { house: HousePrisma }): Order {
-        console.log("Mapping orderPrisma to Order:", { id, customer, house, orderDate, startDate, price });
-    
-        if (!customer || !house) {
-            throw new Error("Missing customer or house data");
-        }
-    
-        const mappedOrder = new Order(
-            id,
-            Customer.from(customer),
-            House.from(house),
-            startDate,
-            price
-        );
-    
-        console.log("Mapped Order:", mappedOrder);
-        return mappedOrder;
+    id,
+    customer,
+    house,
+    orderDate,
+    startDate,
+    price,
+}: OrderPrisma & { customer: CustomerPrisma } & { house: HousePrisma }): Order {
+    console.log("Mapping orderPrisma to Order:", { id, customer, house, orderDate, startDate, price });
+
+    if (!customer || !house) {
+        throw new Error("Missing customer or house data");
     }
-    
+
+    const mappedOrder = new Order(
+        id,
+        Customer.from(customer),
+        House.from(house),
+        startDate,
+        price
+    );
+
+    console.log("Mapped Order:", mappedOrder);
+    return mappedOrder;
+}
+
     
     
 }

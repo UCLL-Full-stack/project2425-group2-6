@@ -67,6 +67,34 @@ employeeRouter.get("/", async (req: Request, res: Response) => {
 });
 
 
+employeeRouter.post("/signup", async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.status(200).json(await employeeService.createEmployee(req.body));
+    } catch (error) {
+        if (error instanceof Error) {
+                        res.status(400).json({ error: "error", errorMessage: error.message });
+                    }
+    }
+});
+
+employeeRouter.post("/login", async (req: Request, res: Response) => {
+    try {
+        const { email, password } = req.body;
+        res.status(200).json(await employeeService.authenticate(email, password));
+    } catch (error) {
+        if (error instanceof Error) {
+            if (error.message === "Invalid email or password" || error.message === "Employee does not exist.") {
+                res.status(400).json({ error: "error", errorMessage: error.message });
+            } else {
+                res.status(500).json({ error: "Internal server", errorMessage: error.message });
+            }
+        } else {
+            res.status(500).json({ error: "error", errorMessage: "Unexpected error" });
+        }
+    }
+});
+
+
 
 // employeeRouter.get("/:id", async (req: Request, res: Response) => {
 //     try {

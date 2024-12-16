@@ -6,6 +6,8 @@ import bcrypt from 'bcrypt';
 import exp from "constants";
 import generateJwtToken from "../util/jwt";
 import { House } from "@prisma/client";
+import EmployeeDb from "../repository/Employee.db";
+import employeeService from "./employee.service";
 
 
 const getAllCustomers = async () : Promise<Array<Customer>> => {
@@ -35,6 +37,14 @@ const createCustomer = async (createCustomerDto: createCustomerDto) : Promise<Cu
 
 const authenticate = async (email: string, password: string): Promise<AuthenticationResponse> => {
     try {
+        // Check if the user is an employee first
+        const isEmployee = await employeeService.getEmployeeExists(email);
+        if (isEmployee) {
+            // Delegate employee authentication to employee service
+            return await employeeService.authenticate(email, password);
+        }
+
+        // If not an employee, proceed with customer authentication
         const customer = await CustomerDb.getCustomerExists(email);
 
         if (!customer) {
@@ -42,7 +52,6 @@ const authenticate = async (email: string, password: string): Promise<Authentica
         }
 
         const isValidPassword = await bcrypt.compare(password, customer.getPassword());
-
         if (!isValidPassword) {
             throw new Error("Invalid password.");
         }
@@ -51,12 +60,19 @@ const authenticate = async (email: string, password: string): Promise<Authentica
             token: generateJwtToken({ email: customer.getEmail(), role: customer.getRole() }),
             email: customer.getEmail(),
             fullname: `${customer.getFirstName()} ${customer.getLastName()}`,
-            role: customer.getRole()
+            role: customer.getRole(),
         };
     } catch (error) {
-        throw new Error("Error authenticating customer: " + error);
+        // Rethrow error to ensure the function explicitly fails
+        if (error instanceof Error) {
+            throw new Error("Error authenticating user: " + error.message);
+        }
+        // If we somehow get here (non-Error throw), throw a generic error
+        throw new Error("Unknown error occurred during authentication.");
     }
-}
+};
+
+
 
 const getCustomerHouses = async (customerId: number) : Promise<Array<House>> => {
     return await CustomerDb.getCustomerHouses(customerId);

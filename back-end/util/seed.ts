@@ -7,16 +7,18 @@ const main = async () => {
     await prisma.employee.deleteMany({});
     await prisma.house.deleteMany({});
     await prisma.order.deleteMany({});
+    await prisma.room.deleteMany({});
+    await prisma.employee.deleteMany({});
 
     // ----------------- Customer -----------------
 
     const JohnDoe = await prisma.customer.create({
         data: {
-            firstName: 'John',
+            firstName: 'Daniel',
             lastName: 'Doe',
-            email: 'john.doe@example.com',
+            email: 'test@gmail.com',
             birthday: new Date('1990-01-01'),
-            password: 'password',
+            password: '$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu',
         }
     });
 
@@ -59,9 +61,9 @@ const main = async () => {
         data: {
             firstName: "Michael",
             lastName: "Scott",
-            email: "michael.scott@example.com",
+            email: "admin@gmail.com",
             birthday: new Date("1964-03-15"),
-            password: "dundermifflin",
+            password: "$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu",
             role: "admin",  
             experience: 20,
             domain: "Sales",

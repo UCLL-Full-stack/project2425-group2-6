@@ -6,7 +6,7 @@ import database from "../util/database";
 const getAllRooms = async () : Promise<Array<Room>> => {
     const roomsPrisma = await database.room.findMany({
         include: {
-            house: true
+            house: true,
         }
     });
     return roomsPrisma.map((roomPrisma) => Room.from(roomPrisma));

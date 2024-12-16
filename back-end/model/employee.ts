@@ -18,7 +18,6 @@ export class Employee {
     private createdOn: Date = new Date();
 
     constructor(
-        id: number,
         firstName: string,
         lastName: string,
         email: string,
@@ -27,9 +26,9 @@ export class Employee {
         experience: number,
         domain: string,
         licenseType: string,
-        createdOn: Date
+        createdOn: Date,
+        id?: number,
     ) {
-        this.setId(id);
         this.setFirstName(firstName);
         this.setLastName(lastName);
         this.setEmail(email);
@@ -40,6 +39,7 @@ export class Employee {
         this.setDomain(domain);
         this.setLicenseType(licenseType);
         this.setCreatedOn(createdOn);
+        this.setId(id);
     }
 
     public getRole(): string {
@@ -106,11 +106,21 @@ export class Employee {
         return this.birthday!;
     }
 
-    public setId(id: number) {
-        if (!id || id <= 0) {
-            throw new Error("ID must be a positive number.");
+    public setId(id: number | undefined) {
+
+        if (id == undefined) {
+            return;
         }
-        this.id = id;
+
+        if (id != undefined){
+            if (id <= 0) {
+                throw new Error("ID must be greater than 0.");
+            }
+        }
+
+        if (id != undefined && id > 0) {
+            this.id = id;
+        }
     }
 
     public getId(): number {
@@ -188,7 +198,6 @@ export class Employee {
         createdOn
     } : EmployeePrisma ) {
         return new Employee(
-            id,
             firstName,
             lastName,
             email,
@@ -197,7 +206,8 @@ export class Employee {
             experience,
             domain,
             licenseType,
-            createdOn
+            createdOn,
+            id,
         );
     }
 }

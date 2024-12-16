@@ -13,6 +13,32 @@ const createOrder = async (prepOrderDto : prepOrderDto) => {
     );
 }
 
+// const getAllOrders = async () => {
+//     return fetch(process.env.NEXT_PUBLIC_API_URL + "/orders", {
+//         method: 'GET',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//     });
+// };
+
+const getAllOrders = async () => {
+    try {
+      const response = fetch(process.env.NEXT_PUBLIC_API_URL + `/orders`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }
+      )
+      return (await response).json();
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      throw new Error("Failed to fetch orders. Please try again later.");
+    }
+};
+
 const getOrdersByEmail = async (email: string) => {
     try {
       const response = fetch(process.env.NEXT_PUBLIC_API_URL + `/orders/email/${email}`,
@@ -32,7 +58,8 @@ const getOrdersByEmail = async (email: string) => {
 
 const OrderService = {
     createOrder,
-    getOrdersByEmail
+    getOrdersByEmail,
+    getAllOrders
   };
 
 export default OrderService;
