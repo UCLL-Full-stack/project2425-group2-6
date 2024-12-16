@@ -1,274 +1,193 @@
-import { useState, useRef, useEffect } from "react";
-import styles from "@/styles/CreateOrder.module.css";
-import { orderInput, houseInput, roomInput } from "@/types/orderTypes"; // Importing the types
-import addressInput from "@/types/addressType";
+import OrderService from '@/services/order.service';
+import { prepOrderDto } from '@/types/orderType';
+import React, { useState } from 'react';
 
-type Props = {
-    customerId: number;
+
+type createOrderProps = {
+    emailProp: string;
 };
 
-const CreateOrder: React.FC<Props> = ({ customerId }: Props) => {
-    const [isExpanded, setIsExpanded] = useState(false);
-    const [houseNumber, setHouseNumber] = useState("");
-    const [street, setStreet] = useState("");
-    const [city, setCity] = useState("");
-    const [state, setState] = useState("");
-    const [zip, setZip] = useState("");
-    const [houseType, setHouseType] = useState("");
-    const [budget, setBudget] = useState("");
-    const [startDate, setStartDate] = useState("");
-    const [rooms, setRooms] = useState<roomInput[]>([
-        { houseId: 0, name: "", workDescription: "" }, // Default to one room
-    ]);
-    const formRef = useRef<HTMLFormElement | null>(null);
-    const [formHeight, setFormHeight] = useState("0px");
-
-    useEffect(() => {
-        if (formRef.current) {
-            setFormHeight(isExpanded ? `${formRef.current.scrollHeight}px` : "0px");
-        }
-    }, [isExpanded, rooms]);
-
-    const toggleForm = () => {
-        setIsExpanded(!isExpanded);
+const CreateOrder: React.FC<createOrderProps> = ({emailProp}) => {
+    const [houseNumber, setHouseNumber] = useState('');
+    const [street, setStreet] = useState('');
+    const [city, setCity] = useState('');
+    const [zip, setZip] = useState('');
+    const [country, setCountry] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [budget, setBudget] = useState('');
+    const [type, setType] = useState('Detached'); // Default order type
+    const [email, setEmail] = useState(emailProp); // Collecting email address
+    const [roomName, setRoomName] = useState('');
+    const [workDescription, setWorkDescription] = useState('');
+  
+    const handleSubmit = (event: React.FormEvent) => {
+      event.preventDefault();
+  
+      // Prepare the DTO object
+      const orderDto: prepOrderDto = {
+        email: email,
+        startDate: new Date(startDate), // Convert to Date object
+        budget: Number(budget), // Convert to number
+        houseNumber: houseNumber.trim(),
+        street: street.trim(),
+        city: city.trim(),
+        zip: zip.trim(),
+        country: country.trim(),
+        type: type.trim(), // Include type
+        roomName : roomName.trim(),
+        workDescription : workDescription.trim()
+      };
+  
+      // Log the DTO or send it to the backend
+      console.log('Prepared Order DTO:', orderDto);
+  
+      // Add your API submission logic here
+      OrderService.createOrder(orderDto);
     };
-
-    const handleAddRoom = () => {
-        setRooms([...rooms, { houseId: 0, name: "", workDescription: "" }]);
-    };
-
-    const handleRemoveRoom = (index: number) => {
-        const updatedRooms = rooms.filter((_, roomIndex) => roomIndex !== index);
-        setRooms(updatedRooms);
-    };
-
-    const handleRoomChange = (index: number, field: keyof roomInput, value: string) => {
-        const updatedRooms = [...rooms];
-        updatedRooms[index][field] = value;
-        setRooms(updatedRooms);
-    };
-
-    const submitOrder = async () => {
-
-        // Map the form data to addressInput DTO
-        const addressData: addressInput = {
-            houseNumber: houseNumber,
-            street: street,
-            city: city,
-            state: state,
-            zip: zip,
-        };
-    
-        // Assuming the house type and budget are part of the form data, map them to houseInput DTO
-        const houseData: houseInput = {
-            addressId: 0, // You would need to assign this based on your data model, here it's a placeholder
-            type: houseType,
-        };
-    
-        // Map the order data to orderInput DTO
-        const orderData: orderInput = {
-            customerId: customerId,
-            orderDate: new Date(), // current date as the order date
-            startDate: new Date(startDate), // start date from the form
-            price: parseFloat(budget), // assuming budget is the price
-            houseId: 0, // You will need to replace this with the actual houseId
-        };
-    
-        // Map the room data to roomInput DTO
-        const roomData: roomInput[] = rooms.map((room) => ({
-            houseId: 0, // You will need to replace this with the actual houseId
-            name: room.name,
-            workDescription: room.workDescription,
-        }));
-    
-        // Send the data to your backend or API
-        try {
-            const response = await fetch(`${process.env['NEXT_PUBLIC_API_URL']}/orders`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    address: addressData,
-                    rooms: roomData,
-                    house: houseData,
-                    order: orderData,
-                }),
-            });
-    
-            if (response.ok) {
-                // Handle success (e.g., show a success message or reset the form)
-            } else {
-                // Handle error (e.g., show an error message)
-            }
-        } catch (error) {
-            // Handle network or other errors
-            console.error("Error submitting order:", error);
-        }
-    };
-    
-    
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        submitOrder();
-    };
-
+  
     return (
-        <div className={styles.createOrderContainer}>
-            <h2 className={styles.createHeading} onClick={toggleForm}>
-                {isExpanded ? "Order in progress" : "I want to make an order"}
-            </h2>
-            <div
-                className={styles.formWrapper}
-                style={{
-                    maxHeight: formHeight,
-                    opacity: isExpanded ? 1 : 0,
-                    transition: "max-height 0.3s ease, opacity 0.3s ease",
-                    overflow: "hidden",
-                }}
+      <div className="max-w-lg mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
+        <h2 className="text-2xl font-semibold text-center mb-6 text-gray-700">Create Order</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="houseNumber" className="block text-sm font-medium text-gray-600">
+              House Number:
+            </label>
+            <input
+              type="text"
+              id="houseNumber"
+              value={houseNumber}
+              onChange={(e) => setHouseNumber(e.target.value)}
+              required
+              className="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label htmlFor="street" className="block text-sm font-medium text-gray-600">
+              Street:
+            </label>
+            <input
+              type="text"
+              id="street"
+              value={street}
+              onChange={(e) => setStreet(e.target.value)}
+              required
+              className="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label htmlFor="city" className="block text-sm font-medium text-gray-600">
+              City:
+            </label>
+            <input
+              type="text"
+              id="city"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              required
+              className="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label htmlFor="zip" className="block text-sm font-medium text-gray-600">
+              Zip:
+            </label>
+            <input
+              type="text"
+              id="zip"
+              value={zip}
+              onChange={(e) => setZip(e.target.value)}
+              required
+              className="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label htmlFor="country" className="block text-sm font-medium text-gray-600">
+              Country:
+            </label>
+            <input
+              type="text"
+              id="country"
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+              required
+              className="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label htmlFor="startDate" className="block text-sm font-medium text-gray-600">
+              Preferred Start Date:
+            </label>
+            <input
+              type="date"
+              id="startDate"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              required
+              className="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label htmlFor="budget" className="block text-sm font-medium text-gray-600">
+              Budget:
+            </label>
+            <input
+              type="number"
+              id="budget"
+              value={budget}
+              onChange={(e) => setBudget(e.target.value)}
+              required
+              className="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label htmlFor="type" className="block text-sm font-medium text-gray-600">
+              Order Type:
+            </label>
+            <select
+              id="type"
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              required
+              className="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200 focus:outline-none"
             >
-                <form onSubmit={handleSubmit} className={styles.orderForm} ref={formRef}>
-                    <div className={styles.formGroup}>
-                        <label htmlFor="houseNumber">House Number:</label>
-                        <input
-                            type="number"
-                            id="houseNumber"
-                            value={houseNumber}
-                            onChange={(e) => setHouseNumber(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className={styles.formGroup}>
-                        <label htmlFor="street">Street:</label>
-                        <input
-                            type="text"
-                            id="street"
-                            value={street}
-                            onChange={(e) => setStreet(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className={styles.formGroup}>
-                        <label htmlFor="city">City:</label>
-                        <input
-                            type="text"
-                            id="city"
-                            value={city}
-                            onChange={(e) => setCity(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className={styles.formGroup}>
-                        <label htmlFor="state">State:</label>
-                        <input
-                            type="text"
-                            id="state"
-                            value={state}
-                            onChange={(e) => setState(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className={styles.formGroup}>
-                        <label htmlFor="zip">Zip:</label>
-                        <input
-                            type="text"
-                            id="zip"
-                            value={zip}
-                            onChange={(e) => setZip(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className={styles.formGroup}>
-                        <label htmlFor="houseType">House Type:</label>
-                        <select
-                            id="houseType"
-                            value={houseType}
-                            onChange={(e) => setHouseType(e.target.value)}
-                            required
-                        >
-                            <option value="">Select a house type</option>
-                            <option value="apartment">Apartment</option>
-                            <option value="detached">Detached</option>
-                            <option value="semi-detached">Semi-Detached</option>
-                            <option value="terraced">Terraced</option>
-                            <option value="bungalow">Bungalow</option>
-                            <option value="townhouse">Townhouse</option>
-                        </select>
-                    </div>
-                    <div className={styles.formGroup}>
-                        <label htmlFor="budget">Budget:</label>
-                        <input
-                            type="number"
-                            id="budget"
-                            value={budget}
-                            onChange={(e) => setBudget(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className={styles.formGroup}>
-                        <label htmlFor="startDate">Start Date:</label>
-                        <input
-                            type="date"
-                            id="startDate"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                            required
-                        />
-                    </div>
+                <option value="apartment">Apartment</option>
+                <option value="detached">Detached</option>
+                <option value="semi-detached">Semi-detached</option>
+                <option value="terraced">Terraced</option>
+                <option value="bungalow">Bungalow</option>
+                <option value="townhouse">Townhouse</option>
+            </select>
+          </div>
 
-                    <h3>Rooms</h3>
-                    {rooms.map((room, index) => (
-                        <div key={index} className={styles.roomGroup}>
-                            <div className={styles.roomHeader}>
-                                <div className={styles.formGroup}>
-                                    <label htmlFor={`roomName-${index}`}>Room Name:</label>
-                                    <input
-                                        type="text"
-                                        id={`roomName-${index}`}
-                                        value={room.name}
-                                        onChange={(e) => handleRoomChange(index, "name", e.target.value)}
-                                        required
-                                        autoComplete="off"
-                                    />
-                                </div>
-                                {index > 0 && (
-                                    <button
-                                        type="button"
-                                        className={styles.removeButton}
-                                        onClick={() => handleRemoveRoom(index)}
-                                    >
-                                        Remove Room
-                                    </button>
-                                )}
-                            </div>
-                            <div className={styles.formGroup}>
-                                <label htmlFor={`workDescription-${index}`}>Work Description:</label>
-                                <input
-                                    type="text"
-                                    id={`workDescription-${index}`}
-                                    value={room.workDescription}
-                                    onChange={(e) =>
-                                        handleRoomChange(index, "workDescription", e.target.value)
-                                    }
-                                    autoComplete="off"
-                                    required
-                                />
-                            </div>
-                        </div>
-                    ))}
-
-                    <button type="button" className={styles.addRoomButton} onClick={handleAddRoom}>
-                        Add Room
-                    </button>
-
-                    <button type="submit" className={styles.submitButton}>
-                        Submit Order
-                    </button>
-                </form>
-            </div>
-        </div>
+          <div className='border border-gray-300 rounded-lg p-4'>
+            <p className='font-bold'>Room</p>
+            <label htmlFor='roomName' className='block text-sm font-medium text-gray-600'>
+                Room name:
+            </label>
+            <input type='text' id='roomName' className='w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200 focus:outline-none' 
+            value={roomName}
+            onChange={(e) => setRoomName(e.target.value)}
+            required
+            />
+            <label htmlFor='workDescription' className='block text-sm font-medium text-gray-600'>
+                Work description:
+            </label>
+            <input type='text' id='workDescription' className='w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200 focus:outline-none' 
+            value = {workDescription}
+            onChange = {(e) => setWorkDescription(e.target.value)}
+            required
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-600 transition"
+          >
+            Create Order
+          </button>
+        </form>
+      </div>
     );
-};
-
-export default CreateOrder;
+  };
+  
+  export default CreateOrder;

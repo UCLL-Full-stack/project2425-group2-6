@@ -1,20 +1,38 @@
-import { orderInput } from "../types/orderType.js";
+import { prepOrderDto } from "../types/orderType.js";
 import { create } from "domain";
 
-const createOrder = async (orderInput : orderInput) => {
+const createOrder = async (prepOrderDto : prepOrderDto) => {
     return fetch(
         process.env.NEXT_PUBLIC_API_URL + "/orders", {
             method: `POST`,
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(orderInput),
+            body: JSON.stringify(prepOrderDto),
         }
     );
 }
 
+const getOrdersByEmail = async (email: string) => {
+    try {
+      const response = fetch(process.env.NEXT_PUBLIC_API_URL + `/orders/email/${email}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }
+      )
+      return (await response).json();
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      throw new Error("Failed to fetch orders. Please try again later.");
+    }
+}
+
 const OrderService = {
-    createOrder
+    createOrder,
+    getOrdersByEmail
   };
 
 export default OrderService;
