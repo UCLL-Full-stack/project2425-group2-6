@@ -66,34 +66,61 @@ const LogIn: React.FC = () => {
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          {emailError && <p>{emailError}</p>}
-        </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          {passwordError && <p>{passwordError}</p>}
-        </div>
-        {statusMessage && <p>{statusMessage.message}</p>}
-        <button type="submit">Log In</button>
-      </form>
+    <div className="flex align-top justify-center bg-white">
+      <div className="w-full max-w-md p-6 border border-black rounded-lg">
+        <h2 className="text-2xl font-bold text-center text-black mb-6">Login</h2>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Email Field */}
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-black">
+              Email:
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-1 w-full px-4 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+              placeholder="Enter your email"
+            />
+            {emailError && <p className="mt-2 text-sm text-red-500">{emailError}</p>}
+          </div>
+  
+          {/* Password Field */}
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-black">
+              Password:
+            </label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-1 w-full px-4 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+              placeholder="Enter your password"
+            />
+            {passwordError && <p className="mt-2 text-sm text-red-500">{passwordError}</p>}
+          </div>
+  
+          {/* Status Message */}
+          {statusMessage && (
+            <p className={`mt-2 text-sm ${statusMessage.type === 'error' ? 'text-red-500' : 'text-black'}`}>
+              {statusMessage.message}
+            </p>
+          )}
+  
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full py-2 border border-black text-black rounded-md hover:bg-black hover:text-white transition duration-150 focus:outline-none focus:ring-2 focus:ring-black"
+          >
+            Log In
+          </button>
+        </form>
+      </div>
     </div>
   );
-};
+  
+}  
 
 export default LogIn;
