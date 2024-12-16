@@ -1,20 +1,17 @@
 import HouseDb from "../repository/House.db";
+import RoomDb from "../repository/Room.db";
 import { createHouseDto } from "../types";
 
 const getAllHouses = async () => {
     return HouseDb.getAllHouses();
 };
 
-const getHouseById = async (id: number) => {
-    return HouseDb.getHouseById(id);
+const getHouse = async (houseId: number) => {
+    return HouseDb.getHouseById(houseId);
 };
 
-const addHouse = async (houseData: createHouseDto) => {
-    return HouseDb.addHouse(houseData);
-};
 
 export default {
     getAllHouses,
-    getHouseById,
-    addHouse,
+    getHouse,
 };

@@ -1,42 +1,72 @@
 import { House } from "../model/house";
 import { Room } from "../model/room";
 import { createHouseDto, createRoomDto } from "../types";
-import AddressDb from "./Address.db";
-import HouseDb from "./House.db";
+import database from "../util/database";
 
-let currentId : number = 1;
+const getAllRooms = async () : Promise<Array<Room>> => {
+    const roomsPrisma = await database.room.findMany({
+        include: {
+            house: true
+        }
+    });
+    return roomsPrisma.map((roomPrisma) => Room.from(roomPrisma));
+} 
 
-let rooms : Array<Room> = [
-    new Room(currentId++,  HouseDb.getAllHouses()[0], "Living Room", "Painting"),
-    new Room(currentId++,  HouseDb.getAllHouses()[1], "Kitchen", "Flooring"),
-    new Room(currentId++,  HouseDb.getAllHouses()[2], "Bedroom", "Wallpaper"),
-    new Room(currentId++,  HouseDb.getAllHouses()[3], "Bathroom", "Tiling"),
-    new Room(currentId++,  HouseDb.getAllHouses()[4], "Office", "Carpeting"),
-]
+const getHouse = async (houseId: number): Promise<any> => {
+    const housePrisma = await database.house.findUnique({
+        where: { id: houseId },
+        include: { rooms: true } // Ensure this matches the property name in your Prisma schema
+    });
 
-rooms.forEach(room => {console.log(`${room.toString()}\n\n`)});
-
-const getAllRooms = () => {
-    return rooms;
-}
-
-const getRoomById = (id : number) : Room | Error => {
-    return rooms.find(room => room.getId() === id) || new Error("Room not found.");
-}
-
-const addRoom = (room : createRoomDto) => {
-    const house = HouseDb.getHouseById(room.houseId);
-    if (house instanceof Error) {
-        throw house;
+    if (!housePrisma) {
+        throw new Error("House not found");
     }
-    const newRoom = new Room(currentId++, house, room.name, room.workDescription);
-    rooms.push(newRoom);
-    return newRoom;
-}
+
+    const house = House.from({...housePrisma});
+    const rooms = housePrisma.rooms.map((roomPrisma) => {
+            const room = Room.from({ ...roomPrisma, house: housePrisma });
+            return {
+                id: room.getId(),
+                name: room.getName(),
+                workDescription: room.getWorkDescription()
+            };
+        });
+
+    return {
+        ...house,
+        rooms
+    };
+};
+
+const createRoom = async (createRoomDto: createRoomDto): Promise<Room> => {
+    try {
+        const roomPrisma = await database.room.create({
+            data: {
+                name: createRoomDto.name,
+                workDescription: createRoomDto.workDescription,
+                house: {
+                    connect: {
+                        id: createRoomDto.houseId
+                    }
+                }
+            }
+        });
+        const housePrisma = await database.house.findUnique({
+            where: { id: createRoomDto.houseId }
+        });
+        if (!housePrisma) {
+            throw new Error("House not found");
+        }
+        return Room.from({ ...roomPrisma, house: housePrisma });
+    } catch (error) {
+        console.error("Error creating room:", error);
+        throw new Error("Error creating room: " + error);
+    }
+};
+
 
 export default {
-    rooms,
-    addRoom,
     getAllRooms,
-    getRoomById,
+    getHouse,
+    createRoom,
 }

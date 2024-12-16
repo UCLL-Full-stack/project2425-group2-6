@@ -1,12 +1,21 @@
-import { Room } from "./room";
-import { Tool } from "./tool";
-import { User } from "./user";
-import { Vehicle } from "./vehicle";
 
-export class Employee extends User {
+import {
+    Employee as EmployeePrisma  
+} from '@prisma/client';
+import { Role } from '../types';
+export class Employee {
+    private id?: number;
+    private firstName?: string;
+    private lastName?: string;
+    private email?: string;
+    private birthday?: Date;
+    private password?: string;
+    private role? : Role = "worker";
     private experience: number = 1;
     private domain?: string;
     private licenseType?: string;
+    private workPosition: string = "worker";
+    private createdOn: Date = new Date();
 
     constructor(
         id: number,
@@ -14,18 +23,98 @@ export class Employee extends User {
         lastName: string,
         email: string,
         password: string,
+        role : Role,
         experience: number,
         domain: string,
-        licenseType: string
+        licenseType: string,
+        createdOn: Date
     ) {
-        super(id, firstName, lastName, email, new Date(), true, password);
+        this.setId(id);
+        this.setFirstName(firstName);
+        this.setLastName(lastName);
+        this.setEmail(email);
+        this.setBirthday(new Date());  // Default to current date
+        this.setPassword(password);
+        this.setRole(role);
         this.setExperience(experience);
         this.setDomain(domain);
         this.setLicenseType(licenseType);
+        this.setCreatedOn(createdOn);
     }
 
-    public getExperience(): number {
-        return this.experience;
+    public getRole(): string {
+        return this.role as string;
+    }
+
+    public setRole(role: Role) {
+        this.role = role;
+    }
+
+    public setFirstName(firstName: string) {
+        if (!firstName || firstName.trim().length < 2) {
+            throw new Error("First name must not be blank and must be at least 2 characters long.");
+        }
+        this.firstName = firstName.trim();
+    }
+
+    public getFirstName(): string {
+        return this.firstName? this.firstName : "";
+    }
+
+    public setLastName(lastName: string) {
+        if (!lastName || lastName.trim().length < 2) {
+            throw new Error("Last name must not be blank and must be at least 2 characters long.");
+        }
+        this.lastName = lastName.trim();
+    }
+
+    public getLastName(): string {
+        return this.lastName!;
+    }
+
+    public setEmail(email: string) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            throw new Error("Invalid email format.");
+        }
+        this.email = email.trim();
+    }
+
+    public getEmail(): string {
+        return this.email!;
+    }
+
+    public setPassword(password: string) {
+        if (!password || password.length < 8) {
+            throw new Error("Password must be at least 8 characters long.");
+        }
+        this.password = password;
+    }
+
+    public getPassword(): string {
+        return this.password!;
+    }
+
+    public setBirthday(birthday: Date) {
+        if (!birthday || isNaN(birthday.getTime())) {
+            throw new Error("Birth date is required and must be a valid date.");
+        }
+        this.birthday = birthday;
+    }
+
+    public getBirthday(): Date {
+        return this.birthday!;
+    }
+
+    public setId(id: number) {
+        if (!id || id <= 0) {
+            throw new Error("ID must be a positive number.");
+        }
+        this.id = id;
+    }
+
+    public getId(): number {
+        return this.id!;
     }
 
     public setExperience(experience: number) {
@@ -35,8 +124,8 @@ export class Employee extends User {
         this.experience = experience;
     }
 
-    public getDomain(): string {
-        return this.domain!;
+    public getExperience(): number {
+        return this.experience;
     }
 
     public setDomain(domain: string) {
@@ -46,8 +135,8 @@ export class Employee extends User {
         this.domain = domain;
     }
 
-    public getLicenseType(): string {
-        return this.licenseType!;
+    public getDomain(): string {
+        return this.domain!;
     }
 
     public setLicenseType(licenseType: string) {
@@ -57,7 +146,58 @@ export class Employee extends User {
         this.licenseType = licenseType;
     }
 
+    public getLicenseType(): string {
+        return this.licenseType!;
+    }
+
+    public setWorkPosition(position: string) {
+        this.workPosition = position;
+    }
+
+    public getWorkPosition(): string {
+        return this.workPosition;
+    }
+
+    public setCreatedOn(createdOn: Date) {
+        if (!createdOn || isNaN(createdOn.getTime())) {
+            throw new Error("Created on date is required and must be a valid date.");
+        }
+        this.createdOn = createdOn;
+    }
+
+    public getCreatedOn(): Date {
+        return this.createdOn;
+    }
+
     public toString(): string {
-        return `Employee [id=${this.getId()}, name=${this.getFirstName()} ${this.getLastName()}, email=${this.getEmail()}, experience=${this.experience}, domain=${this.domain}, licenseType=${this.licenseType}]`;
+        return `Employee [id=${this.id}, name=${this.firstName} ${this.lastName}, email=${this.email}, experience=${this.experience}, domain=${this.domain}, licenseType=${this.licenseType}, workPosition=${this.workPosition}]`;
+    }
+
+    static from ({
+        id,
+        firstName,
+        lastName,
+        email,
+        birthday,
+        password,
+        role,
+        experience,
+        domain,
+        licenseType,
+        workPosition,
+        createdOn
+    } : EmployeePrisma ) {
+        return new Employee(
+            id,
+            firstName,
+            lastName,
+            email,
+            password,
+            role as Role,
+            experience,
+            domain,
+            licenseType,
+            createdOn
+        );
     }
 }

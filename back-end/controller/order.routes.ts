@@ -57,13 +57,26 @@ orderRouter.get("/:id", async (req: Request, res: Response) => {
 
 orderRouter.post("/", async (req, res) => {
     try {
-        const { order, address, house, rooms } = req.body; 
 
-        const newOrder = await orderService.addOrder(address, rooms, house, order);
-
+        const prepOrderDto = req.body;
+        const newOrder = await orderService.createOrder(prepOrderDto)
        
-        res.status(201).json(newOrder);
+        res.status(200).json(newOrder);
     } catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json(error.message);
+        }
+    }
+});
+
+orderRouter.get("/email/:email", async (req, res) => {
+    try {
+        console.log("Fetching orders for email:", req.params.email);
+        const orders = await orderService.getOrderByCustomerEmail(req.params.email);
+        console.log("Orders fetched:", orders);
+        res.status(200).json(orders);
+    } catch (error) {
+        console.error("Error fetching orders:", error);
         if (error instanceof Error) {
             res.status(400).json(error.message);
         }

@@ -1,0 +1,136 @@
+import { Address as AddressPrisma, House } from '@prisma/client';
+
+export class Address {
+    private id!: number;
+    private house!: House; // 1-to-1 relationship
+    private street!: string;
+    private city!: string;
+    private zip!: string;
+    private houseNumber!: string;
+    private country: string = "Belgium";
+    private createdAt!: Date;
+
+    constructor(id: number, house: House, houseNumber: string, street: string, city: string, zip: string, country: string, createdAt: Date) {
+        this.setId(id);
+        this.setHouse(house);
+        this.setHouseNumber(houseNumber);
+        this.setStreet(street);
+        this.setCity(city);
+        this.setZip(zip);
+        this.setCountry(country);
+        this.setCreatedAt(createdAt);
+    }
+
+    public setId(id: number): void {
+        if (id <= 0) {
+            throw new Error("ID must be a positive integer.");
+        }
+        this.id = id;
+    }
+
+    public setHouse(house: House) {
+        this.house = house;
+    }
+
+    public getHouse() : House{
+        return this.house;
+    }
+
+    setHouseNumber(houseNumber: string) {
+        this.houseNumber = houseNumber;
+    }
+
+    getHouseNumber() : string{
+        return this.houseNumber;
+    }
+
+    public getId(): number {
+        return this.id;
+    }
+
+    public getStreet(): string {
+        return this.street;
+    }
+
+    public setStreet(street: string): void {
+        if (!street) {
+            throw new Error("Street must not be blank : " + street);
+        }
+        this.street = street.trim();
+    }
+
+    public getCity(): string {
+        return this.city;
+    }
+
+    public setCity(city: string): void {
+        if (!city || city.trim().length < 3) {
+            throw new Error("City must not be blank and should be at least 3 characters long.");
+        }
+        this.city = city.trim();
+    }
+
+    public getZip(): string {
+        return this.zip;
+    }
+
+    public setZip(zip: string): void {
+        this.zip = zip.trim();
+    }
+
+    public getCountry(): string {
+        return this.country;
+    }
+
+    public setCountry(country: string): void {
+        if (!country || country.trim().length < 1) {
+            throw new Error("Country must not be blank and should be at least 3 characters long.");
+        }
+        this.country = country.trim();
+    }
+
+    public getCreatedAt(): Date {
+        return this.createdAt;
+    }
+
+    public setCreatedAt(createdAt: Date): void {
+        if (!createdAt || isNaN(createdAt.getTime())) {
+            throw new Error("Created at is required and must be a valid date.");
+        }
+        this.createdAt = createdAt;
+    }
+
+    public toString(): string {
+        return `Address [id=${this.id}, street=${this.street}, city=${this.city}, zip=${this.zip}, country=${this.country}]`;
+    }
+
+    static from({
+        id,
+        houseId,
+        houseNumber,
+        street,
+        city,
+        zip,
+        country,
+        createdAt,
+        house, // Ensure 'house' is passed
+    }: AddressPrisma & { house?: House }): Address {
+        if (!house) {
+            throw new Error(
+                `Cannot create Address instance because 'house' is missing. Did you resolve it from 'houseId'?`
+            );
+        }
+    
+        return new Address(
+            id,
+            house, // Use the resolved House object
+            houseNumber,
+            street,
+            city,
+            zip,
+            country,
+            createdAt
+        );
+    }
+    
+}

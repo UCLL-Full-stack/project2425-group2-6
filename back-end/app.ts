@@ -9,7 +9,8 @@ import { employeeRouter } from './controller/employee.routes';
 import houseRouter from './controller/house.routes';
 import orderRouter from './controller/order.routes';
 import roomRouter from './controller/room.routes';
-import addressRouter from './controller/address.routes';
+import { Request, Response, NextFunction } from 'express';
+import { expressjwt } from 'express-jwt';
 
 const app = express();
 dotenv.config();
@@ -17,6 +18,18 @@ const port = process.env.APP_PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
+
+// app.use(expressjwt
+//     ({
+//         secret: process.env.JWT_SECRET || 'fallback_secret',
+//         algorithms: ['HS256'],
+//     })
+//     .unless(
+//         {
+//             path: ['/orders', '/api-docs', /^\/api-docs\/.*/, '/customers/login', '/customers/signup', '/status'],
+//         }
+//     )
+// );
 
 const swaggerOpts = {
     definition: {
@@ -47,7 +60,11 @@ app.use('/rooms', roomRouter);
 
 app.use('/orders', orderRouter);
 
-app.use('/addresses', addressRouter);
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    if (err.name === "UnauthorizedError") {
+        res.status(401).json({ error: "error", errorMessage: err.message });
+    }
+});
 
 app.listen(port || 3000, () => {
     console.log(`Back-end is running on port ${port}.`);

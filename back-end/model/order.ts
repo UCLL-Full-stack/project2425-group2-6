@@ -1,48 +1,58 @@
+import database from "../util/database";
 import { Customer } from "./customer";
 import { Employee } from "./employee";
 import { House } from "./house";
 import { Room } from "./room";
 
+import {    
+            Order as OrderPrisma,
+            Customer as CustomerPrisma,
+            House as HousePrisma
+ } from "@prisma/client";
+
 export class Order {
     private id!: number;
     private customer!: Customer;
-    private orderDate!: Date;
+    private house!: House;
+    private orderDate: Date = new Date();
     private startDate!: Date;
     private price!: number;
-    private house!: House;
-    private rooms: Array<Room> = [];
-    private Employee! : Array<Employee>;
     private status: string = "pending";
 
-    constructor(id: number, customer: Customer, orderDate: Date, startDate: Date, price: number, house: House) {
+    constructor(id: number, customer: Customer, house: House, startDate: Date, price: number) {
         this.setId(id);
         this.setCustomer(customer);
-        this.setOrderDate(orderDate);
+        this.setHouse(house);
         this.setStartDate(startDate);
         this.setPrice(price);
-        this.setHouse(house);
+        this.setStatus();
+        
     }
 
     public getId(): number {
         return this.id;
     }
 
-    getRooms(): Array<Room> {
-        return this.rooms;
-    }
-
-    addRoom(room: Room): this {
-        this.rooms.push(room);
-        return this;
-    }
-
     getStatus(): string {
         return this.status;
     }
 
-    setStatus(status: number): this {
-        const statusLevel = ["pending", "in progress", "completed"];
+    public setHouse(house: House) {
+        this.house = house;
+    }
+
+    public getHouse(): House {
+        return this.house;
+    }
+
+    setStatus(status?: number): this {
+        if (status != undefined) {
+            const statusLevel = ["pending", "in progress", "completed"];
         this.status = statusLevel[status];
+        }
+        else{
+            this.status = "pending";
+        }
         return this;
     }
 
@@ -60,10 +70,6 @@ export class Order {
 
     public getPrice(): number {
         return this.price;
-    }
-
-    public getHouse(): House {
-        return this.house;
     }
 
     public setId(id: number): this {
@@ -109,29 +115,36 @@ export class Order {
         return this;
     }
 
-    public setHouse(house: House): this {
-        this.house = house;
-        return this;
-    }
-
-    getEmployee(): Array<Employee> {
-        return this.Employee;
-    }
-
-    setEmployee(employee: Array<Employee>): this {
-        this.Employee = employee;
-        return this;
-    }
-
-    addEmployee(employee: Employee): this {
-        if (!this.Employee) {
-            this.Employee = [];
-        }
-        this.Employee.push(employee);
-        return this;
-    }
-
     public toString(): string {
-        return `Order [id=${this.id}, customer=${this.customer.toString()}, orderDate=${this.orderDate.toISOString()}, startDate=${this.startDate.toISOString()}, price=${this.price}, house=${this.house.toString()}]`;
+        return `Order [id=${this.id}, customer=${this.customer.toString()}, orderDate=${this.orderDate.toISOString()}, startDate=${this.startDate.toISOString()}, price=${this.price}}]`;
     }
+
+    static from({
+        id,
+        customer,
+        house,
+        orderDate,
+        startDate,
+        price,
+    }: OrderPrisma & { customer: CustomerPrisma } & { house: HousePrisma }): Order {
+        console.log("Mapping orderPrisma to Order:", { id, customer, house, orderDate, startDate, price });
+    
+        if (!customer || !house) {
+            throw new Error("Missing customer or house data");
+        }
+    
+        const mappedOrder = new Order(
+            id,
+            Customer.from(customer),
+            House.from(house),
+            startDate,
+            price
+        );
+    
+        console.log("Mapped Order:", mappedOrder);
+        return mappedOrder;
+    }
+    
+    
+    
 }
