@@ -251,227 +251,383 @@ const house1 = await prisma.house.create({
     });
 
     // ----------------- Rooms -----------------
-    await prisma.room.create({
-        data: {
-            name: "Living Room",
-            workDescription: "Spacious and well-lit living area",
-            house: {
-                connect: { id: house1.id },
+    
+    // ----------------- Rooms -----------------
+const livingRoom1 = await prisma.room.create({
+    data: {
+        name: "Living Room",
+        workDescription: "Spacious and well-lit living area",
+        house: {
+            connect: { id: house1.id },
+        },
+        order: {
+            create: {
+                houseId: house1.id,
+                customerId: JohnDoe.id,
+                employeeId: employee1.id,
+                startDate: new Date('2025-01-01'),
+                status: 'pending',
+                price: 30000,
+                orderDate: new Date('2023-12-15'),
             },
         },
-    });
+    },
+    include: {
+        order: true,
+        house: true, // Optionally include the house details for confirmation
+    },
+});
 
-    await prisma.room.create({
-        data: {
-            name: "Kitchen",
-            workDescription: "Modern kitchen with appliances",
-            house: {
-                connect: { id: house1.id },
+const kitchen1 = await prisma.room.create({
+    data: {
+        name: "Kitchen",
+        workDescription: "Modern kitchen with appliances",
+        house: {
+            connect: { id: house1.id },
+        },
+        order: {
+            create: {
+                houseId: house1.id,
+                customerId: AliceJohnson.id,
+                employeeId: employee2.id,
+                startDate: new Date('2025-02-01'),
+                status: 'pending',
+                price: 20000,
+                orderDate: new Date('2023-12-16'),
             },
         },
-    });
+    },
+    include: {
+        order: true,
+        house: true,
+    },
+});
 
-    await prisma.room.create({
-        data: {
-            name: "Bedroom 1",
-            workDescription: "Cozy bedroom with a balcony",
-            house: {
-                connect: { id: house2.id },
+const bedroom1 = await prisma.room.create({
+    data: {
+        name: "Bedroom 1",
+        workDescription: "Cozy bedroom with a balcony",
+        house: {
+            connect: { id: house2.id },
+        },
+        order: {
+            create: {
+                houseId: house2.id,
+                customerId: JaneSmith.id,
+                employeeId: employee1.id,
+                startDate: new Date('2025-03-01'),
+                status: 'pending',
+                price: 25000,
+                orderDate: new Date('2023-12-17'),
             },
         },
-    });
+    },
+    include: {
+        order: true,
+        house: true,
+    },
+});
 
-    await prisma.room.create({
-        data: {
-            name: "Bedroom 2",
-            workDescription: "Guest bedroom",
-            house: {
-                connect: { id: house2.id },
+const bedroom2 = await prisma.room.create({
+    data: {
+        name: "Bedroom 2",
+        workDescription: "Guest bedroom",
+        house: {
+            connect: { id: house2.id },
+        },
+        order: {
+            create: {
+                houseId: house2.id,
+                customerId: JohnDoe.id,
+                employeeId: employee2.id,
+                startDate: new Date('2025-04-01'),
+                status: 'pending',
+                price: 28000,
+                orderDate: new Date('2023-12-18'),
             },
         },
-    });
+    },
+    include: {
+        order: true,
+        house: true,
+    },
+});
 
-    await prisma.room.create({
-        data: {
-            name: "Living Room",
-            workDescription: "Open-plan living area",
-            house: {
-                connect: { id: house2.id },
+const masterBedroom = await prisma.room.create({
+    data: {
+        name: "Master Bedroom",
+        workDescription: "Spacious master bedroom",
+        house: {
+            connect: { id: house3.id },
+        },
+        order: {
+            create: {
+                houseId: house3.id,
+                customerId: AliceJohnson.id,
+                employeeId: employee1.id,
+                startDate: new Date('2025-05-01'),
+                status: 'pending',
+                price: 40000,
+                orderDate: new Date('2023-12-19'),
             },
         },
-    });
+    },
+    include: {
+        order: true,
+        house: true,
+    },
+});
 
-    await prisma.room.create({
-        data: {
-            name: "Master Bedroom",
-            workDescription: "Spacious master bedroom",
-            house: {
-                connect: { id: house3.id },
+const bathroom = await prisma.room.create({
+    data: {
+        name: "Bathroom",
+        workDescription: "Full bathroom with shower and tub",
+        house: {
+            connect: { id: house3.id },
+        },
+        order: {
+            create: {
+                houseId: house3.id,
+                customerId: JaneSmith.id,
+                employeeId: employee2.id,
+                startDate: new Date('2025-06-01'),
+                status: 'pending',
+                price: 15000,
+                orderDate: new Date('2023-12-20'),
             },
         },
-    });
+    },
+    include: {
+        order: true,
+        house: true,
+    },
+});
 
-    await prisma.room.create({
-        data: {
-            name: "Bathroom",
-            workDescription: "Full bathroom with shower and tub",
-            house: {
-                connect: { id: house3.id },
-            },
-        },
-    });
+// Add similar blocks for the remaining rooms and houses, creating associated orders for each room.
 
-    await prisma.room.create({
-        data: {
-            name: "Living Room",
-            workDescription: "Sunlit living room",
-            house: {
-                connect: { id: house4.id },
-            },
-        },
-    });
+    
+    
+    // await prisma.room.create({
+    //     data: {
+    //         name: "Living Room",
+    //         workDescription: "Spacious and well-lit living area",
+    //         house: {
+    //             connect: { id: house1.id },
+    //         },
+    //     },
+    // });
 
-    await prisma.room.create({
-        data: {
-            name: "Bedroom",
-            workDescription: "Cozy single bedroom",
-            house: {
-                connect: { id: house4.id },
-            },
-        },
-    });
+    // await prisma.room.create({
+    //     data: {
+    //         name: "Kitchen",
+    //         workDescription: "Modern kitchen with appliances",
+    //         house: {
+    //             connect: { id: house1.id },
+    //         },
+    //     },
+    // });
 
-    await prisma.room.create({
-        data: {
-            name: "Living Room",
-            workDescription: "Stylish living space",
-            house: {
-                connect: { id: house5.id },
-            },
-        },
-    });
+    // await prisma.room.create({
+    //     data: {
+    //         name: "Bedroom 1",
+    //         workDescription: "Cozy bedroom with a balcony",
+    //         house: {
+    //             connect: { id: house2.id },
+    //         },
+    //     },
+    // });
 
-    await prisma.room.create({
-        data: {
-            name: "Bedroom 1",
-            workDescription: "Master bedroom with en-suite",
-            house: {
-                connect: { id: house5.id },
-            },
-        },
-    });
+    // await prisma.room.create({
+    //     data: {
+    //         name: "Bedroom 2",
+    //         workDescription: "Guest bedroom",
+    //         house: {
+    //             connect: { id: house2.id },
+    //         },
+    //     },
+    // });
 
-    await prisma.room.create({
-        data: {
-            name: "Bedroom 2",
-            workDescription: "Children's bedroom",
-            house: {
-                connect: { id: house5.id },
-            },
-        },
-    });
+    // await prisma.room.create({
+    //     data: {
+    //         name: "Living Room",
+    //         workDescription: "Open-plan living area",
+    //         house: {
+    //             connect: { id: house2.id },
+    //         },
+    //     },
+    // });
 
-    await prisma.room.create({
-        data: {
-            name: "Living Room",
-            workDescription: "Open-plan living area",
-            house: {
-                connect: { id: house6.id },
-            },
-        },
-    });
+    // await prisma.room.create({
+    //     data: {
+    //         name: "Master Bedroom",
+    //         workDescription: "Spacious master bedroom",
+    //         house: {
+    //             connect: { id: house3.id },
+    //         },
+    //     },
+    // });
 
-    await prisma.room.create({
-        data: {
-            name: "Kitchen",
-            workDescription: "Fully equipped kitchen",
-            house: {
-                connect: { id: house6.id },
-            },
-        },
-    });
+    // await prisma.room.create({
+    //     data: {
+    //         name: "Bathroom",
+    //         workDescription: "Full bathroom with shower and tub",
+    //         house: {
+    //             connect: { id: house3.id },
+    //         },
+    //     },
+    // });
 
-    await prisma.room.create({
-        data: {
-            name: "Bedroom",
-            workDescription: "Compact bedroom",
-            house: {
-                connect: { id: house7.id },
-            },
-        },
-    });
+    // await prisma.room.create({
+    //     data: {
+    //         name: "Living Room",
+    //         workDescription: "Sunlit living room",
+    //         house: {
+    //             connect: { id: house4.id },
+    //         },
+    //     },
+    // });
 
-    await prisma.room.create({
-        data: {
-            name: "Bathroom",
-            workDescription: "Modern bathroom",
-            house: {
-                connect: { id: house7.id },
-            },
-        },
-    });
+    // await prisma.room.create({
+    //     data: {
+    //         name: "Bedroom",
+    //         workDescription: "Cozy single bedroom",
+    //         house: {
+    //             connect: { id: house4.id },
+    //         },
+    //     },
+    // });
 
-    await prisma.room.create({
-        data: {
-            name: "Living Room",
-            workDescription: "Terraced living room",
-            house: {
-                connect: { id: house8.id },
-            },
-        },
-    });
+    // await prisma.room.create({
+    //     data: {
+    //         name: "Living Room",
+    //         workDescription: "Stylish living space",
+    //         house: {
+    //             connect: { id: house5.id },
+    //         },
+    //     },
+    // });
 
-    await prisma.room.create({
-        data: {
-            name: "Bedroom",
-            workDescription: "Large bedroom with terrace access",
-            house: {
-                connect: { id: house8.id },
-            },
-        },
-    });
+    // await prisma.room.create({
+    //     data: {
+    //         name: "Bedroom 1",
+    //         workDescription: "Master bedroom with en-suite",
+    //         house: {
+    //             connect: { id: house5.id },
+    //         },
+    //     },
+    // });
+
+    // await prisma.room.create({
+    //     data: {
+    //         name: "Bedroom 2",
+    //         workDescription: "Children's bedroom",
+    //         house: {
+    //             connect: { id: house5.id },
+    //         },
+    //     },
+    // });
+
+    // await prisma.room.create({
+    //     data: {
+    //         name: "Living Room",
+    //         workDescription: "Open-plan living area",
+    //         house: {
+    //             connect: { id: house6.id },
+    //         },
+    //     },
+    // });
+
+    // await prisma.room.create({
+    //     data: {
+    //         name: "Kitchen",
+    //         workDescription: "Fully equipped kitchen",
+    //         house: {
+    //             connect: { id: house6.id },
+    //         },
+    //     },
+    // });
+
+    // await prisma.room.create({
+    //     data: {
+    //         name: "Bedroom",
+    //         workDescription: "Compact bedroom",
+    //         house: {
+    //             connect: { id: house7.id },
+    //         },
+    //     },
+    // });
+
+    // await prisma.room.create({
+    //     data: {
+    //         name: "Bathroom",
+    //         workDescription: "Modern bathroom",
+    //         house: {
+    //             connect: { id: house7.id },
+    //         },
+    //     },
+    // });
+
+    // await prisma.room.create({
+    //     data: {
+    //         name: "Living Room",
+    //         workDescription: "Terraced living room",
+    //         house: {
+    //             connect: { id: house8.id },
+    //         },
+    //     },
+    // });
+
+    // await prisma.room.create({
+    //     data: {
+    //         name: "Bedroom",
+    //         workDescription: "Large bedroom with terrace access",
+    //         house: {
+    //             connect: { id: house8.id },
+    //         },
+    //     },
+    // });
 
 
-    // ----------------- Create Orders -----------------
+    // // ----------------- Create Orders -----------------
 
-    // Order 1: John Doe for House 1, managed by Michael Scott
-    await prisma.order.create({
-        data: {
-            houseId: house1.id,
-            customerId: JohnDoe.id,
-            employeeId: employee1.id,
-            startDate: new Date('2025-01-01'),
-            status: 'pending',
-            price: 500000,
-            orderDate: new Date('2023-12-01'),
-        }
-    });
+    // // Order 1: John Doe for House 1, managed by Michael Scott
+    // await prisma.order.create({
+    //     data: {
+    //         houseId: house1.id,
+    //         customerId: JohnDoe.id,
+    //         employeeId: employee1.id,
+    //         startDate: new Date('2025-01-01'),
+    //         status: 'pending',
+    //         price: 500000,
+    //         orderDate: new Date('2023-12-01'),
+    //     }
+    // });
 
-    // Order 2: Jane Smith for House 2, managed by Dwight Schrute
-    await prisma.order.create({
-        data: {
-            houseId: house2.id,
-            customerId: JaneSmith.id,
-            employeeId: employee2.id,
-            startDate: new Date('2025-02-01'),
-            status: 'pending',
-            price: 200000,
-            orderDate: new Date('2023-12-05')
-        }
-    });
+    // // Order 2: Jane Smith for House 2, managed by Dwight Schrute
+    // await prisma.order.create({
+    //     data: {
+    //         houseId: house2.id,
+    //         customerId: JaneSmith.id,
+    //         employeeId: employee2.id,
+    //         startDate: new Date('2025-02-01'),
+    //         status: 'pending',
+    //         price: 200000,
+    //         orderDate: new Date('2023-12-05')
+    //     }
+    // });
 
-    // Order 3: Alice Johnson for House 1, managed by Michael Scott
-    await prisma.order.create({
-        data: {
-            houseId: house1.id,
-            customerId: AliceJohnson.id,
-            employeeId: employee1.id,
-            startDate: new Date('2025-03-01'),
-            status: 'pending',
-            price: 550000,
-            orderDate: new Date('2023-12-10')
-        }
-    });
+    // // Order 3: Alice Johnson for House 1, managed by Michael Scott
+    // await prisma.order.create({
+    //     data: {
+    //         houseId: house1.id,
+    //         customerId: AliceJohnson.id,
+    //         employeeId: employee1.id,
+    //         startDate: new Date('2025-03-01'),
+    //         status: 'pending',
+    //         price: 550000,
+    //         orderDate: new Date('2023-12-10')
+    //     }
+    // });
 
 }
 

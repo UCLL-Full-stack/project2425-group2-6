@@ -5,6 +5,8 @@ import { House } from "../model/house";
 import { createHouseDto, createRoomDto, prepOrderDto } from "../types";
 import CustomerDb from "../repository/Customer.db";
 import RoomDb from "../repository/Room.db";
+import database from "../util/database";
+import roomService from "./room.service";
 
 const getAllOrders = async () => {
     const orders = await OrderDb.getAllOrders();
@@ -14,6 +16,7 @@ const getAllOrders = async () => {
 const createOrder = async (order: prepOrderDto) => {
     console.log("Starting createOrder function");
 
+    // Fetch the customer by email
     const customer = await CustomerDb.getCustomerByEmail(order.email);
     console.log("Customer fetched:", customer);
 
@@ -21,26 +24,28 @@ const createOrder = async (order: prepOrderDto) => {
         throw new Error("Customer not found");
     }
 
+    // Fetch the list of houses associated with the customer
     const houses = await HouseDb.getHousesByCustomerId(customer.getId());
     console.log("Houses fetched for customer:", houses);
 
     let house;
     let houseExists = false;
 
+    // Check if the house already exists
     for (const houseItem of houses) {
-        console.log(`Comparing ${houseItem.getHouseNumber()} with ${order.houseNumber}`)
-        console.log(`Comparing ${houseItem.getStreet()} with ${order.street}`)  
-        console.log(`Comparing ${houseItem.getCity()} with ${order.city}`)
-        console.log(`Comparing ${houseItem.getZip()} with ${order.zip}`)
-        console.log(`Comparing ${houseItem.getCountry()} with ${order.country}`)
-        console.log(`Comparing ${houseItem.getType()} with ${order.type}`)
+        console.log(`Comparing ${houseItem.getHouseNumber().toLocaleLowerCase()} with ${order.houseNumber.toLocaleLowerCase()}`);
+        console.log(`Comparing ${houseItem.getStreet().toLocaleLowerCase()} with ${order.street.toLocaleLowerCase()}`);  
+        console.log(`Comparing ${houseItem.getCity().toLocaleLowerCase()} with ${order.city.toLocaleLowerCase()}`);
+        console.log(`Comparing ${houseItem.getZip().toLocaleLowerCase()} with ${order.zip.toLocaleLowerCase()}`);
+        console.log(`Comparing ${houseItem.getCountry().toLocaleLowerCase()} with ${order.country.toLocaleLowerCase()}`);
+        console.log(`Comparing ${houseItem.getType().toLocaleLowerCase()} with ${order.type.toLocaleLowerCase()}`);
         if (
-            houseItem.getHouseNumber() == order.houseNumber &&
-            houseItem.getStreet() == order.street &&
-            houseItem.getCity() == order.city &&
-            houseItem.getZip() == order.zip &&
-            houseItem.getCountry() == order.country &&
-            houseItem.getType() == order.type
+            houseItem.getHouseNumber().toLocaleLowerCase() == order.houseNumber.toLocaleLowerCase() &&
+            houseItem.getStreet().toLocaleLowerCase() == order.street.toLocaleLowerCase() &&
+            houseItem.getCity().toLocaleLowerCase() == order.city.toLocaleLowerCase() &&
+            houseItem.getZip().toLocaleLowerCase() == order.zip.toLocaleLowerCase() &&
+            houseItem.getCountry().toLocaleLowerCase() == order.country.toLocaleLowerCase() &&
+            houseItem.getType().toLocaleLowerCase() == order.type.toLocaleLowerCase()
         ) {
             house = houseItem;
             houseExists = true;
@@ -49,6 +54,7 @@ const createOrder = async (order: prepOrderDto) => {
         }
     }
 
+    // If no matching house exists, create a new house
     if (!houseExists) {
         console.log("No matching house found, creating new house");
 
@@ -69,26 +75,25 @@ const createOrder = async (order: prepOrderDto) => {
         throw new Error("House not found");
     }
 
-    console.log("Prepping room data for new room creation");
-    const newRoom : createRoomDto = {
-        name: order.roomName,
+    console.log("Prepping room and order data for new room creation");
+
+    // Prepare raw data for the repository
+    const roomData = {
+        roomName: order.roomName,
         workDescription: order.workDescription,
         houseId: house.getId(),
+        startDate: order.startDate,
+        budget: order.budget,
     };
 
-    console.log("Creating new room with data:", newRoom);
-    const roomPrisma = await RoomDb.createRoom(newRoom);
+    // Pass raw data to the repository layer
+    const roomWithOrder = await RoomDb.createRoom(roomData, customer.getId());
 
-    const newOrder = await OrderDb.createOrder(
-        customer.getId(),
-        house.getId(),
-        order.startDate,
-        order.budget
-    );
-    console.log("New order created:", newOrder);
+    console.log("Room with associated order created:", roomWithOrder);
 
-    return newOrder;
+    return roomWithOrder.order; // Return the created order
 };
+
 
 const getOrderById = async (id : number) => {
     const order = await OrderDb.getOrderById(id);
@@ -96,8 +101,32 @@ const getOrderById = async (id : number) => {
 }
 
 const getOrderByCustomerEmail = async (email: string) => {
-    const orders = await OrderDb.getOrderByCustomerEmail(email);
-    return orders;
+    const orders = await roomService.getRoomsByEmail(email);
+
+    const refinedOrders = orders.map((order: any) => {
+        return {
+            orderId: order.order.id,
+            orderDate: order.order.orderDate,
+            status: order.order.status,
+            startDate: order.order.startDate,
+            price: order.order.price,
+            house: {
+                id: order.house.id,
+                country: order.house.country,
+                houseNumber: order.house.houseNumber,
+                street: order.house.street,
+                city: order.house.city,
+                zip: order.house.zip,
+                type: order.house.type,
+            },
+            room: {
+                name: order.name,
+                workDescription: order.workDescription,
+            }
+        };
+    });
+
+    return refinedOrders;
 };
 
 export default {

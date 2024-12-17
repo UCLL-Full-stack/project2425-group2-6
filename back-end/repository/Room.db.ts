@@ -7,6 +7,13 @@ const getAllRooms = async () : Promise<Array<Room>> => {
     const roomsPrisma = await database.room.findMany({
         include: {
             house: true,
+            order: {
+                include: {
+                    customer: true,
+                    employee: true,
+                    house: true
+                }
+            }
         }
     });
     return roomsPrisma.map((roomPrisma) => Room.from(roomPrisma));
@@ -15,22 +22,34 @@ const getAllRooms = async () : Promise<Array<Room>> => {
 const getHouse = async (houseId: number): Promise<any> => {
     const housePrisma = await database.house.findUnique({
         where: { id: houseId },
-        include: { rooms: true } // Ensure this matches the property name in your Prisma schema
+        include: {
+            rooms: {
+                include: {
+                    order: {
+                        include: {
+                            customer: true,
+                            employee: true,
+                            house: true
+                        }
+                    }
+                }
+            }
+        }
     });
 
     if (!housePrisma) {
         throw new Error("House not found");
     }
 
-    const house = House.from({...housePrisma});
+    const house = House.from({ ...housePrisma });
     const rooms = housePrisma.rooms.map((roomPrisma) => {
-            const room = Room.from({ ...roomPrisma, house: housePrisma });
-            return {
-                id: room.getId(),
-                name: room.getName(),
-                workDescription: room.getWorkDescription()
-            };
-        });
+        const room = Room.from({ ...roomPrisma, house: housePrisma });
+        return {
+            id: room.getId(),
+            name: room.getName(),
+            workDescription: room.getWorkDescription()
+        };
+    });
 
     return {
         ...house,
@@ -38,35 +57,70 @@ const getHouse = async (houseId: number): Promise<any> => {
     };
 };
 
-const createRoom = async (createRoomDto: createRoomDto): Promise<Room> => {
-    try {
-        const roomPrisma = await database.room.create({
-            data: {
-                name: createRoomDto.name,
-                workDescription: createRoomDto.workDescription,
-                house: {
-                    connect: {
-                        id: createRoomDto.houseId
-                    }
+// Repository Layer: RoomRepository.ts
+
+const createRoom = async (orderData: any, customerId: number) => {
+    const { roomName, workDescription, houseId, startDate, budget } = orderData;
+
+    // Create the room and the associated order
+    const roomWithOrder = await database.room.create({
+        data: {
+            name: roomName,
+            workDescription: workDescription,
+            house: {
+                connect: { id: houseId }, // Link the house
+            },
+            order: {
+                create: {
+                    houseId: houseId,
+                    customerId: customerId,
+                    startDate: startDate,
+                    status: 'pending', // Default order status
+                    price: budget, // Use provided budget as price
+                    orderDate: new Date(), // Use current date as the order date
+                    employeeId: 1, // Add a valid employeeId (assumed to be 1)
+                },
+            },
+        },
+        include: {
+            order: true,
+            house: true,
+        },
+    });
+
+    return roomWithOrder; // Return the created room along with the associated order
+};
+
+
+const getRoomsByEmail = async (email: string) => {
+    const rooms = await database.room.findMany({
+        where: {
+            order: {
+                customer: {
+                    email: email
                 }
             }
-        });
-        const housePrisma = await database.house.findUnique({
-            where: { id: createRoomDto.houseId }
-        });
-        if (!housePrisma) {
-            throw new Error("House not found");
+        },
+        include: {
+            house: true,
+            order: {
+                include: {
+                    customer: true,
+                    employee: true,
+                    house: true
+                }
+            }
         }
-        return Room.from({ ...roomPrisma, house: housePrisma });
-    } catch (error) {
-        console.error("Error creating room:", error);
-        throw new Error("Error creating room: " + error);
-    }
+    });
+
+    return rooms.map((roomPrisma) => Room.from(roomPrisma));
 };
+
 
 
 export default {
     getAllRooms,
     getHouse,
     createRoom,
+    getRoomsByEmail,
 }

@@ -1,3 +1,5 @@
+import { Order } from "@prisma/client";
+
 export type createHouseDto = {
   houseNumber: string,
   street: string,

@@ -60,7 +60,7 @@ model Order {
     customerId Int
     employee   Employee @relation(fields: [employeeId], references: [id])
     employeeId Int
-    // rooms      Room[]
+    rooms      Room[]
 }
 
 model Room {
@@ -70,6 +70,6 @@ model Room {
     house           House    @relation(fields: [houseId], references: [id])
     houseId         Int
     createdAt       DateTime @default(now())
-    // order           Order    @relation(fields: [orderId], references: [id])
-    // orderId         Int
+    order           Order    @relation(fields: [orderId], references: [id])
+    orderId         Int
 }
