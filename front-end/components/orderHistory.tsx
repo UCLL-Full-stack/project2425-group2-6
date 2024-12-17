@@ -1,4 +1,5 @@
 import OrderService from '@/services/order.service';
+import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 
 type orderHistoryProps = {
@@ -63,17 +64,43 @@ const OrderHistory: React.FC<orderHistoryProps> = ({ email }) => {
             </thead>
             <tbody>
               {orders.map((order, index) => (
-                <tr key={order.orderId} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-100'}>
-                  <td className="px-4 py-2">{new Date(order.orderDate).toLocaleDateString()}</td>
-                  <td className={`px-4 py-2 font-bold ${order.status === 'Completed' ? 'text-green-600' : 'text-yellow-600'}`}>
-                    {order.status}
-                  </td>
-                  <td className="px-4 py-2">${order.price.toFixed(2)}</td>
+                <tr
+                  key={order.orderId}
+                  className={`cursor-pointer ${index % 2 === 0 ? 'bg-white' : 'bg-gray-100'} hover:bg-gray-200 transition-colors`}
+                >
                   <td className="px-4 py-2">
-                    {order.house.houseNumber} {order.house.street}, {order.house.city}, {order.house.zip}, {order.house.country}
+                    <Link href={`/orders/${order.orderId}`}>
+                      {new Date(order.orderDate).toLocaleDateString()}
+                    </Link>
                   </td>
-                  <td className="px-4 py-2">{order.room.name}</td>
-                  <td className="px-4 py-2">{new Date(order.startDate).toLocaleDateString()}</td>
+                  <td className="px-4 py-2">
+                    <Link href={`/orders/${order.orderId}`}>
+                      <span
+                        className={`font-bold ${
+                          order.status === 'Completed' ? 'text-green-600' : 'text-yellow-600'
+                        }`}
+                      >
+                        {order.status}
+                      </span>
+                    </Link>
+                  </td>
+                  <td className="px-4 py-2">
+                    <Link href={`/orders/${order.orderId}`}>${order.price.toFixed(2)}</Link>
+                  </td>
+                  <td className="px-4 py-2">
+                    <Link href={`/orders/${order.orderId}`}>
+                      {order.house.houseNumber} {order.house.street}, {order.house.city}, {order.house.zip},{' '}
+                      {order.house.country}
+                    </Link>
+                  </td>
+                  <td className="px-4 py-2">
+                    <Link href={`/orders/${order.orderId}`}>{order.room.name}</Link>
+                  </td>
+                  <td className="px-4 py-2">
+                    <Link href={`/orders/${order.orderId}`}>
+                      {new Date(order.startDate).toLocaleDateString()}
+                    </Link>
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -95,10 +95,48 @@ const createOrder = async (order: prepOrderDto) => {
 };
 
 
-const getOrderById = async (id : number) => {
-    const order = await OrderDb.getOrderById(id);
-    return order;
-}
+const getOrderById = async (orderId: number) => {
+    const rooms = await OrderDb.getOrderById(orderId);
+  
+    if (!rooms.length) {
+      throw new Error(`No order found with ID: ${orderId}`);
+    }
+  
+    // Extract common order information (assuming all rooms share the same order details)
+    const firstRoomOrder = rooms[0];
+    const refinedOrder = {
+      orderId: firstRoomOrder.order.id,
+      orderDate: firstRoomOrder.order.orderDate,
+      status: firstRoomOrder.order.status,
+      startDate: firstRoomOrder.order.startDate,
+      price: firstRoomOrder.order.price,
+      house: {
+        id: firstRoomOrder.house.id,
+        country: firstRoomOrder.house.country,
+        houseNumber: firstRoomOrder.house.houseNumber,
+        street: firstRoomOrder.house.street,
+        city: firstRoomOrder.house.city,
+        zip: firstRoomOrder.house.zip,
+        type: firstRoomOrder.house.type,
+      },
+      rooms: rooms.map((room) => ({
+        name: room.name,
+        workDescription: room.workDescription,
+      })),
+      customer: {
+        firstName: firstRoomOrder.order.customer.firstName,
+        lastName: firstRoomOrder.order.customer.lastName,
+      },
+      employee: firstRoomOrder.order.employee
+        ? {
+            firstName: firstRoomOrder.order.employee.firstName,
+            lastName: firstRoomOrder.order.employee.lastName,
+          }
+        : null,
+    };
+  
+    return refinedOrder; // Refined, customer-friendly order data
+  };
 
 const getOrderByCustomerEmail = async (email: string) => {
     const orders = await roomService.getRoomsByEmail(email);

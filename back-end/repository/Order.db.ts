@@ -8,17 +8,6 @@ import { Room } from "../model/room";
 import RoomDb from "./Room.db";
 import database from "../util/database";
 
-let currentId : number = 1;
-
-const orders : Array<Order> = [
-    // new Order(currentId++, CustomerDb.getAllCustomers()[0], new Date("2021-01-01"), new Date("2025-02-01"), 1000, HouseDb.getAllHouses()[0]),
-    // new Order(currentId++, CustomerDb.getAllCustomers()[1], new Date("2021-02-01"), new Date("2025-03-01"), 2000, HouseDb.getAllHouses()[1]),
-    // new Order(currentId++, CustomerDb.getAllCustomers()[2], new Date("2021-03-01"), new Date("2025-04-01"), 3000, HouseDb.getAllHouses()[2]),
-    // new Order(currentId++, CustomerDb.getAllCustomers()[0], new Date("2021-04-01"), new Date("2025-05-01"), 4000, HouseDb.getAllHouses()[3]),
-];
-
-//orders.forEach(order => {log(`${order.toString()}\n\n`)});
-
 const getAllOrders = async (): Promise<Array<Order>> => {
     const ordersPrisma = await database.order.findMany({
         include: {
@@ -68,9 +57,6 @@ const getOrderByCustomerId = async (customerId: number): Promise<Array<Order>> =
     });
     return ordersPrisma.map((orderPrisma) => Order.from(orderPrisma));
 };
-const getOrderById = (id : number) : Order | [] => {
-    return orders.find(order => order.getId() === id) || [];
-}
 
 const createOrder = async (customerId: number, houseId: number, startDate: Date, budget: number): Promise<Order> => {
     console.log("Starting createOrder function");
@@ -127,8 +113,50 @@ const createOrder = async (customerId: number, houseId: number, startDate: Date,
     return order;
 };
 
+// const getOrderById = async (orderId: number): Promise<Order> => {
+//     const orderPrisma = await database.order.findUnique({
+//         where: { id: orderId },
+//         include: {
+//             customer: true,
+//             house: true,
+//             rooms: {
+//                 include: {
+//                     house: true
+//                 }}
+//         }
+//     });
+
+//     if (!orderPrisma) {
+//         throw new Error("Order not found");
+//     }
+
+//     return Order.from(orderPrisma);
+// };
+
+const getOrderById = async (orderId: number) => {
+    const rooms = await database.room.findMany({
+      where: {
+        order: {
+          id: orderId, // Filter by orderId
+        },
+      },
+      include: {
+        house: true,
+        order: {
+          include: {
+            customer: true, // Include customer details
+            employee: true, // Include employee details
+            house: true,    // Include house details
+            rooms: true,    // Include all rooms
+          },
+        },
+      },
+    });
+  
+    return rooms; // Return raw data as retrieved from the database
+  };
+  
 export default {
-    orders,
     createOrder,
     getAllOrders,
     getOrderById,

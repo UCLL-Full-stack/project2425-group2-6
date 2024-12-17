@@ -56,10 +56,28 @@ const getOrdersByEmail = async (email: string) => {
     }
 }
 
+const getOrderById = async (orderId: string) => {
+    try {
+      const response = fetch(process.env.NEXT_PUBLIC_API_URL + `/orders/${orderId}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }
+      )
+      return (await response).json();
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      throw new Error("Failed to fetch orders. Please try again later.");
+    }
+};
+
 const OrderService = {
     createOrder,
     getOrdersByEmail,
-    getAllOrders
+    getAllOrders,
+    getOrderById,
   };
 
 export default OrderService;
