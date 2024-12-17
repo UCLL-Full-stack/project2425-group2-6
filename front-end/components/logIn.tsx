@@ -1,68 +1,28 @@
-import CustomerService from '@/services/customer.service';
-import { statusMessage } from '@/types/statusMessage';
-import Router from 'next/router';
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 
-const LogIn: React.FC = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+const LogIn = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [statusMessage, setStatusMessage] = useState({ type: '', message: '' });
+  const router = useRouter();
 
-    const [emailError, setEmailError] = useState('');
-    const [passwordError, setPasswordError] = useState('');
-    const [statusMessage, setStatusMessage] = useState<statusMessage>(null);
-
-    const router = Router;
-
-    const validate = (): boolean => {
-        setEmailError('');
-        setPasswordError('');
-        setStatusMessage(null);
-
-        if (!email && email.trim().length === 0) {
-            setEmailError('Email is required');
-            return false;
-        }
-
-        if (!password && password.trim().length === 0) {
-            setPasswordError('Password is required');
-            return false;
-        }
-
-        setStatusMessage({ type: 'success', message: 'Redirecting to homeapge...' });
-
-        return true;
-    };
-
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
-
-        if (!validate()) {
-            return;
-        }
-
-        console.log('Form submitted with values:');
-        console.log('Email:', email);
-        console.log('Password:', password);
-
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    // Add your login logic here
     try {
-        const logIn = await CustomerService.logIn({ email, password });
-        console.log(logIn);
-        sessionStorage.setItem("loggedInUser", JSON.stringify(
-            {
-                token: logIn.token,
-                fullname: logIn.fullname,
-                email: email,
-                role: logIn.role
-            }
-        ));
-        setTimeout(() => {
-            router.push("/");
-        }, 2000);
+      // Simulate login success
+      setStatusMessage({ type: 'success', message: 'Login successful!' });
+      setTimeout(() => {
+        router.push('/');
+      }, 2000);
+    } catch (error) {
+      console.error(error);
+      setStatusMessage({ type: 'error', message: 'Login failed. Please try again.' });
     }
-    catch (error) {
-        console.error(error);
-    }
-
   };
 
   return (
@@ -85,14 +45,14 @@ const LogIn: React.FC = () => {
             />
             {emailError && <p className="mt-2 text-sm text-red-500">{emailError}</p>}
           </div>
-  
+
           {/* Password Field */}
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-black">
               Password:
             </label>
             <input
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -101,14 +61,28 @@ const LogIn: React.FC = () => {
             />
             {passwordError && <p className="mt-2 text-sm text-red-500">{passwordError}</p>}
           </div>
-  
+
+          {/* Show Password Checkbox */}
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="showPassword"
+              checked={showPassword}
+              onChange={(e) => setShowPassword(e.target.checked)}
+              className="mr-2"
+            />
+            <label htmlFor="showPassword" className="text-sm font-medium text-black">
+              Show Password
+            </label>
+          </div>
+
           {/* Status Message */}
-          {statusMessage && (
+          {statusMessage.message && (
             <p className={`mt-2 text-sm ${statusMessage.type === 'error' ? 'text-red-500' : 'text-black'}`}>
               {statusMessage.message}
             </p>
           )}
-  
+
           {/* Submit Button */}
           <button
             type="submit"
@@ -120,7 +94,6 @@ const LogIn: React.FC = () => {
       </div>
     </div>
   );
-  
-}  
+};
 
 export default LogIn;
