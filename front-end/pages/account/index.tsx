@@ -1,38 +1,42 @@
-import Header from "@/components/header";
-import LogIn from "@/components/logIn";
-import LogOut from "@/components/logOut";
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-const Account: React.FC = () => {
-    const [user, setUser] = useState(null);
-    const [fullname, setFullname] = useState('');
+import LogIn from '@/components/LogIn';
+import LogOut from '@/components/LogOut';
+import Header from '@/components/header';
 
-    useEffect(() => {
-        const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser') || '{}');
-        setUser(loggedInUser);
-        setFullname(loggedInUser.fullname || '');
-    }, []);
+const AccountPage = () => {
+  const [user, setUser] = useState({});
+  const [fullname, setFullname] = useState('');
 
-    return (
-        <>
-            <Header/>
+  useEffect(() => {
+    const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser') || '{}');
+    setUser(loggedInUser);
+    setFullname(loggedInUser.fullname || '');
+  }, []);
 
-            <h1 className="text-center mb-10 font-bold">Account</h1>
+  return (
+    <>
+      <Header />
+      <div >
+        <h1 className="text-center text-4xl font-bold mb-10">Account</h1>
+        {fullname.length > 0 ? (
+          <>
+            <h2 className="text-center text-2xl mb-10">
+              View your account details, {fullname ? fullname.split(" ")[0] : ''}
+            </h2>
+            <div className="text-center mb-10">
+              <LogOut />
+            </div>
+          </>
+        ) : (
+          <div>
+            <LogIn />
+          </div>
+        )}
+      </div>
+    </>
+  );
+};
 
-            {fullname.length > 0 ? (
-                <h2 className="text-center mb-10">View your account details, {fullname ? fullname.split(" ")[0] : ''}</h2>
-            ) : (
-                <LogIn/>
-            )}
-
-            {fullname.length > 0 && (
-                <div className="text-center mb-10  font-bold">
-                    <LogOut/>
-                </div>
-            )}
-
-        </>
-    )
-}
-
-export default Account;
+export default AccountPage;
