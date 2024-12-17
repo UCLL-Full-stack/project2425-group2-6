@@ -264,11 +264,15 @@ const livingRoom1 = await prisma.room.create({
             create: {
                 houseId: house1.id,
                 customerId: JohnDoe.id,
-                employeeId: employee1.id,
                 startDate: new Date('2025-01-01'),
                 status: 'pending',
                 price: 30000,
                 orderDate: new Date('2023-12-15'),
+                employees: {
+                    connect: [
+                        { id: employee1.id },
+                    ]
+                }
             },
         },
     },
@@ -289,11 +293,16 @@ const kitchen1 = await prisma.room.create({
             create: {
                 houseId: house1.id,
                 customerId: AliceJohnson.id,
-                employeeId: employee2.id,
                 startDate: new Date('2025-02-01'),
                 status: 'pending',
                 price: 20000,
                 orderDate: new Date('2023-12-16'),
+                employees: {
+                    connect: [
+                        { id: employee1.id },
+                        { id: employee2.id }
+                    ]
+                }
             },
         },
     },
@@ -314,11 +323,15 @@ const bedroom1 = await prisma.room.create({
             create: {
                 houseId: house2.id,
                 customerId: JaneSmith.id,
-                employeeId: employee1.id,
                 startDate: new Date('2025-03-01'),
                 status: 'pending',
                 price: 25000,
                 orderDate: new Date('2023-12-17'),
+                employees: {
+                    connect: [
+                        { id: employee1.id }
+                    ]
+                }
             },
         },
     },
@@ -339,11 +352,15 @@ const bedroom2 = await prisma.room.create({
             create: {
                 houseId: house2.id,
                 customerId: JohnDoe.id,
-                employeeId: employee2.id,
                 startDate: new Date('2025-04-01'),
                 status: 'pending',
                 price: 28000,
                 orderDate: new Date('2023-12-18'),
+                employees: {
+                    connect : [
+                        { id: employee2.id }
+                    ]
+                }
             },
         },
     },
@@ -364,11 +381,15 @@ const masterBedroom = await prisma.room.create({
             create: {
                 houseId: house3.id,
                 customerId: AliceJohnson.id,
-                employeeId: employee1.id,
                 startDate: new Date('2025-05-01'),
                 status: 'pending',
                 price: 40000,
                 orderDate: new Date('2023-12-19'),
+                employees: {
+                    connect : [
+                        { id: employee1.id }
+                    ]
+                }
             },
         },
     },
@@ -389,11 +410,15 @@ const bathroom = await prisma.room.create({
             create: {
                 houseId: house3.id,
                 customerId: JaneSmith.id,
-                employeeId: employee2.id,
                 startDate: new Date('2025-06-01'),
                 status: 'pending',
                 price: 15000,
                 orderDate: new Date('2023-12-20'),
+                employees : {
+                    connect : [
+                        { id: employee2.id }
+                    ]
+                }
             },
         },
     },

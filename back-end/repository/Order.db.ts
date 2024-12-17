@@ -12,7 +12,8 @@ const getAllOrders = async (): Promise<Array<Order>> => {
     const ordersPrisma = await database.order.findMany({
         include: {
             customer: true,
-            house: true
+            house: true,
+            employees: true,
         }
     });
     return ordersPrisma.map((orderPrisma) => Order.from(orderPrisma));
@@ -35,6 +36,7 @@ const getOrderByCustomerEmail = async (email: string): Promise<Array<Order>> => 
         include: {
             customer: true,
             house: true,
+            employees: true,
         }
     });
     console.log("Orders fetched from database:", ordersPrisma);
@@ -52,7 +54,8 @@ const getOrderByCustomerId = async (customerId: number): Promise<Array<Order>> =
         },
         include: {
             customer: true,
-            house: true
+            house: true,
+            employees: true
         }
     });
     return ordersPrisma.map((orderPrisma) => Order.from(orderPrisma));
@@ -92,7 +95,7 @@ const createOrder = async (customerId: number, houseId: number, startDate: Date,
             house: {
                 connect: { id: houseId }
             },
-            employee: {
+            employees: {
                 connect: { id: 2 } // Assuming employee ID 2 is valid
             },
             startDate: startDate,
@@ -101,7 +104,8 @@ const createOrder = async (customerId: number, houseId: number, startDate: Date,
         },
         include: {
             customer: true,
-            house: true
+            house: true,
+            employees: true
         },
     });
 
@@ -111,6 +115,24 @@ const createOrder = async (customerId: number, houseId: number, startDate: Date,
     console.log("Order mapped to Order class instance:", order);
 
     return order;
+};
+
+const getOrdersByEmployeeEmail = async (email: string): Promise<Array<Order>> => {
+    const ordersPrisma = await database.order.findMany({
+        where: {
+            employees: {
+                some: {
+                    email: email
+                }
+            }
+        },
+        include: {
+            customer: true,
+            house: true,
+            employees: true
+        }
+    });
+    return ordersPrisma.map((orderPrisma) => Order.from(orderPrisma));
 };
 
 // const getOrderById = async (orderId: number): Promise<Order> => {
@@ -145,7 +167,7 @@ const getOrderById = async (orderId: number) => {
         order: {
           include: {
             customer: true, // Include customer details
-            employee: true, // Include employee details
+            employees: true, // Include employee details
             house: true,    // Include house details
             rooms: true,    // Include all rooms
           },
@@ -161,5 +183,6 @@ export default {
     getAllOrders,
     getOrderById,
     getOrderByCustomerId,
-    getOrderByCustomerEmail
+    getOrderByCustomerEmail,
+    getOrdersByEmployeeEmail
 }   

@@ -7,7 +7,8 @@ import { Room } from "./room";
 import {    
             Order as OrderPrisma,
             Customer as CustomerPrisma,
-            House as HousePrisma
+            House as HousePrisma,
+            Employee as EmployeePrisma
  } from "@prisma/client";
 
 export class Order {
@@ -18,15 +19,24 @@ export class Order {
     private startDate!: Date;
     private price!: number;
     private status: string = "pending";
+    private employees: Array<Employee> = [];
 
-    constructor(id: number, customer: Customer, house: House, startDate: Date, price: number) {
+    constructor(id: number, customer: Customer, house: House, startDate: Date, price: number, employees: Array<Employee>) {
         this.setId(id);
         this.setCustomer(customer);
         this.setHouse(house);
         this.setStartDate(startDate);
         this.setPrice(price);
         this.setStatus();
-        
+        this.setEmployees(employees);
+    }
+
+    public getEmployees(): Array<Employee> {
+        return this.employees;
+    }
+
+    public setEmployees(employees: Array<Employee>) {
+        this.employees = employees;
     }
 
     public getId(): number {
@@ -126,7 +136,8 @@ export class Order {
     orderDate,
     startDate,
     price,
-}: OrderPrisma & { customer: CustomerPrisma } & { house: HousePrisma }): Order {
+    employees
+}: OrderPrisma & { customer: CustomerPrisma } & { house: HousePrisma } & {employees : EmployeePrisma[]}): Order {
     console.log("Mapping orderPrisma to Order:", { id, customer, house, orderDate, startDate, price });
 
     if (!customer || !house) {
@@ -138,7 +149,8 @@ export class Order {
         Customer.from(customer),
         House.from(house),
         startDate,
-        price
+        price,
+        employees.map(employee => Employee.from(employee))
     );
 
     console.log("Mapped Order:", mappedOrder);

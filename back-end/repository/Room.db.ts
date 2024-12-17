@@ -10,8 +10,8 @@ const getAllRooms = async () : Promise<Array<Room>> => {
             order: {
                 include: {
                     customer: true,
-                    employee: true,
-                    house: true
+                    house: true,
+                    employees: true,
                 }
             }
         }
@@ -28,7 +28,7 @@ const getHouse = async (houseId: number): Promise<any> => {
                     order: {
                         include: {
                             customer: true,
-                            employee: true,
+                            employees: true,
                             house: true
                         }
                     }
@@ -78,7 +78,7 @@ const createRoom = async (orderData: any, customerId: number) => {
                     status: 'pending', // Default order status
                     price: budget, // Use provided budget as price
                     orderDate: new Date(), // Use current date as the order date
-                    employeeId: 1, // Add a valid employeeId (assumed to be 1)
+                    employees: {}, // Add a valid employeeId (assumed to be 1)
                 },
             },
         },
@@ -106,7 +106,7 @@ const getRoomsByEmail = async (email: string) => {
             order: {
                 include: {
                     customer: true,
-                    employee: true,
+                    employees: true,
                     house: true
                 }
             }

@@ -32,7 +32,7 @@ model Employee {
     licenseType  String
     workPosition String   @default("worker")
     createdOn    DateTime @default(now())
-    Order        Order[]
+    orders       Order[]
 }
 
 model House {
@@ -49,18 +49,17 @@ model House {
 }
 
 model Order {
-    id         Int      @id @default(autoincrement())
+    id         Int        @id @default(autoincrement())
     houseId    Int
-    house      House    @relation(fields: [houseId], references: [id])
-    orderDate  DateTime @default(now())
+    house      House      @relation(fields: [houseId], references: [id])
+    orderDate  DateTime   @default(now())
     startDate  DateTime
     status     String
     price      Float
-    customer   Customer @relation(fields: [customerId], references: [id])
+    customer   Customer   @relation(fields: [customerId], references: [id])
     customerId Int
-    employee   Employee @relation(fields: [employeeId], references: [id])
-    employeeId Int
     rooms      Room[]
+    employees  Employee[]
 }
 
 model Room {

@@ -1,8 +1,6 @@
-import { Employee } from "./employee";
+
 import { House } from "./house";
-import { Material } from "./material";
 import { Order } from "./order";
-import { Tool } from "./tool";
 
 import { House as HousePrisma, Order as OrderPrisma, Room as RoomPrisma, Customer as CustomerPrisma, Employee as EmployeePrisma } from "@prisma/client";
 export class Room {
@@ -11,9 +9,6 @@ export class Room {
     private name!: string;
     private workDescription!: string;
     private order! : Order;
-    // private employees: Array<Employee> = [];
-    // private tools: Array<Tool> = [];
-    // private materials: Array<Material> = [];
 
     constructor(id: number, house: House, name: string, workDescription: string, order: Order) {
         this.id = id;
@@ -73,7 +68,7 @@ export class Room {
         name,
         workDescription,
         order
-    }: RoomPrisma & {house: HousePrisma} & { order: OrderPrisma & { customer: CustomerPrisma; employee: EmployeePrisma, house: HousePrisma } }): Room {
+    }: RoomPrisma & {house: HousePrisma} & { order: OrderPrisma & { customer: CustomerPrisma; employees: EmployeePrisma[], house: HousePrisma } }): Room {
         return new Room(id, House.from(house), name, workDescription, Order.from(order));
     }
 }

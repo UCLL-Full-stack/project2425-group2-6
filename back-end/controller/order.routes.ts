@@ -71,16 +71,29 @@ orderRouter.post("/", async (req, res) => {
 
 orderRouter.get("/email/:email", async (req, res) => {
     try {
-        console.log("Fetching orders for email:", req.params.email);
+        //console.log("Fetching orders for email:", req.params.email);
         const orders = await orderService.getOrderByCustomerEmail(req.params.email);
-        console.log("Orders fetched:", orders);
+        //console.log("Orders fetched:", orders);
         res.status(200).json(orders);
     } catch (error) {
-        console.error("Error fetching orders:", error);
+        //console.error("Error fetching orders:", error);
         if (error instanceof Error) {
             res.status(400).json(error.message);
         }
     }
 });
 
+orderRouter.get("/employee/:email", async (req, res) => {
+    try {
+        const orders = await orderService.getOrdersByEmployeeEmail(req.params.email);
+        // //console.log("Orders fetched:", orders);
+        res.status(200).json(orders);
+    } catch (error) {
+        // //console.error("Error fetching orders:", error);
+        if (error instanceof Error) {
+            res.status(400).json(error.message);
+        }
+    }
+}
+);
 export default orderRouter;

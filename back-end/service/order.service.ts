@@ -1,11 +1,9 @@
 
 import HouseDb from "../repository/House.db";
 import OrderDb from "../repository/Order.db";
-import { House } from "../model/house";
-import { createHouseDto, createRoomDto, prepOrderDto } from "../types";
+import { createHouseDto, prepOrderDto } from "../types";
 import CustomerDb from "../repository/Customer.db";
 import RoomDb from "../repository/Room.db";
-import database from "../util/database";
 import roomService from "./room.service";
 
 const getAllOrders = async () => {
@@ -127,10 +125,10 @@ const getOrderById = async (orderId: number) => {
         firstName: firstRoomOrder.order.customer.firstName,
         lastName: firstRoomOrder.order.customer.lastName,
       },
-      employee: firstRoomOrder.order.employee
+      employee: firstRoomOrder.order.employees
         ? {
-            firstName: firstRoomOrder.order.employee.firstName,
-            lastName: firstRoomOrder.order.employee.lastName,
+            firstName: firstRoomOrder.order.employees.forEach((employee) => employee.firstName),
+            lastName: firstRoomOrder.order.employees.forEach((employee) => employee.lastName),
           }
         : null,
     };
@@ -167,9 +165,16 @@ const getOrderByCustomerEmail = async (email: string) => {
     return refinedOrders;
 };
 
+const getOrdersByEmployeeEmail = async (email: string) => {
+    const orders = await OrderDb.getOrdersByEmployeeEmail(email);
+
+    return orders;
+};
+
 export default {
     getOrderByCustomerEmail,
     getAllOrders,
     getOrderById,
     createOrder,
+    getOrdersByEmployeeEmail,
 }
