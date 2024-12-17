@@ -1,4 +1,3 @@
-// components/Dropdown.tsx
 import React, { useState } from 'react';
 import styles from '../styles/dropdown.module.css';
 
@@ -21,19 +20,24 @@ const Dropdown: React.FC<DropdownProps> = ({ title, items, onSelect }) => {
   };
 
   return (
-    <div className={styles.dropdown}>
-      <button onClick={toggleDropdown} className={styles["dropdown-button"]}>
-        {title}
-      </button>
-      {isOpen && (
-        <ul className={styles["dropdown-menu"]}>
-          {items.map((item, index) => (
-            <li key={index} className={styles["dropdown-item"]} onClick={() => handleSelect(item)}>
-              {item}
-            </li>
-          ))}
-        </ul>
-      )}
+    <div className="p-4 bg-gray-50 flex flex-col items-center">
+      <div className={styles.dropdown}>
+        <div className="flex justify-center">
+            <h1 className="text-xl font-bold pb-2">{title}</h1>
+        </div>
+        <button onClick={toggleDropdown} className={styles["dropdown-button"]}>
+          {title}
+        </button>
+        {isOpen && (
+          <ul className={styles["dropdown-menu"]}>
+            {items.map((item, index) => (
+              <li key={index} className={styles["dropdown-item"]} onClick={() => handleSelect(item)}>
+                {item}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 };
