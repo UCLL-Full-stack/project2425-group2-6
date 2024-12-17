@@ -12,7 +12,7 @@
     border-radius: 0.5rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 125rem; /* Increased from 400px to 600px */
+    max-width: 400px;
   }
   
   .title {
@@ -77,6 +77,10 @@
     font-weight: 500;
     cursor: pointer;
     transition: background-color 0.2s;
+  }
+  
+  .submitButton:hover {
+    background-color: #f59e0b;
   }
   
   .submitButton:focus {
