@@ -5,23 +5,53 @@ const LogIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [statusMessage, setStatusMessage] = useState({ type: '', message: '' });
+  const [errorMessage, setErrorMessage] = useState('');
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Add your login logic here
+
+    // Clear previous error message
+    setErrorMessage('');
+
+    const loginData = {
+      email,
+      password
+    };
+
+    console.log('Submitting login data:', loginData);
+
     try {
-      // Simulate login success
-      setStatusMessage({ type: 'success', message: 'Login successful!' });
-      setTimeout(() => {
-        router.push('/');
-      }, 2000);
+      const response = await fetch('http://localhost:3000/customers/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(loginData)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Server Error:', errorData);
+        setErrorMessage(errorData.errorMessage || 'Something went wrong');
+        return;
+      }
+
+      const data = await response.json();
+      console.log('Login Success:', data);
+
+      // Store the token and user information in session storage
+      sessionStorage.setItem('loggedInUser', JSON.stringify(data));
+
+      console.log('Redirecting to account page...');
+      router.push('/'); // Redirect to the account page
     } catch (error) {
-      console.error(error);
-      setStatusMessage({ type: 'error', message: 'Login failed. Please try again.' });
+      console.error('Error:', error);
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage('An unknown error occurred');
+      }
     }
   };
 
@@ -30,7 +60,6 @@ const LogIn = () => {
       <div className="w-full max-w-md p-6 border border-black rounded-lg">
         <h2 className="text-2xl font-bold text-center text-black mb-6">Login</h2>
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Email Field */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-black">
               Email:
@@ -43,10 +72,7 @@ const LogIn = () => {
               className="mt-1 w-full px-4 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black"
               placeholder="Enter your email"
             />
-            {emailError && <p className="mt-2 text-sm text-red-500">{emailError}</p>}
           </div>
-
-          {/* Password Field */}
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-black">
               Password:
@@ -59,10 +85,7 @@ const LogIn = () => {
               className="mt-1 w-full px-4 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black"
               placeholder="Enter your password"
             />
-            {passwordError && <p className="mt-2 text-sm text-red-500">{passwordError}</p>}
           </div>
-
-          {/* Show Password Checkbox */}
           <div className="flex items-center">
             <input
               type="checkbox"
@@ -75,15 +98,7 @@ const LogIn = () => {
               Show Password
             </label>
           </div>
-
-          {/* Status Message */}
-          {statusMessage.message && (
-            <p className={`mt-2 text-sm ${statusMessage.type === 'error' ? 'text-red-500' : 'text-black'}`}>
-              {statusMessage.message}
-            </p>
-          )}
-
-          {/* Submit Button */}
+          {errorMessage && <p className="mt-2 text-sm text-red-500">{errorMessage}</p>}
           <button
             type="submit"
             className="w-full py-2 border border-black text-black rounded-md hover:bg-black hover:text-white transition duration-150 focus:outline-none focus:ring-2 focus:ring-black"
