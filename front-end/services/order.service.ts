@@ -90,12 +90,46 @@ const getOrdersByEmployeeEmail = async (email: string) => {
     }
 };
 
+const removeEmployeeFromOrder = async (orderId: string, email: string) => {
+  try {
+    return fetch(process.env.NEXT_PUBLIC_API_URL + `/orders/employee/remove/${email}/${orderId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  }
+  catch (error) {
+    console.error("Error removing employee from order:", error);
+    throw new Error("Failed to remove employee from order. Please try again later.");
+  }
+}
+
+const addEmployeeToOrder = async (orderId: string, email: string) => {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders/employee/add/${email}/${orderId}`, {
+      method: 'PUT',
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to add employee: ${response.statusText}`);
+    }
+    console.log("Employee added successfully.");
+  } catch (error) {
+    console.error("Error adding employee:", error);
+    throw new Error("Failed to add employee to order. Please try again later.");
+  }
+};
+
+
+
 const OrderService = {
     createOrder,
     getOrdersByEmail,
     getAllOrders,
     getOrderById,
     getOrdersByEmployeeEmail,
+    addEmployeeToOrder,
+    removeEmployeeFromOrder,
   };
 
 export default OrderService;

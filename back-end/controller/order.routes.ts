@@ -96,4 +96,32 @@ orderRouter.get("/employee/:email", async (req, res) => {
     }
 }
 );
+
+orderRouter.put("/employee/add/:email/:orderId", async (req, res) => {
+    try {
+      const orderId = parseInt(req.params.orderId);
+      const email = req.params.email;
+      await orderService.addEmployeeByEmailToOrder(orderId, email);
+      res.status(200).json("Employee added to order");
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json(error.message);
+      }
+    }
+  });
+  
+  orderRouter.put("/employee/remove/:email/:orderId", async (req, res) => {
+    try {
+      const orderId = parseInt(req.params.orderId);
+      const email = req.params.email;
+      await orderService.removeEmployeeByEmailFromOrder(orderId, email);
+      res.status(200).json("Employee removed from order");
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json(error.message);
+      }
+    }
+  });
+  
+
 export default orderRouter;

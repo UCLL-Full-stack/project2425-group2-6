@@ -26,7 +26,7 @@ const createCustomer = async (customer: Customer): Promise<Customer> => {
         });
         return Customer.from(customerPrisma);
     } catch (error) {
-        console.error("Error creating customer:", error);
+        //console.error("Error creating customer:", error);
         throw new Error("Error creating customer: " + error);
     }
 };

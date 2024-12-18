@@ -22,7 +22,7 @@ const createHouse = async (createHouseDto: createHouseDto): Promise<House> => {
         });
         return House.from(housePrisma);
     } catch (error) {
-        console.error("Error creating house:", error);
+        //console.error("Error creating house:", error);
         throw new Error("Error creating house: " + error);
     }
 };

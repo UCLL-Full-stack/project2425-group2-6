@@ -138,7 +138,7 @@ export class Order {
     price,
     employees
 }: OrderPrisma & { customer: CustomerPrisma } & { house: HousePrisma } & {employees : EmployeePrisma[]}): Order {
-    console.log("Mapping orderPrisma to Order:", { id, customer, house, orderDate, startDate, price });
+    //console.log("Mapping orderPrisma to Order:", { id, customer, house, orderDate, startDate, price });
 
     if (!customer || !house) {
         throw new Error("Missing customer or house data");
@@ -153,7 +153,7 @@ export class Order {
         employees.map(employee => Employee.from(employee))
     );
 
-    console.log("Mapped Order:", mappedOrder);
+    //console.log("Mapped Order:", mappedOrder);
     return mappedOrder;
 }
 

@@ -42,45 +42,47 @@ const EmployeeOrdersOverview: React.FC<Props> = ({ email }) => {
           <table className="min-w-full table-auto border-collapse">
             <thead className="bg-gray-100">
               <tr>
-                <th className="px-4 py-10 text-left border-b">Order ID</th>
-                <th className="px-4 py-10 text-left border-b">Order Date</th>
                 <th className="px-4 py-10 text-left border-b">Status</th>
                 <th className="px-4 py-10 text-left border-b">Customer</th>
                 <th className="px-4 py-10 text-left border-b">House</th>
-                <th className="px-4 py-10 text-left border-b">Type</th>
+                <th className="px-4 py-10 text-left border-b">Room</th>
+                <th className="px-4 py-10 text-left border-b">Work Description</th>
                 <th className="px-4 py-10 text-left border-b">Start Date</th>
-                <th className="px-4 py-10 text-left border-b">Price</th>
-                <th className="px-4 py-10 text-left border-b">Assigned Employees</th>
+                <th className="px-4 py-10 text-left border-b">Workers</th>
               </tr>
             </thead>
             <tbody>
               {orders.map((order) => (
-                <tr key={order.id} className="border-t">
-                  <td className="px-4 py-10">{order.id}</td>
-                  <td className="px-4 py-10">
-                    {new Date(order.orderDate).toLocaleDateString()}
-                  </td>
+                <tr key={order.orderId} className="border-t">
                   <td className="px-4 py-10">{order.status}</td>
                   <td className="px-4 py-10">
                     {order.customer.firstName} {order.customer.lastName}
                   </td>
                   <td className="px-4 py-10">
-                    {order.house.houseNumber} {order.house.street},{" "}
-                    {order.house.city}, {order.house.zip},{" "}
-                    {order.house.country}
+                    {order.house.houseNumber} {order.house.street}, {order.house.city},{" "}
+                    {order.house.zip}, {order.house.country}
                   </td>
-                  <td className="px-4 py-10">{order.house.type}</td>
+                  <td className="px-4 py-10">
+                    {order.rooms.map((room: any, index: number) => (
+                      <div key={index} className="mb-2">
+                        <span className="font-semibold">{room.name}</span>
+                      </div>
+                    ))}
+                  </td>
+                  <td className="px-4 py-10">
+                    {order.rooms.map((room: any, index: number) => (
+                      <div key={index} className="mb-2">
+                        {room.workDescription}
+                      </div>
+                    ))}
+                  </td>
                   <td className="px-4 py-10">
                     {new Date(order.startDate).toLocaleDateString()}
                   </td>
-                  <td className="px-4 py-10">${order.price.toLocaleString()}</td>
                   <td className="px-4 py-10">
                     {order.employees.map((employee: any, index: number) => (
                       <div key={index} className="mb-2">
-                        <span className="font-semibold">
-                          {employee.firstName} {employee.lastName}
-                        </span>{" "}
-                        - {employee.workPosition} ({employee.domain})
+                        {employee.firstName} {employee.lastName}
                       </div>
                     ))}
                   </td>

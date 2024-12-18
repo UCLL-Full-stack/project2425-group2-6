@@ -8,7 +8,7 @@ const Spotlight: React.FC = () => {
         <div className={styles.spotlightContainer}>
             <div className={styles.left}>
                 <div className={styles.leftContent}>
-                    <h1>Renovy</h1>
+                <h1>Renovy</h1>
                     <p>
                         Renovy: Building Dreams, Restoring Trust.                    
                     </p>

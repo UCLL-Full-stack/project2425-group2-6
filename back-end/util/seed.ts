@@ -28,7 +28,7 @@ const main = async () => {
             lastName: "Smith",
             email: "jane.smith@example.com",
             birthday: new Date("1985-05-15"),
-            password: "securePassword2",
+            password: "$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu",
 
         }
     });
@@ -39,7 +39,7 @@ const main = async () => {
             lastName: "Johnson",
             email: "alice.johnson@example.com",
             birthday: new Date("1992-09-10"),
-            password: "securePassword3",
+            password: "$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu",
 
         }
     });
@@ -50,7 +50,7 @@ const main = async () => {
             lastName: "Brown",
             email: "bobbrown@example.com",
             birthday: new Date("1980-12-25"),
-            password: "securePassword4",
+            password: "$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu",
 
         }
     });
@@ -78,7 +78,7 @@ const main = async () => {
             lastName: "Schrute",
             email: "dwight.schrute@example.com",
             birthday: new Date("1970-01-20"),
-            password: "beetfarmer",
+            password: "$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu",
             role: "admin",
             experience: 15,
             domain: "Sales",
@@ -93,7 +93,7 @@ const main = async () => {
             lastName: "Halpert",
             email: "jim.halpert@example.com",
             birthday: new Date("1978-10-01"),
-            password: "prankster",
+            password: "$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu",
             experience: 10,
             domain: "Sales",
             licenseType: "B",
@@ -107,7 +107,7 @@ const main = async () => {
             lastName: "Beesly",
             email: "pam.beesly@example.com",
             birthday: new Date("1979-03-25"),
-            password: "artist",
+            password: "$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu",
             experience: 8,
             domain: "Reception",
             licenseType: "C",
@@ -121,7 +121,7 @@ const main = async () => {
             lastName: "Hudson",
             email: "stanley.hudson@example.com",
             birthday: new Date("1958-02-19"),
-            password: "crossword",
+            password: "$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu",
             experience: 30,
             domain: "Sales",
             licenseType: "B",

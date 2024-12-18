@@ -43,8 +43,8 @@ const authenticate = async (email: string, password: string): Promise<Authentica
 
         const isValidPassword = await bcrypt.compare(password, employee.getPassword());
 
-        console.log(`comparing password ${password} with ${employee.getPassword()}`);
-        console.log(`isValidPassword: ${isValidPassword}`);
+        //console.log(`comparing password ${password} with ${employee.getPassword()}`);
+        //console.log(`isValidPassword: ${isValidPassword}`);
         if (!isValidPassword) {
             throw new Error("Invalid password.");
         }
