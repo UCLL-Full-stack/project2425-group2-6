@@ -33,7 +33,7 @@ export class Room {
     public getHouse(): House {
         return this.house;
     }
-
+    
     public getName(): string {
         return this.name;
     }
