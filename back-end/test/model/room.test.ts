@@ -1,60 +1,70 @@
 import { Room } from "../../model/room";
 import { House } from "../../model/house";
-import { Address } from "../../model/address";
+import { Order } from "../../model/order";
+import { Customer } from "../../model/customer";
 import { Employee } from "../../model/employee";
-import { Tool } from "../../model/tool";
-import { Material } from "../../model/material";
+import { Role } from "../../types";
 
+// Create a customer
+const customerId = 1;
+const firstName = "John";
+const lastName = "Doe";
+const email = "john.doe@example.com";
+const birthday = new Date("1990-01-01");
+const password = "password123";
+const customer = new Customer(firstName, lastName, email, birthday, password, new Date(), customerId);
+
+// Create a house
 const houseId = 1;
-const houseNumber = 1;
+const houseNumber = "1";
 const street = "Rue de la Loi";
 const city = "Brussels";
-const state = "Brussels Capital";
 const zip = "1000";
-const address = new Address(houseId, houseNumber, street, city, state, zip);
-const type = "detached";
-const house = new House(houseId, address, type);
+const country = "Belgium";
+const houseType = "detached";
+const house = new House(houseId, houseNumber, street, city, zip, houseType, country, new Date());
 
+// Create an order
+const orderId = 1;
+const startDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // Start date is one day after order date
+const price = 1000;
+const employees: Employee[] = [];
+const order = new Order(orderId, customer, house, startDate, price, employees);
+
+// Create a room
 const roomId = 1;
 const roomName = "Living Room";
 const workDescription = "Painting";
-
-const room = new Room(roomId, house, roomName, workDescription);
+const room = new Room(roomId, house, roomName, workDescription, order);
 
 test("Create a room", () => {
   expect(room.getId()).toBe(roomId);
   expect(room.getHouse()).toBe(house);
   expect(room.getName()).toBe(roomName);
   expect(room.getWorkDescription()).toBe(workDescription);
-  expect(room.getEmployees()).toEqual([]);
-  expect(room.getTools()).toEqual([]);
-  expect(room.getMaterials()).toEqual([]);
+  expect(room.getOrder()).toBe(order);
 });
 
-test('given: valid employee, when: addEmployee, then: add employee', () => {
-    const employee = new Employee(1, "Jane", "Doe", "jane.doe@example.com", "password123", 5, "Engineering", "B");
-    room.addEmployee(employee);
-    expect(room.getEmployees()).toContain(employee);
-});
-
-test('given: valid tool, when: addTool, then: add tool', () => {
-    const tool = new Tool(1, "Hammer", 10);
-    room.addTool(tool);
-    expect(room.getTools()).toContain(tool);
-});
-
-test('given: valid material, when: addMaterial, then: add material', () => {
-    const material = new Material(1, "Wood", 20);
-    room.addMaterial(material);
-    expect(room.getMaterials()).toContain(material);
+test('given: valid house, when: setHouse, then: set house', () => {
+  const newHouse = new House(2, "2", "New Street", "Antwerp", "2000", "apartment", "Belgium", new Date());
+  room.setHouse(newHouse);
+  expect(room.getHouse()).toBe(newHouse);
 });
 
 test('given: valid name, when: setName, then: set name', () => {
-    room.setName("Bedroom");
-    expect(room.getName()).toBe("Bedroom");
+  const newName = "Bedroom";
+  room.setName(newName);
+  expect(room.getName()).toBe(newName);
 });
 
 test('given: valid work description, when: setWorkDescription, then: set work description', () => {
-    room.setWorkDescription("Cleaning");
-    expect(room.getWorkDescription()).toBe("Cleaning");
+  const newWorkDescription = "Flooring";
+  room.setWorkDescription(newWorkDescription);
+  expect(room.getWorkDescription()).toBe(newWorkDescription);
+});
+
+test('given: valid order, when: setOrder, then: set order', () => {
+  const newOrder = new Order(2, customer, house, startDate, 2000, employees);
+  room.setOrder(newOrder);
+  expect(room.getOrder()).toBe(newOrder);
 });
