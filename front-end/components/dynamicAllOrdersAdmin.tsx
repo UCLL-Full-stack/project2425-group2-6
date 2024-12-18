@@ -135,7 +135,7 @@ const OrderIdOverviewPageAdmin: React.FC = () => {
             </thead>
             <tbody>
               {order.employees.map((employee: any, index: number) => (
-                <tr key={index}>
+                <tr key={index}>  
                   <td className="px-4 py-2">{employee.firstName} {employee.lastName}</td>
                   <td className="px-4 py-2">{employee.email}</td>
                 </tr>
@@ -149,7 +149,7 @@ const OrderIdOverviewPageAdmin: React.FC = () => {
 
       {/* Add/Remove Employees */}
       <div className="mt-5 p-5 border rounded-lg shadow-sm">
-        <h3 className="text-lg font-semibold">Add/Remove Employees</h3>
+        <h3 className="text-lg font-semibold text-center">Add/Remove Employees</h3>
         <div className="mt-3">
           <select
             multiple
@@ -160,19 +160,22 @@ const OrderIdOverviewPageAdmin: React.FC = () => {
             }}
           >
             {employees.map((employee: any) => (
-              <option key={employee.email} value={employee.email} disabled={order.employees.find((e: any) => e.email === employee.email)}>
+              <option key={employee.email} value={employee.email} disabled={order.employees.find((e: any) => e.email === employee.email)} className="p-2">
                 {employee.firstName} {employee.lastName} ({employee.email})
               </option>
             ))}
           </select>
         </div>
+        <div className="flex justify-center">
+
         <button
           className="mt-3 bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700"
           onClick={handleAddRemoveEmployee}
-        >
+          >
           Add/Remove Selected Employees
         </button>
       </div>
+          </div>
     </div>
   );
 };
