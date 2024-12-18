@@ -117,6 +117,7 @@ const getOrderById = async (orderId: number) => {
         type: firstRoomOrder.house.type,
       },
       rooms: rooms.map((room) => ({
+        id: room.id,
         name: room.name,
         workDescription: room.workDescription,
       })),
@@ -127,6 +128,7 @@ const getOrderById = async (orderId: number) => {
       employees: firstRoomOrder.order.employees.map((employee) => ({
         firstName: employee.firstName,
         lastName: employee.lastName,
+        email: employee.email,
       })),
     };
   
@@ -221,12 +223,40 @@ const getOrdersByEmployeeEmail = async (email: string) => {
     return refinedOrders;
 };
 
-const removeEmployeeByEmailFromOrder = async (orderId: number, email: string) => {
-    return await OrderDb.removeEmployeeByEmailFromOrder(orderId, email );
+const toggleEmployeeAssignment = async (orderId: number, email: string) => {
+    // Check if the order exists
+    const order = await getOrderById(orderId);
+    if (!order) {
+        throw new Error(`Order with ID ${orderId} not found`);
+    }
+
+    // Check if the employee exists in the order's employees list
+    const isEmployeeAssigned = order.employees.some((employee: any) => employee.email === email);
+
+    // Determine action: add or remove
+    const action = isEmployeeAssigned ? "remove" : "add";
+
+    // Perform the toggle operation
+    try {
+        await OrderDb.toggleEmployeeAssignment(orderId, email, action);
+    } catch (error) {
+        throw new Error(`Failed to ${action} employee with email ${email} to/from order: ${error}`);
+    }
+
+    return {
+        message: `Employee with email ${email} has been ${isEmployeeAssigned ? "removed from" : "added to"} the order.`,
+        action,
+    };
 };
 
-const addEmployeeByEmailToOrder = async (orderId: number, email: string) => {
-    return await OrderDb.addEmployeeByEmailToOrder(orderId, email);
+const deleteOrder = async (orderId: number) => {
+    const result = await OrderDb.deleteOrder(orderId);
+    return result;
+};
+
+const modifyOrderStatus = async (orderId: number, status: string) => {
+    const order = await OrderDb.modifyOrderStatus(orderId, status);
+    return order;
 };
 
 export default {
@@ -235,6 +265,7 @@ export default {
     getOrderById,
     createOrder,
     getOrdersByEmployeeEmail,
-    removeEmployeeByEmailFromOrder,
-    addEmployeeByEmailToOrder,
+    toggleEmployeeAssignment,
+    deleteOrder,
+    modifyOrderStatus,
 }

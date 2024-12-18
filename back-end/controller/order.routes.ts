@@ -97,31 +97,49 @@ orderRouter.get("/employee/:email", async (req, res) => {
 }
 );
 
-orderRouter.put("/employee/add/:email/:orderId", async (req, res) => {
+orderRouter.put("/employee/toggle/:email/:orderId", async (req: Request, res: Response) => {
     try {
       const orderId = parseInt(req.params.orderId);
       const email = req.params.email;
-      await orderService.addEmployeeByEmailToOrder(orderId, email);
-      res.status(200).json("Employee added to order");
+  
+      const result = await orderService.toggleEmployeeAssignment(orderId, email);
+      res.status(200).json(result);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  orderRouter.delete("/:id", async (req, res) => {
+    try {
+    //   console.log("Received DELETE request for order ID:", req.params.id);
+      const orderId = parseInt(req.params.id);
+      if (isNaN(orderId)) {
+        console.error("Invalid order ID:", req.params.id);
+        return res.status(400).json({ error: "Invalid order ID" });
+      }
+      const result = await orderService.deleteOrder(orderId);
+      res.status(200).json(result);
+    } catch (error) {
+      console.error("Error in deleteOrder handler:", error);
+      if (error instanceof Error) {
+        res.status(400).json({ error: error.message });
+      }
+    }
+  });
+
+  orderRouter.put("/status/:id", async (req, res) => {
+    try {
+      const orderId = parseInt(req.params.id);
+      const status = req.body.status;
+      const result = await orderService.modifyOrderStatus(orderId, status);
+      res.status(200).json(result);
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).json(error.message);
+        res.status(400).json({ error: error.message });
       }
     }
   });
   
-  orderRouter.put("/employee/remove/:email/:orderId", async (req, res) => {
-    try {
-      const orderId = parseInt(req.params.orderId);
-      const email = req.params.email;
-      await orderService.removeEmployeeByEmailFromOrder(orderId, email);
-      res.status(200).json("Employee removed from order");
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json(error.message);
-      }
-    }
-  });
   
 
 export default orderRouter;

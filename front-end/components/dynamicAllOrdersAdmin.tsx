@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import OrderService from "@/services/order.service";
-import { useRouter } from "next/router";
 import EmployeeService from "@/services/employee.service";
+import { useRouter } from "next/router";
 
 const OrderIdOverviewPageAdmin: React.FC = () => {
   const router = useRouter();
@@ -22,12 +22,13 @@ const OrderIdOverviewPageAdmin: React.FC = () => {
       const fetchedOrder = await OrderService.getOrderById(orderId); // Fetch order by ID
       setOrder(fetchedOrder);
     } catch (err: any) {
-      setError(err.message || 'Something went wrong');
+      setError(err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
   };
 
+  // Fetch all employees
   const fetchEmployees = async () => {
     try {
       const employeeList = await EmployeeService.getAllEmployees(); // Fetch all employees
@@ -37,38 +38,31 @@ const OrderIdOverviewPageAdmin: React.FC = () => {
     }
   };
 
+  // Handle toggling employees in the order
+  const handleAddRemoveEmployee = async () => {
+    if (!orderId) return;
+
+    try {
+      const responses = await Promise.all(
+        selectedEmployees.map(async (email) => {
+          return OrderService.toggleEmployee(orderId, email);
+        })
+      );
+
+      // console.log("Employee toggle responses:", responses);
+
+      // Refresh the order data after changes
+      await fetchOrderDetails();
+      setSelectedEmployees([]); // Clear the selection after updating
+    } catch (err: any) {
+      console.error("Error updating employees:", err.message);
+    }
+  };
+
   useEffect(() => {
     fetchOrderDetails();
     fetchEmployees();
   }, [orderId]); // Re-run the effect when orderId changes
-  
-
-  const handleAddRemoveEmployee = async () => {
-    if (!orderId) return;
-  
-    console.log("Selected Employees for Add/Remove:", selectedEmployees);
-  
-    for (let email of selectedEmployees) {
-      try {
-        const isEmployeeAssigned = order.employees.some((e: any) => e.email === email); // Check if the employee is already assigned
-        if (isEmployeeAssigned) {
-          // Employee is part of the order, so remove them
-          const response = await OrderService.removeEmployeeFromOrder(orderId, email);
-          console.log(`Removed employee with email: ${email} from order ${orderId}`, response);
-        } else {
-          // Employee is not part of the order, so add them
-          const response = await OrderService.addEmployeeToOrder(orderId, email);
-          console.log(`Added employee with email: ${email} to order ${orderId}`, response);
-        }
-      } catch (err: any) {
-        console.error("Error updating employee:", err.message);
-      }
-    }
-  
-    // Refresh the order data after changes
-    await fetchOrderDetails();
-  };
-  
 
   if (loading) {
     return <p className="text-center">Loading...</p>;
@@ -86,14 +80,72 @@ const OrderIdOverviewPageAdmin: React.FC = () => {
     <div className="p-10">
       <h2 className="font-bold text-center text-xl">Order Details - ID: {order.orderId}</h2>
 
-      {/* Order Info */}
-      <div className="mt-5 p-5 border rounded-lg shadow-sm">
-        <h3 className="text-lg font-semibold">Order Information</h3>
-        <p><strong>Order Date:</strong> {new Date(order.orderDate).toLocaleDateString()}</p>
-        <p><strong>Status:</strong> {order.status}</p>
-        <p><strong>Start Date:</strong> {new Date(order.startDate).toLocaleDateString()}</p>
-        <p><strong>Price:</strong> ${order.price}</p>
-      </div>
+{/* Order Info */}
+<div className="mt-5 p-5 border rounded-lg shadow-sm">
+  <h3 className="text-lg font-semibold">Order Information</h3>
+  <p><strong>Status:</strong> {order?.status}</p> {/* Add optional chaining to avoid errors if order is not loaded */}
+  <div className="flex items-center space-x-4">
+    {/* Pending Radio Option */}
+    <label className="flex items-center space-x-2">
+      <input
+        type="radio"
+        name="orderStatus"
+        value="Pending"
+        checked={order?.status?.toLowerCase() === "pending"} // Use optional chaining to avoid errors
+        onChange={async (e) => {
+          if (e.target.checked) {
+            try {
+              const updatedOrder = await OrderService.modifyOrderStatus(order.orderId, "Pending");
+              setOrder((prevOrder: any) => ({
+                ...prevOrder,
+                status: updatedOrder.status
+              })); // Update local order state
+            } catch (error) {
+              console.error("Failed to update status to Pending:", error);
+            }
+          }
+        }}
+        className="form-radio"
+      />
+      <span>Pending</span>
+    </label>
+
+    {/* Approved Radio Option */}
+    <label className="flex items-center space-x-2">
+      <input
+        type="radio"
+        name="orderStatus"
+        value="Approved"
+        checked={order?.status?.toLowerCase() === "approved"} // Use optional chaining to avoid errors
+        onChange={async (e) => {
+          if (e.target.checked) {
+            try {
+              const updatedOrder = await OrderService.modifyOrderStatus(order.orderId, "Approved");
+              setOrder((prevOrder: any) => ({
+                ...prevOrder,
+                status: updatedOrder.status
+              })); // Update local order state
+            } catch (error) {
+              console.error("Failed to update status to Approved:", error);
+            }
+          }
+        }}
+        className="form-radio"
+      />
+      <span>Approved</span>
+    </label>
+  </div>
+  <p><strong>Order Date:</strong> {new Date(order.orderDate).toLocaleDateString()}</p>
+
+  {/* Order Status */}
+  {/* <p><strong>Status:</strong></p> */}
+
+
+<p><strong>Start Date:</strong> {new Date(order.startDate).toLocaleDateString()}</p>
+<p><strong>Price:</strong> ${order.price}</p>
+</div>
+
+
 
       {/* House Info */}
       <div className="mt-5 p-5 border rounded-lg shadow-sm">
@@ -135,7 +187,7 @@ const OrderIdOverviewPageAdmin: React.FC = () => {
             </thead>
             <tbody>
               {order.employees.map((employee: any, index: number) => (
-                <tr key={index}>  
+                <tr key={index}>
                   <td className="px-4 py-2">{employee.firstName} {employee.lastName}</td>
                   <td className="px-4 py-2">{employee.email}</td>
                 </tr>
@@ -160,24 +212,51 @@ const OrderIdOverviewPageAdmin: React.FC = () => {
             }}
           >
             {employees.map((employee: any) => (
-              <option key={employee.email} value={employee.email} disabled={order.employees.find((e: any) => e.email === employee.email)} className="p-2">
+              <option
+                key={employee.email}
+                value={employee.email}
+                // disabled={order.employees.find((e: any) => e.email === employee.email)}
+                className="p-2"
+              >
                 {employee.firstName} {employee.lastName} ({employee.email})
               </option>
             ))}
           </select>
         </div>
         <div className="flex justify-center">
-
-        <button
-          className="mt-3 bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700"
-          onClick={handleAddRemoveEmployee}
+          <button
+            className="mt-3 bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700"
+            onClick={handleAddRemoveEmployee}
           >
-          Add/Remove Selected Employees
-        </button>
+            Add/Remove Selected Employees
+          </button>
+        </div>
       </div>
-          </div>
+      
+      {/* Delete order */}
+      <div className="mt-5 p-5 border rounded-lg shadow-sm">
+        <h3 className="text-lg font-semibold text-center">Delete Order</h3>
+        <div className="flex justify-center">
+          <button
+            className="mt-3 bg-red-500 text-white p-2 rounded-md hover:bg-red-700"
+            onClick={async () => {
+              if (window.confirm("Are you sure you want to delete this order?")) {
+                try {
+                  await OrderService.deleteOrder(orderId);
+                  router.push("/orders");
+                } catch (err: any) {
+                  console.error("Error deleting order:", err.message);
+                }
+              }
+            }}
+          >
+            Delete Order
+          </button>
+        </div>
     </div>
+      
+      </div>
   );
-};
+}
 
 export default OrderIdOverviewPageAdmin;

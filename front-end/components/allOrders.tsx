@@ -13,6 +13,7 @@ const AllOrders: React.FC = () => {
         setLoading(true);
         const fetchedOrders = await OrderService.getAllOrders();
         setOrders(fetchedOrders); // Set the fetched orders
+        console.log(fetchedOrders);
       } catch (err: any) {
         setError(err.message || 'Something went wrong'); // Handle errors
       } finally {
@@ -66,7 +67,7 @@ const AllOrders: React.FC = () => {
                 </td>
                 <td className="px-4 py-2">
                   <Link href={`/orders/master/${order.id}`}>
-                    <span className={`font-bold ${order.status === 'Completed' ? 'text-green-600' : 'text-yellow-600'}`}>
+                    <span className={`font-bold ${order.status === 'Approved' ? 'text-green-600' : 'text-yellow-600'}`}>
                       {order.status}
                     </span>
                   </Link>

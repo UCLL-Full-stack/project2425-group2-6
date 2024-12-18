@@ -19,7 +19,7 @@ export class Order {
     private startDate!: Date;
     private price!: number;
     private status: string = "pending";
-    private employees: Array<Employee> = [];
+    private employees?: Array<Employee> = [];
 
     constructor(id: number, customer: Customer, house: House, startDate: Date, price: number, employees: Array<Employee>) {
         this.setId(id);
@@ -32,7 +32,7 @@ export class Order {
     }
 
     public getEmployees(): Array<Employee> {
-        return this.employees;
+        return this.employees || [];
     }
 
     public setEmployees(employees: Array<Employee>) {

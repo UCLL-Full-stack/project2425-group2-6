@@ -187,73 +187,80 @@ const getOrderById = async (orderId: number) => {
     return rooms; // Return raw data as retrieved from the database
   };
 
-  const removeEmployeeByEmailFromOrder = async (orderId: number, email: string) => {
-    const order = await database.order.findUnique({
-      where: {
-        id: orderId,
-      },
-      include: {
-        employees: true,
-      },
-    });
-  
-    if (!order) {
-      throw new Error(`No order found with ID: ${orderId}`);
-    }
-  
-    const employee = order.employees.find((employee) => employee.email === email);
-  
-    if (!employee) {
-      throw new Error(`No employee found with email: ${email}`);
-    }
-  
-    await database.order.update({
-      where: {
-        id: orderId,
-      },
-      data: {
-        employees: {
-          disconnect: {
-            email: email,
-          },
-        },
-      },
+  const toggleEmployeeAssignment = async (orderId: number, email: string, action: "add" | "remove") => {
+    const updateData =
+      action === "add"
+        ? { employees: { connect: { email } } }
+        : { employees: { disconnect: { email } } };
+
+    return database.order.update({
+      where: { id: orderId },
+      data: updateData,
     });
   };
 
-  const addEmployeeByEmailToOrder = async (orderId: number, email: string) => {
-    const order = await database.order.findUnique({
-      where: {
-        id: orderId,
-      },
-      include: {
-        employees: true,
-      },
-    });
+  const deleteOrder = async (orderId: number) => {
+    try {
+      // Fetch the order to get the associated rooms
+      const order = await database.order.findUnique({
+        where: { id: orderId },
+        include: { rooms: true }, // Ensure rooms are included in the result
+      });
   
-    if (!order) {
-      throw new Error(`No order found with ID: ${orderId}`);
+      if (!order) {
+        throw new Error(`Order with ID ${orderId} not found`);
+      }
+  
+      // Delete associated rooms first
+      for (const room of order.rooms) {
+        await database.room.delete({
+          where: { id: room.id },
+        });
+      }
+  
+      // Delete the order itself
+      await database.order.delete({
+        where: { id: orderId },
+      });
+  
+      return `Successfully deleted order with ID ${orderId}`;
+    } catch (error) {
+      if (error instanceof Error){
+        console.error("Error deleting order:", error);
+        throw new Error(`Failed to delete order with ID ${orderId}: ${error.message}`);
+      }
     }
-  
-    const employee = order.employees.find((employee) => employee.email === email);
-  
-    if (employee) {
-      throw new Error(`Employee already exists in order with email: ${email}`);
-    }
-  
-    await database.order.update({
-      where: {
-        id: orderId,
-      },
-      data: {
-        employees: {
-          connect: {
-            email: email,
-          },
-        },
-      },
-    });
   };
+
+  const modifyOrderStatus = async (orderId: number, status: string) => {
+    try {
+
+      // Fetch the order to get the associated rooms
+      const order = await database.order.findUnique({
+        where: { id: orderId },
+        include: { rooms: true }, // Ensure rooms are included in the result
+      });
+  
+      if (!order) {
+        throw new Error(`Order with ID ${orderId} not found`);
+      }
+  
+      // Update the order status
+      const updatedOrder = await database.order.update({
+        where: { id: orderId },
+        data: { status: status },
+      });
+  
+      return updatedOrder;
+    } catch (error) {
+      if (error instanceof Error){
+        console.error("Error modifying order status:", error);
+        throw new Error(`Failed to modify order status for order with ID ${orderId}: ${error.message}`);
+    }
+  };
+};
+  
+
   
 export default {
     createOrder,
@@ -262,6 +269,7 @@ export default {
     getOrderByCustomerId,
     getOrderByCustomerEmail,
     getOrdersByEmployeeEmail,
-    removeEmployeeByEmailFromOrder,
-    addEmployeeByEmailToOrder,
-}   
+    toggleEmployeeAssignment,
+    deleteOrder,
+    modifyOrderStatus,
+};

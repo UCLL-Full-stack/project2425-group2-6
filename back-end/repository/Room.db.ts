@@ -116,6 +116,20 @@ const getRoomsByEmail = async (email: string) => {
     return rooms.map((roomPrisma) => Room.from(roomPrisma));
 };
 
+const deleteRoomById = async (roomId: number) => {
+    try {
+        const deletedRoom = await database.room.delete({
+            where: {
+                id: roomId
+            }
+        });
+        return `Room with ID: ${roomId} has been deleted`;
+    }
+    catch (error) {
+        throw new Error("Room not found with ID: " + roomId + ". Error: " + error);
+    };
+}
+
 
 
 export default {
@@ -123,4 +137,5 @@ export default {
     getHouse,
     createRoom,
     getRoomsByEmail,
+    deleteRoomById,
 }
