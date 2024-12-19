@@ -57,7 +57,7 @@ export class Customer {
 
     public setCreatedAt(createdAt: Date | undefined) {
         if (!createdAt || isNaN(createdAt.getTime())) {
-            throw new Error("Created at is required and must be a valid date.");
+            throw new Error("Created must be a valid date.");
         }
         this.createdAt = createdAt;
     }
@@ -86,7 +86,15 @@ export class Customer {
     }
 
     public setBirthday(birthday: Date) {
-        this.birthday = birthday;
+        if (!birthday || isNaN(birthday.getTime())) {
+            throw new Error("Birthday must be a valid date.");
+        }
+
+        if (birthday.getTime() > new Date().getTime()) {
+            throw new Error("Birthday must be in the past.");
+        }
+
+        this.birthday = birthday
     }
 
     public getBirthday(): Date {

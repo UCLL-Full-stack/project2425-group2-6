@@ -56,7 +56,7 @@ test('given: invalid licenseType, when: setLicenseType, then: throw error', () =
 });
 
 test('given: invalid createdOn, when: setCreatedOn, then: throw error', () => {
-  expect(() => new Employee(firstName, lastName, email, password, role, experience, domain, licenseType, new Date("invalid-date"))).toThrow("Created on date is required and must be a valid date.");
+  expect(() => new Employee(firstName, lastName, email, password, role, experience, domain, licenseType, new Date("invalid-date"))).toThrow("Created must be a valid date.");
 });
 
 test('given: invalid id, when: setId, then: throw error', () => {

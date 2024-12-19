@@ -47,7 +47,18 @@ export class Employee {
     }
 
     public setRole(role: Role) {
-        this.role = role;
+        if (!role.toLowerCase() || role.trim().length === 0 || role === undefined || role === null) {
+            throw new Error("Role must not be empty.");
+        }
+
+        if (role.toLowerCase() !== "worker" && role.toLowerCase() !== "admin") {
+            throw new Error("Role must be either worker or admin.");
+        }
+
+        if (role.toLowerCase() === "worker" || role.toLowerCase() === "admin") {
+            this.role = role.toLowerCase() as Role;
+        }
+
     }
 
     public setFirstName(firstName: string) {
@@ -97,9 +108,14 @@ export class Employee {
 
     public setBirthday(birthday: Date) {
         if (!birthday || isNaN(birthday.getTime())) {
-            throw new Error("Birth date is required and must be a valid date.");
+            throw new Error("Birthday must be a valid date.");
         }
-        this.birthday = birthday;
+
+        if (birthday.getTime() > new Date().getTime()) {
+            throw new Error("Birthday must be in the past.");
+        }
+
+        this.birthday = birthday
     }
 
     public getBirthday(): Date {
@@ -157,10 +173,17 @@ export class Employee {
     }
 
     public getLicenseType(): string {
-        return this.licenseType!;
+        if (!this.licenseType) {
+            throw new Error("License type must not be empty.");
+        }
+
+        return this.licenseType;
     }
 
     public setWorkPosition(position: string) {
+        if (!position || position.trim().length === 0) {
+            throw new Error("Work position must not be empty.");
+        }
         this.workPosition = position;
     }
 
@@ -170,7 +193,7 @@ export class Employee {
 
     public setCreatedOn(createdOn: Date) {
         if (!createdOn || isNaN(createdOn.getTime())) {
-            throw new Error("Created on date is required and must be a valid date.");
+            throw new Error("Created must be a valid date.");
         }
         this.createdOn = createdOn;
     }

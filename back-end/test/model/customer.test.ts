@@ -37,7 +37,7 @@ test('given: invalid password, when: setPassword, then: throw error', () => {
 });
 
 test('given: invalid createdAt, when: setCreatedAt, then: throw error', () => {
-  expect(() => new Customer(firstName, lastName, email, birthday, password, new Date("invalid-date"))).toThrow("Created at is required and must be a valid date.");
+  expect(() => new Customer(firstName, lastName, email, birthday, password, new Date("invalid-date"))).toThrow("Created must be a valid date.");
 });
 
 test('given: invalid id, when: setId, then: throw error', () => {

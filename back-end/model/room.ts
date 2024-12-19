@@ -23,6 +23,14 @@ export class Room {
     }
 
     public setOrder(order: Order) {
+        if (!order) {
+            throw new Error("Order is required.");
+        }
+
+        if (!(order instanceof Order)) {
+            throw new Error("Invalid order data.");
+        }
+
         this.order = order;
     }
 
@@ -42,19 +50,37 @@ export class Room {
         return this.workDescription;
     }
 
-    public setId(id: number) {
+    public setId(id: number): this {
+        if (id <= 0) {
+            throw new Error("ID must be a positive number.");
+        }
         this.id = id;
+        return this;
     }
 
     public setHouse(house: House) {
+        if (!house) {
+            throw new Error("House is required.");
+        }
+
+        if (!(house instanceof House)) {
+            throw new Error("Invalid house data.");
+        }
+
         this.house = house;
     }
 
     public setName(name: string) {
+        if (!name || name.trim() === "") {
+            throw new Error("Name is required.");
+        }
         this.name = name;
     }
 
     public setWorkDescription(workDescription: string) {
+        if (!workDescription || workDescription.trim() === "") {
+            throw new Error("Work description is required.");
+        }
         this.workDescription = workDescription;
     }
 

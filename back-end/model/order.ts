@@ -36,7 +36,14 @@ export class Order {
     }
 
     public setEmployees(employees: Array<Employee>) {
-        this.employees = employees;
+        if (employees) {
+            for (const employee of employees) {
+                if (!(employee instanceof Employee)) {
+                    throw new Error("Invalid employee data.");
+                }
+            }
+        }
+            this.employees = employees;
     }
 
     public getId(): number {
@@ -48,6 +55,14 @@ export class Order {
     }
 
     public setHouse(house: House) {
+        if (!house) {
+            throw new Error("House is required.");
+        }
+        
+        if (!(house instanceof House)) {
+            throw new Error("Invalid house data.");
+        }
+
         this.house = house;
     }
 
@@ -91,7 +106,16 @@ export class Order {
     }
 
     public setCustomer(customer: Customer): this {
+        if (!customer) {
+            throw new Error("Customer is required.");
+        }
+
+        if (!(customer instanceof Customer)) {
+            throw new Error("Invalid customer data.");
+        }
+
         this.customer = customer;
+
         return this;
     }
 
