@@ -54,6 +54,21 @@ const customerRouter = express.Router();
  *         password:
  *           type: string
  *           description: Customer's password.
+ *     AuthenticationResponse:
+ *       type: object
+ *       properties:
+ *         token:
+ *           type: string
+ *           description: JWT token.
+ *         email:
+ *           type: string
+ *           description: Customer's email address.
+ *         fullname:
+ *           type: string
+ *           description: Customer's full name.
+ *         role:
+ *           type: string
+ *           description: Customer's role.
  */
 
 /**
@@ -73,68 +88,20 @@ const customerRouter = express.Router();
  *                 $ref: '#/components/schemas/Customer'
  *       400:
  *         description: Error fetching customers
- */
-customerRouter.get("/", async (req: Request, res: Response) => {
-    try {
-        res.status(200).json(await customerService.getAllCustomers());
-    }
-    catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: "error", errorMessage: error.message });
-        }
-    }
-});
-
-/**
- * @swagger
- * /customers/{id}:
- *   get:
- *     summary: Retrieve a customer by ID
- *     tags: [Customers]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: integer
- *         required: true
- *         description: Numeric ID of the customer to retrieve
- *     responses:
- *       200:
- *         description: Details of a specific customer
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Customer'
- *       400:
- *         description: Error retrieving customer
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message
  */
-// customerRouter.get("/:id", async (req: Request, res: Response) => {
-//     try {
-//         const id: number = parseInt(req.params.id, 10);      
-//         res.status(200).json(await customerService.getCustomerById(id));
-//     }
-//     catch (error) {
-//         if (error instanceof Error) {
-//             res.status(400).json({ error: "error", errorMessage: error.message });
-//         }
-//     }
-// });
 
-
-// customerRouter.get("/orders/:id", async (req: Request, res: Response) => {
-//     try {
-//         res.status(200).json(await customerService.getCustomerOrderById(parseInt(req.params.id)));
-//     }
-//     catch (error) {
-//         if (error instanceof Error) {
-//             res.status(400).json({ error: "error", errorMessage: error.message });
-//         }
-//     }
-// });
 
 /**
  * @swagger
- * /customers/:
+ * /customers/signup:
  *   post:
  *     summary: Create a new customer
  *     tags: [Customers]
@@ -153,18 +120,16 @@ customerRouter.get("/", async (req: Request, res: Response) => {
  *               $ref: '#/components/schemas/Customer'
  *       400:
  *         description: Error creating customer
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message
  */
-// customerRouter.post("/", async (req: Request, res: Response) => {
-//     try {
-//         const customerData: CreateCustomerDto = req.body;
-//         const newCustomer = await customerService.createCustomer(customerData);
-//         res.status(201).json(newCustomer);
-//     } catch (error) {
-//         if (error instanceof Error) {
-//             res.status(400).json({ error: "error", errorMessage: error.message });
-//         }
-//     }
-// });
+
 
 /**
  * @swagger
@@ -190,71 +155,37 @@ customerRouter.get("/", async (req: Request, res: Response) => {
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 token:
- *                   type: string
- *                   description: JWT token
+ *               $ref: '#/components/schemas/AuthenticationResponse'
  *       400:
  *         description: Invalid email or password
- */
-// customerRouter.post("/login", async(req: Request, res: Response) => {
-//     try {
-//         res.status(200).json(await customerService.attemptSignin(req.body));
-//     }
-//     catch (error) {
-//         if (error instanceof Error && error.message === "Invalid email or password") {
-//             res.status(400).json({ error: "error", errorMessage: error.message });
-//         }
-//     }
-// });
-
-/**
- * @swagger
- * /customers/{id}/orders:
- *   get:
- *     summary: Retrieve orders for a specific customer by customer ID
- *     tags: [Orders]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: integer
- *         required: true
- *         description: Numeric ID of the customer
- *     responses:
- *       200:
- *         description: Orders of the specified customer
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Order'
- *       400:
- *         description: Error retrieving customer orders
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message
  */
-// customerRouter.get("/:id/orders", async (req: Request, res: Response) => {
-//     try {
-//         res.status(200).json(await customerService.getCustomerOrderById(parseInt(req.params.id)));
-//     }
-//     catch (error) {
-//         if (error instanceof Error) {
-//             res.status(400).json({ error: "error", errorMessage: error.message });
-//         }
-//     }
-// });
-
+customerRouter.get("/", async (req: Request, res: Response) => {
+    try {
+        res.status(200).json(await customerService.getAllCustomers());
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json({ error: "error", errorMessage: error.message });
+        }
+    }
+});
 customerRouter.post("/signup", async (req: Request, res: Response, next: NextFunction) => {
     try {
         res.status(200).json(await customerService.createCustomer(req.body));
     } catch (error) {
         if (error instanceof Error) {
-                        res.status(400).json({ error: "error", errorMessage: error.message });
-                    }
+            res.status(400).json({ error: "error", errorMessage: error.message });
+        }
     }
 });
-
 customerRouter.post("/login", async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
@@ -271,6 +202,5 @@ customerRouter.post("/login", async (req: Request, res: Response) => {
         }
     }
 });
-
 
 export { customerRouter };
