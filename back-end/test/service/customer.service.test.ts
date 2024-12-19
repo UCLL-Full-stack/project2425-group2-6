@@ -16,7 +16,7 @@ beforeEach(() => {
 
 test("given: valid Customer, when: getAllCustomers, then: return all customers", async () => {
     (CustomerDb.getAllCustomers as jest.Mock).mockResolvedValue([customer]);
-    const result = await customerService.getAllCustomers();
+    const result = await customerService.getAllCustomers({email: "admin@gmail.com",role: "admin"});
     expect(result).toEqual([customer]);
 });
 

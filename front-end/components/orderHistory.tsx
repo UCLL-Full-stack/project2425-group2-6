@@ -15,7 +15,7 @@ const OrderHistory: React.FC<orderHistoryProps> = ({ email }) => {
     const fetchOrders = async () => {
       try {
         setLoading(true);
-        const fetchedOrders = await OrderService.getOrdersByEmail(email);
+        const fetchedOrders = await OrderService.getAllOrders();
 
         // Ensure fetchedOrders is an array; if not, fallback to an empty array
         if (!Array.isArray(fetchedOrders)) {

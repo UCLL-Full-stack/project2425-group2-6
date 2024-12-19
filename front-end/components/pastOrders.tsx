@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { orderInput } from "@/types/orderType";
 import styles from "@/styles/accountOrders.module.css"; // Correct way to import CSS modules
+import OrderService from "@/services/order.service";
 
 type Props = {
     customerId: number;
@@ -13,7 +14,7 @@ const AccountOrders: React.FC<Props> = ({ customerId }) => {
     // Function to fetch orders by customerId
     const getOrdersByCustomerId = async () => {
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/customers/${customerId}/orders`);
+            const response = await OrderService.getAllOrders();
             if (!response.ok) {
                 throw new Error("Network response was not ok");
             }

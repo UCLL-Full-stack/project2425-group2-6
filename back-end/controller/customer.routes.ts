@@ -171,7 +171,8 @@ const customerRouter = express.Router();
  */
 customerRouter.get("/", async (req: Request, res: Response) => {
     try {
-        res.status(200).json(await customerService.getAllCustomers());
+        const { email, role } = req.params;
+        res.status(200).json(await customerService.getAllCustomers({email, role}));
     }
     catch (error) {
         if (error instanceof Error) {
@@ -179,6 +180,7 @@ customerRouter.get("/", async (req: Request, res: Response) => {
         }
     }
 });
+
 customerRouter.post("/signup", async (req: Request, res: Response, next: NextFunction) => {
     try {
         res.status(200).json(await customerService.createCustomer(<createCustomerDto>req.body));

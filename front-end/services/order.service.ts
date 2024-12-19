@@ -1,3 +1,4 @@
+import { stringify } from "querystring";
 import { prepOrderDto } from "../types/orderType.js";
 import { create } from "domain";
 
@@ -26,52 +27,69 @@ const createOrder = async (prepOrderDto : prepOrderDto) => {
 
 const getAccessToken = (): { message: string, token: string, email: string, fullname: string, role: string } | null => {
   try {
-    const loggedInUser = sessionStorage.getItem('loggedInUser');
+      const loggedInUser = sessionStorage.getItem('loggedInUser');
 
-    if (!loggedInUser) {
-      return null; // No user data found in session storage
-    }
+      if (!loggedInUser) {
+          console.error("No logged-in user found in session storage.");
+          return null; // No user data found in session storage
+      }
 
-    const parsedUser = JSON.parse(loggedInUser);
+      const parsedUser = JSON.parse(loggedInUser);
+      console.log("Parsed user data:", parsedUser);
 
-    if (parsedUser && typeof parsedUser.token === 'string') {
-      return {
-        message: parsedUser.message,
-        token: parsedUser.token,
-        email: parsedUser.email,
-        fullname: parsedUser.fullname,
-        role: parsedUser.role
-      };
-    }
+      if (parsedUser && typeof parsedUser.token === 'string') {
+          return {
+              message: parsedUser.message,
+              token: parsedUser.token,
+              email: parsedUser.email,
+              fullname: parsedUser.fullname,
+              role: parsedUser.role
+          };
+      }
 
-    return null; // User data is not available or invalid
+      console.error("User data is invalid or missing required fields.");
+      return null; // User data is not available or invalid
   } catch (error) {
-    console.error('Error retrieving user data from session storage:', error);
-    return null; // Handle potential parsing errors gracefully
+      console.error('Error retrieving user data from session storage:', error);
+      return null; // Handle potential parsing errors gracefully
   }
 };
 
 
+
+
 const getAllOrders = async () => {
-  const token = getAccessToken();
-    try {
-      // const token = getAccessToken();
-      // console.log(`Access token: ${token}`);
-      const response = fetch(process.env.NEXT_PUBLIC_API_URL + `/orders`,
-        {
+  const token = getAccessToken(); // Get token
+  const email = token?.email;  // Get email from the token
+  const role = token?.role;    // Get role from the token
+
+  console.log("Fetching orders with email:", email, "and role:", role);
+
+  if (!email || !role) {
+      throw new Error("Email and role must be available to fetch orders.");
+  }
+
+  try {
+      // Send the request with email and role as query parameters
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders?email=${email}&role=${role}`, {
           method: 'GET',
           headers: {
-            'Content-Type': 'application/json',
-            Authorization: "Bearer " + token?.token,
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token?.token}`,
           }
-        }
-      )
-      return (await response).json();
-    } catch (error) {
+      });
+
+      if (!response.ok) {
+          throw new Error(`Failed to fetch orders: ${response.statusText}`);
+      }
+
+      return await response.json(); // Return the fetched orders
+  } catch (error) {
       console.error("Error fetching orders:", error);
       throw new Error("Failed to fetch orders. Please try again later.");
-    }
+  }
 };
+
 
 const getOrdersByEmail = async (email: string) => {
   const token = getAccessToken();

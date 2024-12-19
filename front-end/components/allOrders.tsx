@@ -50,59 +50,66 @@ const AllOrders: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-            {orders.map((order, index) => (
-              <tr
-                key={order.id}
-                className={`cursor-pointer ${index % 2 === 0 ? 'bg-white' : 'bg-gray-100'} hover:bg-gray-200 transition-colors`}
-              >
-                <td className="px-4 py-2">
-                  <Link href={`/orders/master/${order.id}`}>
-                    {order.id}
-                  </Link>
-                </td>
-                <td className="px-4 py-2">
-                  <Link href={`/orders/master/${order.id}`}>
-                    {new Date(order.orderDate).toLocaleDateString()}
-                  </Link>
-                </td>
-                <td className="px-4 py-2">
-                  <Link href={`/orders/master/${order.id}`}>
-                    <span className={`font-bold ${order.status === 'Approved' ? 'text-green-600' : 'text-yellow-600'}`}>
-                      {order.status}
-                    </span>
-                  </Link>
-                </td>
-                <td className="px-4 py-2">
-                  <Link href={`/orders/master/${order.id}`}>
-                    {order.customer.firstName} {order.customer.lastName}
-                  </Link>
-                </td>
-                <td className="px-4 py-2">
-                  <Link href={`/orders/master/${order.id}`}>
-                    {order.employees && order.employees.length > 0 ? (
-                      order.employees.map((employee: any, idx: number) => (
-                        <div key={idx}>
-                          {employee.firstName} {employee.lastName}
-                        </div>
-                      ))
-                    ) : (
-                      <span>No workers assigned</span>
-                    )}
-                  </Link>
-                </td>
-                <td className="px-4 py-2">
-                  <Link href={`/orders/master/${order.id}`}>
-                    {new Date(order.startDate).toLocaleDateString()}
-                  </Link>
-                </td>
-                <td className="px-4 py-2">
-                  <Link href={`/orders/master/${order.id}`}>
-                    ${order.price.toFixed(2)}
-                  </Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+  {Array.isArray(orders) && orders.length > 0 ? (
+    orders.map((order, index) => (
+      <tr
+        key={order.id}
+        className={`cursor-pointer ${index % 2 === 0 ? 'bg-white' : 'bg-gray-100'} hover:bg-gray-200 transition-colors`}
+      >
+        <td className="px-4 py-2">
+          <Link href={`/orders/master/${order.id}`}>
+            {order.id}
+          </Link>
+        </td>
+        <td className="px-4 py-2">
+          <Link href={`/orders/master/${order.id}`}>
+            {new Date(order.orderDate).toLocaleDateString()}
+          </Link>
+        </td>
+        <td className="px-4 py-2">
+          <Link href={`/orders/master/${order.id}`}>
+            <span className={`font-bold ${order.status === 'Approved' ? 'text-green-600' : 'text-yellow-600'}`}>
+              {order.status}
+            </span>
+          </Link>
+        </td>
+        <td className="px-4 py-2">
+          <Link href={`/orders/master/${order.id}`}>
+            {order.customer.firstName} {order.customer.lastName}
+          </Link>
+        </td>
+        <td className="px-4 py-2">
+          <Link href={`/orders/master/${order.id}`}>
+            {order.employees && order.employees.length > 0 ? (
+              order.employees.map((employee: any, idx: number) => (
+                <div key={idx}>
+                  {employee.firstName} {employee.lastName}
+                </div>
+              ))
+            ) : (
+              <span>No workers assigned</span>
+            )}
+          </Link>
+        </td>
+        <td className="px-4 py-2">
+          <Link href={`/orders/master/${order.id}`}>
+            {new Date(order.startDate).toLocaleDateString()}
+          </Link>
+        </td>
+        <td className="px-4 py-2">
+          <Link href={`/orders/master/${order.id}`}>
+            ${order.price.toFixed(2)}
+          </Link>
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan={7} className="px-4 py-2 text-center">No orders available</td>
+    </tr>
+  )}
+</tbody>
+
           </table>
         </div>
       ) : (

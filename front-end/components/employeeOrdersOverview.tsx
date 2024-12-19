@@ -36,7 +36,7 @@ const EmployeeOrdersOverview: React.FC<Props> = ({ email }) => {
 
   return (
     <div className="p-10">
-      <h2 className="font-bold text-center text-xl">Your Orders Overview</h2>
+      <h2 className="font-bold text-center text-xl">Your Work Orders Overview</h2>
       {orders.length > 0 ? (
         <div className="overflow-x-auto mt-10">
           <table className="min-w-full table-auto border-collapse">

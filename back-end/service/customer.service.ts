@@ -10,8 +10,21 @@ import EmployeeDb from "../repository/Employee.db";
 import employeeService from "./employee.service";
 
 
-const getAllCustomers = async () : Promise<Array<Customer>> => {
-    return await CustomerDb.getAllCustomers();
+const getAllCustomers = async ({email, role}: { email: string, role: string }) : Promise<Array<Customer> | Customer | undefined> => {
+    if (role === "customer"){
+        const customer = await CustomerDb.getCustomerByEmail(email);
+        if (!customer) {
+            throw new Error(`Customer with email ${email} not found.`);
+        }
+        return customer;
+    }
+    if (role === "worker"){
+        return await CustomerDb.getAllCustomers();
+    }
+    if (role === "admin"){
+        return await CustomerDb.getAllCustomers();
+    }
+    throw new Error("Something went wrong");
 }
 
 const createCustomer = async (createCustomerDto: createCustomerDto) : Promise<Customer> => {

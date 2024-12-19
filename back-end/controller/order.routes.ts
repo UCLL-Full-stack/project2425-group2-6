@@ -403,14 +403,25 @@ const orderRouter = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/Order'
  */
-
 orderRouter.get("/", async (req: Request, res: Response) => {
     try {
-        res.status(200).json(await orderService.getAllOrders());
-    }
-    catch (error) {
+        // Correctly extract email and role from req.query
+        const email = req.query.email as string;
+        const role = req.query.role as string;
+
+        if (!email || !role) {
+            return res.status(400).json({ message: "Missing email or role in query parameters" });
+        }
+
+        const orders = await orderService.getAllOrders({ email, role });
+
+        res.status(200).json(orders);
+    } catch (error) {
+        console.error(error);
         if (error instanceof Error) {
-            res.status(400).json(error.message);
+            res.status(400).json({ message: error.message });
+        } else {
+            res.status(500).json({ message: "An unexpected error occurred" });
         }
     }
 });

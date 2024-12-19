@@ -29,13 +29,14 @@ const getAccessToken = (): { message: string, token: string, email: string, full
 
 const getAllCustomers = async () => {
   const token = getAccessToken();
+  console.log(`Access token: ${token}`);
   return fetch(
     process.env.NEXT_PUBLIC_API_URL + "/customers", {
       method: `GET`,
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token?.token}`,
-      }
+      },
     }
   )
 };

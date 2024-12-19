@@ -2,6 +2,7 @@ import { House } from "../model/house";
 import customerService from "../service/customer.service";
 import { createHouseDto } from "../types";
 import database from "../util/database";
+import CustomerDb from "./Customer.db";
 
 const getAllHouses = async (): Promise<Array<House>> => {
     const housesPrisma = await database.house.findMany({});
@@ -28,7 +29,7 @@ const createHouse = async (createHouseDto: createHouseDto): Promise<House> => {
 };
 
 const getHousesByCustomerId = async (customerId: number) : Promise<Array<House>> => {
-    const customerHouses = await customerService.getCustomerHouses(customerId);
+    const customerHouses = await CustomerDb.getCustomerHouses(customerId)
     return customerHouses.map((house) => House.from(house));
 };
 

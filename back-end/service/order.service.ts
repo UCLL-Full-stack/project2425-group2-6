@@ -7,9 +7,19 @@ import RoomDb from "../repository/Room.db";
 import roomService from "./room.service";
 import { House } from "@prisma/client";
 
-const getAllOrders = async () => {
-    const orders = await OrderDb.getAllOrders();
-    return orders;
+const getAllOrders = async ({email, role}: {email: string, role : string}) => {
+    
+    // console.log(email, role);
+        
+    if (role === 'admin') {
+        return OrderDb.getAllOrders();
+    }
+    if (role === 'customer') {
+        return getOrderByCustomerEmail(email);
+    } else if (role === 'employee') {
+        return getOrdersByEmployeeEmail(email);
+    }
+    throw new Error("Something went wrong");
 }
 
 const createOrder = async (order: prepOrderDto) => {
