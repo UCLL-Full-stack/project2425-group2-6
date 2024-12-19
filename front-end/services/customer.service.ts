@@ -74,11 +74,29 @@ const logIn = async (customer: LoginCustomer) => {
   return response;
 };
 
+const signUp = async (customer: CustomerInput) => {
+  let fetchResponse = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/customers/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(customer),
+    }
+  );
 
+  if (!fetchResponse.ok) {
+    let errorResponse = await fetchResponse.json();
+    throw new Error(errorResponse.errorMessage || 'Something went wrong');
+  }
+
+  // If the response is OK, parse and return the data
+  return await fetchResponse.json();
+};
 
 
 const CustomerService = {
-  getAllCustomers, addCustomer, logIn,
+  getAllCustomers, addCustomer, logIn, signUp,
 };
 
 export default CustomerService;

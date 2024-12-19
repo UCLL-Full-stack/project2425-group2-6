@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
+import CustomerService from '../services/customer.service';
 
 const LogIn = () => {
   const [email, setEmail] = useState('');
@@ -8,7 +9,7 @@ const LogIn = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // Clear previous error message
@@ -22,22 +23,7 @@ const LogIn = () => {
     console.log('Submitting login data:', loginData);
 
     try {
-      const response = await fetch('http://localhost:3000/customers/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(loginData)
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Server Error:', errorData);
-        setErrorMessage(errorData.errorMessage || 'Something went wrong');
-        return;
-      }
-
-      const data = await response.json();
+      const data = await CustomerService.logIn(loginData);
       console.log('Login Success:', data);
 
       // Store the token and user information in session storage
@@ -46,7 +32,7 @@ const LogIn = () => {
       console.log('Redirecting to account page...');
       router.push('/'); // Redirect to the account page
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Login Error:', error);
       if (error instanceof Error) {
         setErrorMessage(error.message);
       } else {
@@ -94,7 +80,7 @@ const LogIn = () => {
               onChange={(e) => setShowPassword(e.target.checked)}
               className="mr-2"
             />
-            <label htmlFor="showPassword" className="text-sm font-medium text-black">
+            <label htmlFor="showPassword" className="text-sm text-black">
               Show Password
             </label>
           </div>
