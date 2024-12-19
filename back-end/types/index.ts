@@ -66,8 +66,10 @@ export type prepOrderDto = {
   country: string,
   type: string,
 
-  roomName: string,
-  workDescription: string,
+  rooms: {
+    roomName: string;
+    workDescription: string;
+  }[];
 
 };
 

@@ -59,10 +59,10 @@ const getHouse = async (houseId: number): Promise<any> => {
 
 // Repository Layer: RoomRepository.ts
 
-const createRoom = async (orderData: any, customerId: number) => {
-    const { roomName, workDescription, houseId, startDate, budget } = orderData;
+const createRoom = async (roomData: any) => {
+    const { roomName, workDescription, houseId, startDate, budget, orderId } = roomData;
 
-    // Create the room and the associated order
+    // Create the room and associate it with the existing order
     const roomWithOrder = await database.room.create({
         data: {
             name: roomName,
@@ -71,15 +71,7 @@ const createRoom = async (orderData: any, customerId: number) => {
                 connect: { id: houseId }, // Link the house
             },
             order: {
-                create: {
-                    houseId: houseId,
-                    customerId: customerId,
-                    startDate: startDate,
-                    status: 'pending', // Default order status
-                    price: budget, // Use provided budget as price
-                    orderDate: new Date(), // Use current date as the order date
-                    employees: {}, // Add a valid employeeId (assumed to be 1)
-                },
+                connect: { id: orderId }, // Connect the room to the existing order
             },
         },
         include: {
@@ -90,6 +82,7 @@ const createRoom = async (orderData: any, customerId: number) => {
 
     return roomWithOrder; // Return the created room along with the associated order
 };
+
 
 
 const getRoomsByEmail = async (email: string) => {
