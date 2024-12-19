@@ -71,7 +71,7 @@ const getAllOrders = async () => {
 
   try {
       // Send the request with email and role as query parameters
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders?email=${email}&role=${role}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders/`, {
           method: 'GET',
           headers: {
               'Content-Type': 'application/json',

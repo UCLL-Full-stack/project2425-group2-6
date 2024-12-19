@@ -531,4 +531,65 @@ orderRouter.put("/status/:id", async (req: Request, res: Response) => {
     }
 });
 
+/**
+ * @swagger
+ * /orders:
+ *   post:
+ *     summary: Create a new order
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               customerEmail:
+ *                 type: string
+ *                 description: Email of the customer placing the order
+ *               productId:
+ *                 type: integer
+ *                 description: ID of the product being ordered
+ *               quantity:
+ *                 type: integer
+ *                 description: Quantity of the product ordered
+ *               shippingAddress:
+ *                 type: string
+ *                 description: Shipping address for the order
+ *               orderDate:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Date and time when the order was placed
+ *     responses:
+ *       '200':
+ *         description: The newly created order
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Order'
+ *       '400':
+ *         description: Error while creating the order
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message
+ */
+orderRouter.post("/", async (req, res) => {
+    try {
+        const prepOrderDto = req.body;
+        const newOrder = await orderService.createOrder(prepOrderDto);
+        res.status(200).json(newOrder);
+    } catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json(error.message);
+        }
+    }
+});
+
 export default orderRouter;
