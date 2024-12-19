@@ -16,15 +16,6 @@ const createOrder = async (prepOrderDto : prepOrderDto) => {
     );
 }
 
-// const getAllOrders = async () => {
-//     return fetch(process.env.NEXT_PUBLIC_API_URL + "/orders", {
-//         method: 'GET',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//     });
-// };
-
 const getAccessToken = (): { message: string, token: string, email: string, fullname: string, role: string } | null => {
   try {
       const loggedInUser = sessionStorage.getItem('loggedInUser');
@@ -190,6 +181,11 @@ const deleteOrder = async (orderId: string | number) => {
 
 const modifyOrderStatus = async (orderId: number, status: string) => {
   const token = getAccessToken();
+  
+  if (status.toLowerCase() !== "pending" || status.toLowerCase() !== "approved") {
+    throw new Error("Invalid order status. Please provide a valid order status.");
+  }
+  
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders/status/${orderId}`, {
       method: "PUT",
