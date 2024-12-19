@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import orderService from '../service/order.service';
 import { log } from 'console';
 
@@ -69,17 +69,19 @@ orderRouter.post("/", async (req, res) => {
     }
 });
 
-orderRouter.get("/email/:email", async (req, res) => {
+orderRouter.get("/email/:email", async (req : Request, res: Response, next: NextFunction) => {
     try {
         //console.log("Fetching orders for email:", req.params.email);
         const orders = await orderService.getOrderByCustomerEmail(req.params.email);
         //console.log("Orders fetched:", orders);
         res.status(200).json(orders);
     } catch (error) {
+        next(error)
+      
         //console.error("Error fetching orders:", error);
-        if (error instanceof Error) {
-            res.status(400).json(error.message);
-        }
+        // if (error instanceof Error) {
+        //     res.status(400).json(error.message);
+        // }
     }
 });
 

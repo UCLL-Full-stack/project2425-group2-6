@@ -1,7 +1,7 @@
 
 import { Customer } from "../model/customer";
 import CustomerDb from "../repository/Customer.db";
-import { AuthenticationResponse, createCustomerDto } from "../types";
+import { authenticateDTO, AuthenticationResponse, createCustomerDto } from "../types";
 import bcrypt from 'bcrypt';
 import exp from "constants";
 import generateJwtToken from "../util/jwt";
@@ -35,7 +35,10 @@ const createCustomer = async (createCustomerDto: createCustomerDto) : Promise<Cu
     return await CustomerDb.createCustomer(customer);
 }
 
-const authenticate = async (email: string, password: string): Promise<AuthenticationResponse> => {
+const authenticate = async (credentials: authenticateDTO): Promise<AuthenticationResponse> => {
+    
+    const {email, password} = credentials;
+    
     try {
         // Check if the user is an employee first
         const isEmployee = await employeeService.getEmployeeExists(email);

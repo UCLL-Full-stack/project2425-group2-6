@@ -23,17 +23,17 @@ const port = process.env.APP_PORT || 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
-// app.use(expressjwt
-//     ({
-//         secret: process.env.JWT_SECRET || 'fallback_secret',
-//         algorithms: ['HS256'],
-//     })
-//     .unless(
-//         {
-//             path: ['/orders', '/api-docs', /^\/api-docs\/.*/, '/customers/login', '/customers/signup', '/status'],
-//         }
-//     )
-// );
+app.use(expressjwt
+    ({
+        secret: process.env.JWT_SECRET || 'fallback_secret',
+        algorithms: ['HS256'],
+    })
+    .unless(
+        {
+            path: ['/api-docs', /^\/api-docs\/.*/, '/customers/login', '/customers/signup', '/employees/signup', '/status'],
+        }
+    )
+);
 
 const swaggerOpts = {
     definition: {
@@ -68,6 +68,9 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     if (err.name === "UnauthorizedError") {
         res.status(401).json({ error: "error", errorMessage: err.message });
     }
+    
+    res.status(400).json({status : "application error", message : err.message});
+    
 });
 
 app.listen(port || 3000, () => {
