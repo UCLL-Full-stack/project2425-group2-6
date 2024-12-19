@@ -40,6 +40,7 @@ const Header: React.FC = () => {
                     <li><Link href="/services">Services</Link></li>
                     <li><Link href="/projects">Projects</Link></li>
                     <li><Link href="/orders">Order</Link></li>
+                    <Link href="/account"><li><img src={AccountIcon.src} alt="Account Icon" /></li></Link>
                     <Language/>
                 </ul>
             </nav>
