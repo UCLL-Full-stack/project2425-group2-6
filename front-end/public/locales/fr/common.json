@@ -1,0 +1,24 @@
+{
+    "app.title" : "Renovy",
+    "home" : {
+        "spotlight" : {
+            "title":"Renovy",
+            "spotlightDesc": "Chez Renovy, nous nous spécialisons dans la transformation de pièces individuelles en espaces époustouflants et fonctionnels. Que ce soit une chambre confortable, une cuisine moderne ou une salle de bain luxueuse, notre équipe d'experts est dédiée à donner vie à votre vision. Découvrez la différence qu'une rénovation de pièce peut faire avec Renovy.",
+            "readMore": "En savoir plus sur nous"
+        }
+    },
+    "main": {
+        "heading": "Bienvenue chez Renovy",
+        "intro": "Chez Renovy, nous nous spécialisons dans la transformation des vieux bâtiments en maisons modernes et élégantes. Notre équipe de professionnels expérimentés est dédiée à fournir un travail de haute qualité et un service client exceptionnel. Nous sommes fiers de notre capacité à préserver le caractère unique des bâtiments historiques tout en incorporant des éléments de design contemporain et des équipements à la pointe de la technologie.",
+        "renovations": "Nos services de rénovation incluent :",
+        "renovationsList" : {
+            "1" : "Évaluations structurelles complètes et réparations",
+            "2" : "Modernisation des systèmes électriques, de plomberie et de CVC",
+            "3" : "Solutions de design intérieur et extérieur sur mesure",
+            "4" : "Améliorations énergétiques et pratiques de construction durables",
+            "5" : "Restauration des caractéristiques historiques et des détails architecturaux"
+        },
+        "mindset" : "Nous comprenons que chaque projet est unique, et nous travaillons en étroite collaboration avec nos clients pour garantir que leur vision prenne vie. De la consultation initiale à l'achèvement du projet, nous nous engageons à dépasser les attentes et à fournir des résultats qui résistent à l'épreuve du temps.",
+        "pickUs" : "Choisissez Renovy pour votre prochain projet de rénovation et découvrez le parfait mélange de tradition et d'innovation. Laissez-nous vous aider à créer une maison qui soit non seulement belle mais aussi fonctionnelle et durable pour les années à venir."
+    } 
+}

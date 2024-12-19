@@ -19,6 +19,11 @@ export type createAddressDto = {
   zip: string,
 };
 
+export type authenticateDTO = {
+  email: string,
+  password: string,
+} 
+
 export type AuthenticationResponse = {
   token : string;
   email: string;
@@ -61,8 +66,10 @@ export type prepOrderDto = {
   country: string,
   type: string,
 
-  roomName: string,
-  workDescription: string,
+  rooms: {
+    roomName: string;
+    workDescription: string;
+  }[];
 
 };
 

@@ -1,5 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import customerService from "../service/customer.service";
+import { nextDay } from 'date-fns';
+import { authenticateDTO, createCustomerDto } from '../types';
 
 const customerRouter = express.Router();
 
@@ -179,27 +181,32 @@ customerRouter.get("/", async (req: Request, res: Response) => {
 });
 customerRouter.post("/signup", async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.status(200).json(await customerService.createCustomer(req.body));
+        res.status(200).json(await customerService.createCustomer(<createCustomerDto>req.body));
     } catch (error) {
         if (error instanceof Error) {
             res.status(400).json({ error: "error", errorMessage: error.message });
         }
     }
 });
-customerRouter.post("/login", async (req: Request, res: Response) => {
+
+customerRouter.post("/login", async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { email, password } = req.body;
-        res.status(200).json(await customerService.authenticate(email, password));
+        const credentials = <authenticateDTO>req.body;
+        const response = await customerService.authenticate(credentials);
+        res.status(200).json({message: "Authentication successful", ...response});
     } catch (error) {
-        if (error instanceof Error) {
-            if (error.message === "Invalid email or password" || error.message === "Customer does not exist.") {
-                res.status(400).json({ error: "error", errorMessage: error.message });
-            } else {
-                res.status(500).json({ error: "Internal server", errorMessage: error.message });
-            }
-        } else {
-            res.status(500).json({ error: "error", errorMessage: "Unexpected error" });
-        }
+
+        next(error);
+
+        // if (error instanceof Error) {
+        //     if (error.message === "Invalid email or password" || error.message === "Customer does not exist.") {
+        //         res.status(400).json({ error: "error", errorMessage: error.message });
+        //     } else {
+        //         res.status(500).json({ error: "Internal server", errorMessage: error.message });
+        //     }
+        // } else {
+        //     res.status(500).json({ error: "error", errorMessage: "Unexpected error" });
+        // }
     }
 });
 

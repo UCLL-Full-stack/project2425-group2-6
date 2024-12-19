@@ -16,10 +16,16 @@ const OrderHistory: React.FC<orderHistoryProps> = ({ email }) => {
       try {
         setLoading(true);
         const fetchedOrders = await OrderService.getOrdersByEmail(email);
-        console.log('Fetched Orders:', fetchedOrders);
+
+        // Ensure fetchedOrders is an array; if not, fallback to an empty array
+        if (!Array.isArray(fetchedOrders)) {
+          throw new Error('Not authorized to view orders');
+        }
+
         setOrders(fetchedOrders);
       } catch (err: any) {
-        setError(err.message || 'Something went wrong');
+        setError(err.message || 'Something went wrong while fetching orders.');
+        setOrders([]); // Fallback to an empty array to avoid runtime errors
       } finally {
         setLoading(false);
       }
@@ -47,7 +53,7 @@ const OrderHistory: React.FC<orderHistoryProps> = ({ email }) => {
   return (
     <div className="pl-10 pr-10 text-center mt-20 mb-10">
       <h2 className="text-2xl font-semibold text-black mb-6">All orders belonging to {email}</h2>
-      <div className="overflow-x-auto bg-white shadow-lg rounded-lg border border-gray-300">
+      <div className="overflow-x-auto bg-white shadow-lg rounded-lg border border-gray-300" role="region" aria-live="polite">
         {orders.length === 0 ? (
           <p className="text-center text-gray-500 p-6">No orders found for this customer.</p>
         ) : (
@@ -58,7 +64,7 @@ const OrderHistory: React.FC<orderHistoryProps> = ({ email }) => {
                 <th className="px-4 py-2">Status</th>
                 <th className="px-4 py-2">Price</th>
                 <th className="px-4 py-2">House Address</th>
-                <th className="px-4 py-2">Room Name</th>
+                <th className="px-4 py-2">Room Names</th>
                 <th className="px-4 py-2">Start Date</th>
               </tr>
             </thead>
@@ -76,9 +82,7 @@ const OrderHistory: React.FC<orderHistoryProps> = ({ email }) => {
                   <td className="px-4 py-2">
                     <Link href={`/orders/${order.orderId}`}>
                       <span
-                        className={`font-bold ${
-                          order.status === 'Completed' ? 'text-green-600' : 'text-yellow-600'
-                        }`}
+                        className={`font-bold ${order.status === 'Completed' ? 'text-green-600' : 'text-yellow-600'}`}
                       >
                         {order.status}
                       </span>
@@ -89,12 +93,22 @@ const OrderHistory: React.FC<orderHistoryProps> = ({ email }) => {
                   </td>
                   <td className="px-4 py-2">
                     <Link href={`/orders/${order.orderId}`}>
-                      {order.house.houseNumber} {order.house.street}, {order.house.city}, {order.house.zip},{' '}
-                      {order.house.country}
+                      {order.house?.houseNumber} {order.house?.street}, {order.house?.city}, {order.house?.zip},{' '}
+                      {order.house?.country}
                     </Link>
                   </td>
                   <td className="px-4 py-2">
-                    <Link href={`/orders/${order.orderId}`}>{order.room.name}</Link>
+                    {/* Map through the rooms array and display the room names */}
+                    <Link href={`/orders/${order.orderId}`}>
+                      {order.rooms?.length > 0
+                        ? order.rooms.map((room: any, index: number) => (
+                            <span key={room.roomId}>
+                              {room.roomName}
+                              {index < order.rooms.length - 1 ? ', ' : ''}
+                            </span>
+                          ))
+                        : 'No rooms available'}
+                    </Link>
                   </td>
                   <td className="px-4 py-2">
                     <Link href={`/orders/${order.orderId}`}>

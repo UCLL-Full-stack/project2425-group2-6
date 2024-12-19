@@ -207,9 +207,17 @@ const orderRouter = express.Router();
 
 /**
  * @swagger
+ * tags:
+ *   name: Orders
+ *   description: API for managing orders
+ */
+
+/**
+ * @swagger
  * /orders:
  *   get:
  *     summary: Get all orders
+ *     tags: [Orders]
  *     responses:
  *       '200':
  *         description: A list of orders
@@ -221,6 +229,7 @@ const orderRouter = express.Router();
  *                 $ref: '#/components/schemas/Order'
  *   post:
  *     summary: Create a new order
+ *     tags: [Orders]
  *     requestBody:
  *       required: true
  *       content:
@@ -241,6 +250,7 @@ const orderRouter = express.Router();
  * /orders/{id}:
  *   get:
  *     summary: Get order by ID
+ *     tags: [Orders]
  *     parameters:
  *       - in: path
  *         name: id
@@ -262,6 +272,7 @@ const orderRouter = express.Router();
  * /orders/email/{email}:
  *   get:
  *     summary: Get orders by customer email
+ *     tags: [Orders]
  *     parameters:
  *       - in: path
  *         name: email
@@ -285,6 +296,7 @@ const orderRouter = express.Router();
  * /orders/employee/{email}:
  *   get:
  *     summary: Get orders by employee email
+ *     tags: [Orders]
  *     parameters:
  *       - in: path
  *         name: email
@@ -308,6 +320,7 @@ const orderRouter = express.Router();
  * /orders/employee/toggle/{email}/{orderId}:
  *   put:
  *     summary: Toggle employee assignment to an order
+ *     tags: [Orders]
  *     parameters:
  *       - in: path
  *         name: email
@@ -340,6 +353,7 @@ const orderRouter = express.Router();
  * /orders/{id}:
  *   delete:
  *     summary: Delete an order by ID
+ *     tags: [Orders]
  *     parameters:
  *       - in: path
  *         name: id
@@ -364,6 +378,7 @@ const orderRouter = express.Router();
  * /orders/status/{id}:
  *   put:
  *     summary: Modify the status of an order
+ *     tags: [Orders]
  *     parameters:
  *       - in: path
  *         name: id
@@ -390,110 +405,98 @@ const orderRouter = express.Router();
  */
 
 orderRouter.get("/", async (req: Request, res: Response) => {
-  try {
-      res.status(200).json(await orderService.getAllOrders());
-  }
-  catch (error) {
-      if (error instanceof Error) {
-          res.status(400).json(error.message);
-      }
-  }
-});
-orderRouter.get("/:id", async (req: Request, res: Response) => {
-  try {
-      res.status(200).json(await orderService.getOrderById(parseInt(req.params.id)));
-  }
-  catch (error) {
-      if (error instanceof Error) {
-          res.status(400).json(error.message);
-      }
-  }
+    try {
+        res.status(200).json(await orderService.getAllOrders());
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json(error.message);
+        }
+    }
 });
 
+orderRouter.get("/:id", async (req: Request, res: Response) => {
+    try {
+        res.status(200).json(await orderService.getOrderById(parseInt(req.params.id)));
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json(error.message);
+        }
+    }
+});
 
 orderRouter.post("/", async (req, res) => {
-  try {
-
-      const prepOrderDto = req.body;
-      const newOrder = await orderService.createOrder(prepOrderDto)
-     
-      res.status(200).json(newOrder);
-  } catch (error) {
-      if (error instanceof Error) {
-          res.status(400).json(error.message);
-      }
-  }
+    try {
+        const prepOrderDto = req.body;
+        const newOrder = await orderService.createOrder(prepOrderDto);
+        res.status(200).json(newOrder);
+    } catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json(error.message);
+        }
+    }
 });
 
 orderRouter.get("/email/:email", async (req, res) => {
-  try {
-      //console.log("Fetching orders for email:", req.params.email);
-      const orders = await orderService.getOrderByCustomerEmail(req.params.email);
-      //console.log("Orders fetched:", orders);
-      res.status(200).json(orders);
-  } catch (error) {
-      //console.error("Error fetching orders:", error);
-      if (error instanceof Error) {
-          res.status(400).json(error.message);
-      }
-  }
+    try {
+        const orders = await orderService.getOrderByCustomerEmail(req.params.email);
+        res.status(200).json(orders);
+    } catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json(error.message);
+        }
+    }
 });
 
 orderRouter.get("/employee/:email", async (req, res) => {
-  try {
-      const orders = await orderService.getOrdersByEmployeeEmail(req.params.email);
-      // //console.log("Orders fetched:", orders);
-      res.status(200).json(orders);
-  } catch (error) {
-      // //console.error("Error fetching orders:", error);
-      if (error instanceof Error) {
-          res.status(400).json(error.message);
-      }
-  }
-}
-);
+    try {
+        const orders = await orderService.getOrdersByEmployeeEmail(req.params.email);
+        res.status(200).json(orders);
+    } catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json(error.message);
+        }
+    }
+});
 
 orderRouter.put("/employee/toggle/:email/:orderId", async (req: Request, res: Response) => {
-  try {
-    const orderId = parseInt(req.params.orderId);
-    const email = req.params.email;
-
-    const result = await orderService.toggleEmployeeAssignment(orderId, email);
-    res.status(200).json(result);
-  } catch (error: any) {
-    res.status(400).json({ error: error.message });
-  }
+    try {
+        const orderId = parseInt(req.params.orderId);
+        const email = req.params.email;
+        const result = await orderService.toggleEmployeeAssignment(orderId, email);
+        res.status(200).json(result);
+    } catch (error: any) {
+        res.status(400).json({ error: error.message });
+    }
 });
 
 orderRouter.delete("/:id", async (req, res) => {
-  try {
-  //   console.log("Received DELETE request for order ID:", req.params.id);
-    const orderId = parseInt(req.params.id);
-    if (isNaN(orderId)) {
-      console.error("Invalid order ID:", req.params.id);
-      return res.status(400).json({ error: "Invalid order ID" });
+    try {
+        const orderId = parseInt(req.params.id);
+        if (isNaN(orderId)) {
+            return res.status(400).json({ error: "Invalid order ID" });
+        }
+        const result = await orderService.deleteOrder(orderId);
+        res.status(200).json(result);
+    } catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json({ error: error.message });
+        }
     }
-    const result = await orderService.deleteOrder(orderId);
-    res.status(200).json(result);
-  } catch (error) {
-    console.error("Error in deleteOrder handler:", error);
-    if (error instanceof Error) {
-      res.status(400).json({ error: error.message });
-    }
-  }
 });
 
 orderRouter.put("/status/:id", async (req, res) => {
-  try {
-    const orderId = parseInt(req.params.id);
-    const status = req.body.status;
-    const result = await orderService.modifyOrderStatus(orderId, status);
-    res.status(200).json(result);
-  } catch (error) {
-    if (error instanceof Error) {
-      res.status(400).json({ error: error.message });
+    try {
+        const orderId = parseInt(req.params.id);
+        const status = req.body.status;
+        const result = await orderService.modifyOrderStatus(orderId, status);
+        res.status(200).json(result);
+    } catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json({ error: error.message });
+        }
     }
-  }
 });
 
 export default orderRouter;

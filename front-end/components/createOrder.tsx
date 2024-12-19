@@ -16,10 +16,26 @@ const CreateOrder: React.FC<createOrderProps> = ({ emailProp }) => {
   const [budget, setBudget] = useState('');
   const [type, setType] = useState('Detached'); // Default order type
   const [email, setEmail] = useState(emailProp); // Collecting email address
-  const [roomName, setRoomName] = useState('');
-  const [workDescription, setWorkDescription] = useState('');
+  const [rooms, setRooms] = useState([{ roomName: '', workDescription: '' }]); // Array of rooms
 
   const [isFormOpen, setIsFormOpen] = useState(false); // Track the form visibility
+
+  const handleRoomChange = (index: number, field: keyof typeof rooms[0], value: string) => {
+    const updatedRooms = [...rooms];
+    updatedRooms[index][field] = value;
+    setRooms(updatedRooms);
+  };
+
+  const addRoom = () => {
+    setRooms([...rooms, { roomName: '', workDescription: '' }]);
+  };
+
+  const removeRoom = (index: number) => {
+    if (rooms.length > 1) {
+      const updatedRooms = rooms.filter((_, i) => i !== index);
+      setRooms(updatedRooms);
+    }
+  };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -35,8 +51,10 @@ const CreateOrder: React.FC<createOrderProps> = ({ emailProp }) => {
       zip: zip.trim(),
       country: country.trim(),
       type: type.trim(), // Include type
-      roomName: roomName.trim(),
-      workDescription: workDescription.trim()
+      rooms: rooms.map((room) => ({
+        roomName: room.roomName.trim(),
+        workDescription: room.workDescription.trim(),
+      })),
     };
 
     // Log the DTO or send it to the backend
@@ -58,9 +76,10 @@ const CreateOrder: React.FC<createOrderProps> = ({ emailProp }) => {
       {/* Animated form */}
       <div
         className={`transition-all duration-700 ease-in-out overflow-hidden ${isFormOpen ? 'max-h-screen' : 'max-h-0'}`}
-        style={{ maxHeight: isFormOpen ? '1200px' : '0' }}
+        style={{ maxHeight: isFormOpen ? '100%' : '0' }}
       >
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* House Details */}
           <div>
             <label htmlFor="houseNumber" className="block text-sm font-medium text-gray-800">
               House Number:
@@ -179,31 +198,53 @@ const CreateOrder: React.FC<createOrderProps> = ({ emailProp }) => {
             </select>
           </div>
 
-          <div className="border border-gray-400 rounded-lg p-4">
-            <p className="font-bold text-gray-800">Room Details</p>
-            <label htmlFor="roomName" className="block text-sm font-medium text-gray-800">
-              Room Name:
-            </label>
-            <input
-              type="text"
-              id="roomName"
-              value={roomName}
-              onChange={(e) => setRoomName(e.target.value)}
-              required
-              className="w-full mt-1 p-3 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
-            />
-            <label htmlFor="workDescription" className="block text-sm font-medium text-gray-800">
-              Work Description:
-            </label>
-            <input
-              type="text"
-              id="workDescription"
-              value={workDescription}
-              onChange={(e) => setWorkDescription(e.target.value)}
-              required
-              className="w-full mt-1 p-3 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
-            />
-          </div>
+                    {/* Dynamic Room Details */}
+                    {rooms.map((room, index) => (
+            <div key={index} className="border border-gray-400 rounded-lg p-4 space-y-3">
+              <p className="font-bold text-gray-800">Room {index + 1}</p>
+              <label htmlFor={`roomName-${index}`} className="block text-sm font-medium text-gray-800">
+                Room Name:
+              </label>
+              <input
+                type="text"
+                id={`roomName-${index}`}
+                value={room.roomName}
+                onChange={(e) => handleRoomChange(index, 'roomName', e.target.value)}
+                required
+                className="w-full mt-1 p-3 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              />
+              <label htmlFor={`workDescription-${index}`} className="block text-sm font-medium text-gray-800">
+                Work Description:
+              </label>
+              <input
+                type="text"
+                id={`workDescription-${index}`}
+                value={room.workDescription}
+                onChange={(e) => handleRoomChange(index, 'workDescription', e.target.value)}
+                required
+                className="w-full mt-1 p-3 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              />
+
+              <div className="flex space-x-4">
+                <button
+                  type="button"
+                  onClick={() => removeRoom(index)}
+                  className="text-red-500 hover:text-red-700"
+                >
+                  Remove Room
+                </button>
+                {index === rooms.length - 1 && (
+                  <button
+                    type="button"
+                    onClick={addRoom}
+                    className="text-blue-500 hover:text-blue-700"
+                  >
+                    Add Room
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
 
           <button
             type="submit"

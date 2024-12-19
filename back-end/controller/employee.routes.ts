@@ -89,9 +89,17 @@ const employeeRouter = express.Router();
 
 /**
  * @swagger
+ * tags:
+ *   name: Employees
+ *   description: API for managing employees
+ */
+
+/**
+ * @swagger
  * /employees:
  *   get:
  *     summary: Retrieve a list of employees
+ *     tags: [Employees]
  *     responses:
  *       '200':
  *         description: A list of employees
@@ -118,6 +126,7 @@ const employeeRouter = express.Router();
  * /employees/signup:
  *   post:
  *     summary: Create a new employee
+ *     tags: [Employees]
  *     requestBody:
  *       required: true
  *       content:
@@ -148,6 +157,7 @@ const employeeRouter = express.Router();
  * /employees/login:
  *   post:
  *     summary: Authenticate an employee
+ *     tags: [Employees]
  *     requestBody:
  *       required: true
  *       content:
@@ -180,41 +190,36 @@ const employeeRouter = express.Router();
  *                   description: Error message
  */
 
-employeeRouter.get("/", async (req: Request, res: Response) => {
+employeeRouter.get('/', async (req: Request, res: Response) => {
     try {
-        return res.status(200).json(await employeeService.getAllEmployees());
-    }
-    catch (error) {
-        if (error instanceof Error){
-            res.status(400).json({error : "error", errorMessage : error.message});
+        const employees = await employeeService.getAllEmployees();
+        res.status(200).json(employees);
+    } catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json({ error: error.message });
         }
     }
 });
 
-
-employeeRouter.post("/signup", async (req: Request, res: Response, next: NextFunction) => {
+employeeRouter.post('/signup', async (req: Request, res: Response) => {
     try {
-        res.status(200).json(await employeeService.createEmployee(req.body));
+        const employee = await employeeService.createEmployee(req.body);
+        res.status(201).json(employee);
     } catch (error) {
         if (error instanceof Error) {
-                        res.status(400).json({ error: "error", errorMessage: error.message });
-                    }
+            res.status(400).json({ error: error.message });
+        }
     }
 });
 
-employeeRouter.post("/login", async (req: Request, res: Response) => {
+employeeRouter.post('/login', async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
-        res.status(200).json(await employeeService.authenticate(email, password));
+        const authResponse = await employeeService.authenticate(email, password);
+        res.status(200).json(authResponse);
     } catch (error) {
         if (error instanceof Error) {
-            if (error.message === "Invalid email or password" || error.message === "Employee does not exist.") {
-                res.status(400).json({ error: "error", errorMessage: error.message });
-            } else {
-                res.status(500).json({ error: "Internal server", errorMessage: error.message });
-            }
-        } else {
-            res.status(500).json({ error: "error", errorMessage: "Unexpected error" });
+            res.status(400).json({ error: error.message });
         }
     }
 });

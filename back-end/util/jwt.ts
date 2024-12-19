@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-const generateJwtToken = ({ email, role }: { email: string; role: string }): string => {
+const generateJwtToken = ({ email, role }: any): string => {
     const options = { issuer: "Renovy", expiresIn: `${process.env.JWT_EXPIRES_IN}h` };
 
     if (!process.env.JWT_SECRET) {

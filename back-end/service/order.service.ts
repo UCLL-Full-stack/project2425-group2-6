@@ -5,6 +5,7 @@ import { createHouseDto, prepOrderDto } from "../types";
 import CustomerDb from "../repository/Customer.db";
 import RoomDb from "../repository/Room.db";
 import roomService from "./room.service";
+import { House } from "@prisma/client";
 
 const getAllOrders = async () => {
     const orders = await OrderDb.getAllOrders();
@@ -12,50 +13,35 @@ const getAllOrders = async () => {
 }
 
 const createOrder = async (order: prepOrderDto) => {
-    //console.log("Starting createOrder function");
-
     // Fetch the customer by email
     const customer = await CustomerDb.getCustomerByEmail(order.email);
-    //console.log("Customer fetched:", customer);
-
     if (!customer) {
         throw new Error("Customer not found");
     }
 
     // Fetch the list of houses associated with the customer
     const houses = await HouseDb.getHousesByCustomerId(customer.getId());
-    //console.log("Houses fetched for customer:", houses);
-
-    let house;
+    let house : House | any;
     let houseExists = false;
 
     // Check if the house already exists
     for (const houseItem of houses) {
-        //console.log(`Comparing ${houseItem.getHouseNumber().toLocaleLowerCase()} with ${order.houseNumber.toLocaleLowerCase()}`);
-        //console.log(`Comparing ${houseItem.getStreet().toLocaleLowerCase()} with ${order.street.toLocaleLowerCase()}`);  
-        //console.log(`Comparing ${houseItem.getCity().toLocaleLowerCase()} with ${order.city.toLocaleLowerCase()}`);
-        //console.log(`Comparing ${houseItem.getZip().toLocaleLowerCase()} with ${order.zip.toLocaleLowerCase()}`);
-        //console.log(`Comparing ${houseItem.getCountry().toLocaleLowerCase()} with ${order.country.toLocaleLowerCase()}`);
-        //console.log(`Comparing ${houseItem.getType().toLocaleLowerCase()} with ${order.type.toLocaleLowerCase()}`);
         if (
-            houseItem.getHouseNumber().toLocaleLowerCase() == order.houseNumber.toLocaleLowerCase() &&
-            houseItem.getStreet().toLocaleLowerCase() == order.street.toLocaleLowerCase() &&
-            houseItem.getCity().toLocaleLowerCase() == order.city.toLocaleLowerCase() &&
-            houseItem.getZip().toLocaleLowerCase() == order.zip.toLocaleLowerCase() &&
-            houseItem.getCountry().toLocaleLowerCase() == order.country.toLocaleLowerCase() &&
-            houseItem.getType().toLocaleLowerCase() == order.type.toLocaleLowerCase()
+            houseItem.getHouseNumber().toLocaleLowerCase() === order.houseNumber.toLocaleLowerCase() &&
+            houseItem.getStreet().toLocaleLowerCase() === order.street.toLocaleLowerCase() &&
+            houseItem.getCity().toLocaleLowerCase() === order.city.toLocaleLowerCase() &&
+            houseItem.getZip().toLocaleLowerCase() === order.zip.toLocaleLowerCase() &&
+            houseItem.getCountry().toLocaleLowerCase() === order.country.toLocaleLowerCase() &&
+            houseItem.getType().toLocaleLowerCase() === order.type.toLocaleLowerCase()
         ) {
             house = houseItem;
             houseExists = true;
-            //console.log("Matching house found:", house);
             break;
         }
     }
 
     // If no matching house exists, create a new house
     if (!houseExists) {
-        //console.log("No matching house found, creating new house");
-
         const newHouse: createHouseDto = {
             houseNumber: order.houseNumber,
             street: order.street,
@@ -66,31 +52,51 @@ const createOrder = async (order: prepOrderDto) => {
         };
 
         house = await HouseDb.createHouse(newHouse);
-        //console.log("New house created:", house);
     }
 
     if (!house) {
-        throw new Error("House not found");
+        throw new Error("House not found or created");
     }
 
-    //console.log("Prepping room and order data for new room creation");
-
-    // Prepare raw data for the repository
-    const roomData = {
-        roomName: order.roomName,
-        workDescription: order.workDescription,
+    // Prepare data for a single order
+    const orderData = {
         houseId: house.getId(),
+        customerId: customer.getId(),
         startDate: order.startDate,
-        budget: order.budget,
+        status: 'pending', // Default status
+        price: order.budget, // Total price for all rooms
+        orderDate: new Date(), // Current date as the order date
+        employees: {}, // Assuming no employee IDs are being used for now
     };
 
-    // Pass raw data to the repository layer
-    const roomWithOrder = await RoomDb.createRoom(roomData, customer.getId());
+    // Create the order first
+    const createdOrder = await OrderDb.createOrder(orderData.customerId, orderData.houseId, orderData.startDate, orderData.price);
 
-    //console.log("Room with associated order created:", roomWithOrder);
+    // Loop through all rooms in the order and create them
+    const roomPromises = order.rooms.map(async (room) => {
+        const roomData = {
+            roomName: room.roomName,
+            workDescription: room.workDescription,
+            houseId: house.getId(),
+            startDate: order.startDate,
+            budget: order.budget, // If each room has a separate budget, adjust this
+        };
 
-    return roomWithOrder.order; // Return the created order
+        // Create room and associate it with the created order
+        await RoomDb.createRoom({
+            ...roomData,
+            orderId: createdOrder.getId(), // Link room to the created order
+        });
+    });
+
+    // Wait for all rooms to be created
+    await Promise.all(roomPromises);
+
+    // Return the created order (with associated rooms)
+    return createdOrder;
 };
+
+
 
 const getOrderById = async (orderId: number) => {
     const rooms = await OrderDb.getOrderById(orderId);
@@ -136,33 +142,54 @@ const getOrderById = async (orderId: number) => {
 };
 
 const getOrderByCustomerEmail = async (email: string) => {
+    // Fetch all rooms by email (assumed to return a list of room objects)
     const orders = await roomService.getRoomsByEmail(email);
+    console.log(orders);
 
-    const refinedOrders = orders.map((order: any) => {
-        return {
-            orderId: order.order.id,
-            orderDate: order.order.orderDate,
-            status: order.order.status,
-            startDate: order.order.startDate,
-            price: order.order.price,
-            house: {
-                id: order.house.id,
-                country: order.house.country,
-                houseNumber: order.house.houseNumber,
-                street: order.house.street,
-                city: order.house.city,
-                zip: order.house.zip,
-                type: order.house.type,
-            },
-            room: {
-                name: order.name,
-                workDescription: order.workDescription,
-            }
-        };
+    // Initialize an empty map to store orders by their order ID
+    const ordersMap: { [orderId: string]: any } = {};
+
+    // Loop through each room to group them by their order ID
+    orders.forEach((room: any) => {
+        // Extract the necessary details
+        const orderId = room.order.id;
+
+        // Check if the order already exists in the map
+        if (!ordersMap[orderId]) {
+            // Initialize the order entry with basic details
+            ordersMap[orderId] = {
+                orderId: orderId,
+                orderDate: room.order.orderDate,
+                status: room.order.status,
+                startDate: room.order.startDate,
+                price: room.order.price,
+                house: {
+                    id: room.house.id,
+                    country: room.house.country,
+                    houseNumber: room.house.houseNumber,
+                    street: room.house.street,
+                    city: room.house.city,
+                    zip: room.house.zip,
+                    type: room.house.type,
+                },
+                rooms: [] // Initialize the rooms array
+            };
+        }
+
+        // Push the room details to the corresponding order's `rooms` array
+        ordersMap[orderId].rooms.push({
+            roomId: room.id,
+            roomName: room.name,
+            workDescription: room.workDescription,
+        });
     });
+
+    // Convert the ordersMap into an array of orders
+    const refinedOrders = Object.values(ordersMap);
 
     return refinedOrders;
 };
+
 
 const getOrdersByEmployeeEmail = async (email: string) => {
     const rooms = await OrderDb.getOrdersByEmployeeEmail(email);

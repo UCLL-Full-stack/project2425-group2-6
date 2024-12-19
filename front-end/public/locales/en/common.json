@@ -1,0 +1,24 @@
+{
+    "app.title" : "Renovy",
+    "home" : {
+        "spotlight" : {
+            "title":"Renovy",
+            "spotlightDesc": "At Renovy, we specialize in transforming individual rooms into stunning, functional spaces. Whether it's a cozy bedroom, a modern kitchen, or a luxurious bathroom, our expert team is dedicated to bringing your vision to life. Discover the difference a room renovation can make with Renovy.",
+            "readMore": "Read more about us"
+        }
+    },
+    "main": {
+        "heading": "Welcome to Renovy",
+        "intro": "At Renovy, we specialize in transforming old buildings into modern and classy homes. Our team of experienced professionals is dedicated to delivering high-quality workmanship and exceptional customer service. We take pride in our ability to preserve the unique character of historic buildings while incorporating contemporary design elements and state-of-the-art amenities.",
+        "renovations": "Our renovation services include:",
+        "renovationsList" : {
+            "1" : "Comprehensive structural assessments and repairs",
+            "2" : "Modernizing electrical, plumbing, and HVAC systems",
+            "3" : "Custom interior and exterior design solutions",
+            "4" : "Energy-efficient upgrades and sustainable building practices",
+            "5" : "Restoration of historical features and architectural details"
+        },
+        "mindset" : "We understand that every project is unique, and we work closely with our clients to ensure their vision is brought to life. From initial consultation to project completion, we are committed to exceeding expectations and delivering results that stand the test of time.",
+        "pickUs" : "Choose Renovy for your next renovation project and experience the perfect blend of tradition and innovation. Let us help you create a home that is not only beautiful but also functional and sustainable for years to come." 
+    } 
+}
