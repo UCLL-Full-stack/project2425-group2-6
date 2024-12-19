@@ -95,9 +95,7 @@ const createOrder = async (customerId: number, houseId: number, startDate: Date,
             house: {
                 connect: { id: houseId }
             },
-            employees: {
-                connect: { id: 2 } // Assuming employee ID 2 is valid
-            },
+            
             startDate: startDate,
             price: budget,
             status: "pending" // Default status
