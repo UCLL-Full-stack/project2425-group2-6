@@ -1,42 +1,64 @@
-import HouseService from "../../service/house.service";
-import HouseDb from "../../repository/House.db";
-import { createHouseDto } from "../../types";
 import { House } from "../../model/house";
-import { Address } from "../../model/address";
 
-jest.mock("../../repository/House.db");
+const houseId = 1;
+const houseNumber = "1";
+const street = "Rue de la Loi";
+const city = "Brussels";
+const zip = "1000";
+const country = "Belgium";
+const type = "detached";
+const createdAt = new Date();
 
-const address = new Address(1, 1, "Rue de la Loi", "Brussels", "Brussels Capital", "1000");
-const house = new House(1, address, "detached");
+const house = new House(houseId, houseNumber, street, city, zip, type, country, createdAt);
 
-const newHouse: createHouseDto = {
-    addressId: 1,
-    type: "semi-detached"
-};
-
-beforeEach(() => {
-    jest.clearAllMocks();
+test("Create a house", () => {
+  expect(house.getId()).toBe(houseId);
+  expect(house.getHouseNumber()).toBe(houseNumber);
+  expect(house.getStreet()).toBe(street);
+  expect(house.getCity()).toBe(city);
+  expect(house.getZip()).toBe(zip);
+  expect(house.getCountry()).toBe(country);
+  expect(house.getType()).toBe(type);
 });
 
-test("getAllHouses should return all houses", async () => {
-    (HouseDb.getAllHouses as jest.Mock).mockResolvedValue([house]);
-    const result = await HouseService.getAllHouses();
-    expect(result).toEqual([house]);
-    expect(HouseDb.getAllHouses).toHaveBeenCalledTimes(1);
+test("Set and get house properties", () => {
+  house.setHouseNumber("2");
+  expect(house.getHouseNumber()).toBe("2");
+
+  house.setStreet("New Street");
+  expect(house.getStreet()).toBe("New Street");
+
+  house.setCity("Antwerp");
+  expect(house.getCity()).toBe("Antwerp");
+
+  house.setZip("2000");
+  expect(house.getZip()).toBe("2000");
+
+  house.setCountry("Netherlands");
+  expect(house.getCountry()).toBe("Netherlands");
+
+  house.setType("apartment");
+  expect(house.getType()).toBe("apartment");
 });
 
-test("getHouseById should return the house with the given id", async () => {
-    (HouseDb.getHouseById as jest.Mock).mockResolvedValue(house);
-    const result = await HouseService.getHouseById(1);
-    expect(result).toEqual(house);
-    expect(HouseDb.getHouseById).toHaveBeenCalledWith(1);
-    expect(HouseDb.getHouseById).toHaveBeenCalledTimes(1);
-});
+test("Create a house from plain data", () => {
+  const houseData = {
+    id: 2,
+    houseNumber: "3",
+    street: "Another Street",
+    city: "Ghent",
+    zip: "9000",
+    country: "Belgium",
+    createdAt: new Date(),
+    type: "semi-detached",
+  };
 
-test("addHouse should add a new house", async () => {
-    (HouseDb.addHouse as jest.Mock).mockResolvedValue(newHouse);
-    const result = await HouseService.addHouse(newHouse);
-    expect(result).toEqual(newHouse);
-    expect(HouseDb.addHouse).toHaveBeenCalledWith(newHouse);
-    expect(HouseDb.addHouse).toHaveBeenCalledTimes(1);
+  const newHouse = House.from(houseData);
+  expect(newHouse.getId()).toBe(houseData.id);
+  expect(newHouse.getHouseNumber()).toBe(houseData.houseNumber);
+  expect(newHouse.getStreet()).toBe(houseData.street);
+  expect(newHouse.getCity()).toBe(houseData.city);
+  expect(newHouse.getZip()).toBe(houseData.zip);
+  expect(newHouse.getCountry()).toBe(houseData.country);
+  expect(newHouse.getType()).toBe(houseData.type);
 });

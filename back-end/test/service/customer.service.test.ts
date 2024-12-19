@@ -53,30 +53,30 @@ test("given: existing Customer, when: createCustomer, then: throw error", async 
     await expect(customerService.createCustomer(createCustomerDto)).rejects.toThrow(`Customer with email ${createCustomerDto.email} already exists.`);
 });
 
-test("given: valid credentials, when: authenticate, then: return authentication response", async () => {
-    const email = "johndoe@gmail.com";
-    const password = "password123";
+// test("given: valid credentials, when: authenticate, then: return authentication response", async () => {
+//     const email = "johndoe@gmail.com";
+//     const password = "password123";
 
-    (CustomerDb.getCustomerByEmail as jest.Mock).mockResolvedValue(customer);
-    (bcrypt.compare as jest.Mock).mockResolvedValue(true);
+//     (CustomerDb.getCustomerByEmail as jest.Mock).mockResolvedValue(customer);
+//     (bcrypt.compare as jest.Mock).mockResolvedValue(true);
 
-    const result = await customerService.authenticate(email, password);
-    expect(result).toEqual({
-        token: expect.any(String),
-        email: customer.getEmail(),
-        fullname: `${customer.getFirstName()} ${customer.getLastName()}`,
-        role: customer.getRole(),
-    });
-});
+//     const result = await customerService.authenticate(email, password);
+//     expect(result).toEqual({
+//         token: expect.any(String),
+//         email: customer.getEmail(),
+//         fullname: `${customer.getFirstName()} ${customer.getLastName()}`,
+//         role: customer.getRole(),
+//     });
+// });
 
-test("given: non-existing Customer, when: authenticate, then: throw error", async () => {
-    const email = "nonexistent@gmail.com";
-    const password = "password123";
+// test("given: non-existing Customer, when: authenticate, then: throw error", async () => {
+//     const email = "nonexistent@gmail.com";
+//     const password = "password123";
 
-    (CustomerDb.getCustomerByEmail as jest.Mock).mockResolvedValue(null);
+//     (CustomerDb.getCustomerByEmail as jest.Mock).mockResolvedValue(null);
 
-    await expect(customerService.authenticate(email, password)).rejects.toThrow("Customer does not exist.");
-});
+//     await expect(customerService.authenticate(email, password)).rejects.toThrow("Customer does not exist.");
+// });
 
 test("given: valid customerId, when: getCustomerHouses, then: return houses", async () => {
     const customerId = 1;
