@@ -3,8 +3,16 @@ import styles from "../styles/Header.module.css";
 import AccountIcon from "../public/Header/account.svg";
 import Logo from "../public/logo.png";
 import Link from "next/link";
+import { useTranslation } from "react-i18next"; // Import the hook for translations
+import Language from "./language";
 
 const Header: React.FC = () => {
+    const { i18n } = useTranslation(); // Access the i18n instance
+
+    const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        i18n.changeLanguage(event.target.value); // Trigger language change
+    };
+
     return (
         <div className={styles.headerContainer}>
             <div className={styles.strip}>
@@ -28,11 +36,11 @@ const Header: React.FC = () => {
                     {/* Add any left-side navigation items if needed */}
                 </div>
                 <ul className={styles.rightNavigation}>
-                    <li><Link href = "/aboutUs">About Us</Link></li>
-                    <li><Link href = "/services">Services</Link></li>
-                    <li><Link href = "/projects">Projects</Link></li>
-                    <li><Link href = "/orders">Order</Link></li>
-                    <Link href = "/account"><li><img src={AccountIcon.src} alt="Account Icon"/></li></Link>
+                    <li><Link href="/aboutUs">About Us</Link></li>
+                    <li><Link href="/services">Services</Link></li>
+                    <li><Link href="/projects">Projects</Link></li>
+                    <li><Link href="/orders">Order</Link></li>
+                    <Language/>
                 </ul>
             </nav>
         </div>
