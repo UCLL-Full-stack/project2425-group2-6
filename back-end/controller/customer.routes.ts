@@ -78,6 +78,8 @@ const customerRouter = express.Router();
  * /customers:
  *   get:
  *     summary: Retrieve a list of all customers
+ *     security:
+ *       - bearerAuth: []
  *     tags: [Customers]
  *     responses:
  *       200:
@@ -99,6 +101,17 @@ const customerRouter = express.Router();
  *                   type: string
  *                   description: Error message
  */
+customerRouter.get("/", async (req: Request, res: Response) => {
+    try {
+        const { email, role } = req.params;
+        res.status(200).json(await customerService.getAllCustomers({email, role}));
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json({ error: "error", errorMessage: error.message });
+        }
+    }
+});
 
 
 /**
@@ -131,6 +144,15 @@ const customerRouter = express.Router();
  *                   type: string
  *                   description: Error message
  */
+customerRouter.post("/signup", async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.status(200).json(await customerService.createCustomer(<createCustomerDto>req.body));
+    } catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json({ error: "error", errorMessage: error.message });
+        }
+    }
+});
 
 
 /**
@@ -144,6 +166,7 @@ const customerRouter = express.Router();
  *       content:
  *         application/json:
  *           schema:
+ *             type: object
  *             properties:
  *               email:
  *                 type: string
@@ -169,28 +192,6 @@ const customerRouter = express.Router();
  *                   type: string
  *                   description: Error message
  */
-customerRouter.get("/", async (req: Request, res: Response) => {
-    try {
-        const { email, role } = req.params;
-        res.status(200).json(await customerService.getAllCustomers({email, role}));
-    }
-    catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: "error", errorMessage: error.message });
-        }
-    }
-});
-
-customerRouter.post("/signup", async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        res.status(200).json(await customerService.createCustomer(<createCustomerDto>req.body));
-    } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: "error", errorMessage: error.message });
-        }
-    }
-});
-
 customerRouter.post("/login", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const credentials = <authenticateDTO>req.body;
@@ -199,17 +200,8 @@ customerRouter.post("/login", async (req: Request, res: Response, next: NextFunc
     } catch (error) {
 
         next(error);
-
-        // if (error instanceof Error) {
-        //     if (error.message === "Invalid email or password" || error.message === "Customer does not exist.") {
-        //         res.status(400).json({ error: "error", errorMessage: error.message });
-        //     } else {
-        //         res.status(500).json({ error: "Internal server", errorMessage: error.message });
-        //     }
-        // } else {
-        //     res.status(500).json({ error: "error", errorMessage: "Unexpected error" });
-        // }
-    }
+ }
 });
+
 
 export { customerRouter };

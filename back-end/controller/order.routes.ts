@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import orderService from '../service/order.service';
+import { Role } from '../types';
 
 const orderRouter = express.Router();
 
@@ -218,32 +219,43 @@ const orderRouter = express.Router();
  *   get:
  *     summary: Get all orders
  *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       '200':
  *         description: A list of orders
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Order'
- *   post:
- *     summary: Create a new order
- *     tags: [Orders]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/PrepOrderDto'
- *     responses:
- *       '201':
- *         description: The created order
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Order'
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message
  */
+orderRouter.get("/", async (req: Request, res: Response) => {
+    try {
+        // Correctly extract email and role from req.query
+        const request = req as Request & { auth: { email: string; role: Role } };
+        const email = request.auth.email;
+        const role = request.auth.role;
+
+        if (!email || !role) {
+            return res.status(400).json({ message: "Missing email or role in query parameters" });
+        }
+
+        const orders = await orderService.getAllOrders({ email, role });
+
+        res.status(200).json(orders);
+    } catch (error) {
+        console.error(error);
+        if (error instanceof Error) {
+            res.status(400).json({ message: error.message });
+        } else {
+            res.status(500).json({ message: "An unexpected error occurred" });
+        }
+    }
+});
 
 /**
  * @swagger
@@ -251,6 +263,8 @@ const orderRouter = express.Router();
  *   get:
  *     summary: Get order by ID
  *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -264,8 +278,25 @@ const orderRouter = express.Router();
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Order'
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message
  */
+orderRouter.get("/:id", async (req: Request, res: Response) => {
+    try {
+        const request = req as Request & { auth: { email: string; role: Role } };
+        const email = request.auth.email;
+        const role = request.auth.role;
+        res.status(200).json(await orderService.getOrderById(parseInt(req.params.id)));
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json(error.message);
+        }
+    }
+});
 
 /**
  * @swagger
@@ -273,23 +304,41 @@ const orderRouter = express.Router();
  *   get:
  *     summary: Get orders by customer email
  *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: email
  *         required: true
  *         schema:
  *           type: string
- *         description: The email of the customer
+ *         description: The email of the customer to retrieve orders for
  *     responses:
  *       '200':
- *         description: A list of orders associated with the email
+ *         description: A list of orders associated with the customer email
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Order'
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message
  */
+orderRouter.get("/email/:email", async (req : Request, res: Response) => {
+    try {
+        const request = req as Request & { auth: { email: string; role: Role } };
+        const email = request.auth.email;
+        const role = request.auth.role;
+
+        const orders = await orderService.getOrderByCustomerEmail(req.params.email);
+        res.status(200).json(orders);
+    } catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json(error.message);
+        }
+    }
+});
 
 /**
  * @swagger
@@ -297,6 +346,8 @@ const orderRouter = express.Router();
  *   get:
  *     summary: Get orders by employee email
  *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: email
@@ -306,14 +357,31 @@ const orderRouter = express.Router();
  *         description: The email of the employee
  *     responses:
  *       '200':
- *         description: A list of orders associated with the email
+ *         description: A list of orders associated with the employee's email
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Order'
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message
  */
+
+orderRouter.get("/employee/:email", async (req: Request, res: Response) => {
+    try {
+        const request = req as Request & { auth: { email: string; role: Role } };
+        const email = request.auth.email;
+        const role = request.auth.role;
+
+        const orders = await orderService.getOrdersByEmployeeEmail(req.params.email);
+        res.status(200).json(orders);
+    } catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json(error.message);
+        }
+    }
+});
 
 /**
  * @swagger
@@ -321,13 +389,15 @@ const orderRouter = express.Router();
  *   put:
  *     summary: Toggle employee assignment to an order
  *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: email
  *         required: true
  *         schema:
  *           type: string
- *         description: The email of the employee
+ *         description: The email of the employee to be added or removed from order
  *       - in: path
  *         name: orderId
  *         required: true
@@ -342,11 +412,25 @@ const orderRouter = express.Router();
  *             schema:
  *               type: object
  *               properties:
- *                 message:
+ *                 error:
  *                   type: string
- *                 action:
- *                   type: string
+ *                   description: Error message
  */
+orderRouter.put("/employee/toggle/:email/:orderId", async (req: Request, res: Response) => {
+    try {
+
+        const request = req as Request & { auth: { email: string; role: Role } };
+        const email = request.auth.email;
+        const role = request.auth.role;
+
+        const orderId = parseInt(req.params.orderId);
+        const emailParam = req.params.email;
+        const result = await orderService.toggleEmployeeAssignment(orderId, emailParam);
+        res.status(200).json(result);
+    } catch (error: any) {
+        res.status(400).json({ error: error.message });
+    }
+});
 
 /**
  * @swagger
@@ -354,6 +438,8 @@ const orderRouter = express.Router();
  *   delete:
  *     summary: Delete an order by ID
  *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -369,9 +455,28 @@ const orderRouter = express.Router();
  *             schema:
  *               type: object
  *               properties:
- *                 message:
+ *                 error:
  *                   type: string
+ *                   description: Error message
  */
+orderRouter.delete("/:id", async (req: Request, res: Response) => {
+    try {
+        const request = req as Request & { auth: { email: string; role: Role } };
+        const email = request.auth.email;
+        const role = request.auth.role;
+
+        const orderId = parseInt(req.params.id);
+        if (isNaN(orderId)) {
+            return res.status(400).json({ error: "Invalid order ID" });
+        }
+        const result = await orderService.deleteOrder(orderId);
+        res.status(200).json(result);
+    } catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json({ error: error.message });
+        }
+    }
+});
 
 /**
  * @swagger
@@ -379,6 +484,8 @@ const orderRouter = express.Router();
  *   put:
  *     summary: Modify the status of an order
  *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -401,104 +508,18 @@ const orderRouter = express.Router();
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Order'
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message
  */
-orderRouter.get("/", async (req: Request, res: Response) => {
+orderRouter.put("/status/:id", async (req: Request, res: Response) => {
     try {
-        // Correctly extract email and role from req.query
-        const email = req.query.email as string;
-        const role = req.query.role as string;
+        const request = req as Request & { auth: { email: string; role: Role } };
+        const email = request.auth.email;
+        const role = request.auth.role;
 
-        if (!email || !role) {
-            return res.status(400).json({ message: "Missing email or role in query parameters" });
-        }
-
-        const orders = await orderService.getAllOrders({ email, role });
-
-        res.status(200).json(orders);
-    } catch (error) {
-        console.error(error);
-        if (error instanceof Error) {
-            res.status(400).json({ message: error.message });
-        } else {
-            res.status(500).json({ message: "An unexpected error occurred" });
-        }
-    }
-});
-
-orderRouter.get("/:id", async (req: Request, res: Response) => {
-    try {
-        res.status(200).json(await orderService.getOrderById(parseInt(req.params.id)));
-    }
-    catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json(error.message);
-        }
-    }
-});
-
-orderRouter.post("/", async (req, res) => {
-    try {
-        const prepOrderDto = req.body;
-        const newOrder = await orderService.createOrder(prepOrderDto);
-        res.status(200).json(newOrder);
-    } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json(error.message);
-        }
-    }
-});
-
-orderRouter.get("/email/:email", async (req, res) => {
-    try {
-        const orders = await orderService.getOrderByCustomerEmail(req.params.email);
-        res.status(200).json(orders);
-    } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json(error.message);
-        }
-    }
-});
-
-orderRouter.get("/employee/:email", async (req, res) => {
-    try {
-        const orders = await orderService.getOrdersByEmployeeEmail(req.params.email);
-        res.status(200).json(orders);
-    } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json(error.message);
-        }
-    }
-});
-
-orderRouter.put("/employee/toggle/:email/:orderId", async (req: Request, res: Response) => {
-    try {
-        const orderId = parseInt(req.params.orderId);
-        const email = req.params.email;
-        const result = await orderService.toggleEmployeeAssignment(orderId, email);
-        res.status(200).json(result);
-    } catch (error: any) {
-        res.status(400).json({ error: error.message });
-    }
-});
-
-orderRouter.delete("/:id", async (req, res) => {
-    try {
-        const orderId = parseInt(req.params.id);
-        if (isNaN(orderId)) {
-            return res.status(400).json({ error: "Invalid order ID" });
-        }
-        const result = await orderService.deleteOrder(orderId);
-        res.status(200).json(result);
-    } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: error.message });
-        }
-    }
-});
-
-orderRouter.put("/status/:id", async (req, res) => {
-    try {
         const orderId = parseInt(req.params.id);
         const status = req.body.status;
         const result = await orderService.modifyOrderStatus(orderId, status);

@@ -99,9 +99,11 @@ const employeeRouter = express.Router();
  * /employees:
  *   get:
  *     summary: Retrieve a list of employees
+ *     security:
+ *       - bearerAuth: []
  *     tags: [Employees]
  *     responses:
- *       '200':
+ *       200:
  *         description: A list of employees
  *         content:
  *           application/json:
@@ -109,7 +111,7 @@ const employeeRouter = express.Router();
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Employee'
- *       '400':
+ *       400:
  *         description: Error retrieving employees
  *         content:
  *           application/json:
@@ -120,6 +122,16 @@ const employeeRouter = express.Router();
  *                   type: string
  *                   description: Error message
  */
+employeeRouter.get('/', async (req: Request, res: Response) => {
+    try {
+        const employees = await employeeService.getAllEmployees();
+        res.status(200).json(employees);
+    } catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json({ error: error.message });
+        }
+    }
+});
 
 /**
  * @swagger
@@ -134,13 +146,13 @@ const employeeRouter = express.Router();
  *           schema:
  *             $ref: '#/components/schemas/CreateEmployeeDto'
  *     responses:
- *       '201':
+ *       201:
  *         description: The created employee
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Employee'
- *       '400':
+ *       400:
  *         description: Error creating employee
  *         content:
  *           application/json:
@@ -151,6 +163,16 @@ const employeeRouter = express.Router();
  *                   type: string
  *                   description: Error message
  */
+employeeRouter.post('/signup', async (req: Request, res: Response) => {
+    try {
+        const employee = await employeeService.createEmployee(req.body);
+        res.status(201).json(employee);
+    } catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json({ error: error.message });
+        }
+    }
+});
 
 /**
  * @swagger
@@ -167,18 +189,18 @@ const employeeRouter = express.Router();
  *             properties:
  *               email:
  *                 type: string
- *                 description: Employee's email address.
+ *                 description: Employee's email address
  *               password:
  *                 type: string
- *                 description: Employee's password.
+ *                 description: Employee's password
  *     responses:
- *       '200':
+ *       200:
  *         description: Authentication response
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/AuthenticationResponse'
- *       '400':
+ *       400:
  *         description: Error authenticating employee
  *         content:
  *           application/json:
@@ -189,29 +211,6 @@ const employeeRouter = express.Router();
  *                   type: string
  *                   description: Error message
  */
-
-employeeRouter.get('/', async (req: Request, res: Response) => {
-    try {
-        const employees = await employeeService.getAllEmployees();
-        res.status(200).json(employees);
-    } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: error.message });
-        }
-    }
-});
-
-employeeRouter.post('/signup', async (req: Request, res: Response) => {
-    try {
-        const employee = await employeeService.createEmployee(req.body);
-        res.status(201).json(employee);
-    } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: error.message });
-        }
-    }
-});
-
 employeeRouter.post('/login', async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;

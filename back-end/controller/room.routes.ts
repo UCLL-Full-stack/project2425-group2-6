@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import houseService from '../service/house.service';
+import { Role } from '../types';
 
 const houseRouter = express.Router();
 
@@ -49,6 +50,8 @@ const houseRouter = express.Router();
  * @swagger
  * /houses:
  *   get:
+ *     security:
+ *       - BearerAuth: []
  *     summary: Get all houses
  *     tags: [Houses]
  *     responses:
@@ -71,11 +74,26 @@ const houseRouter = express.Router();
  *                   type: string
  *                   description: Error message
  */
+houseRouter.get("/", async (req: Request, res: Response) => {
+    try {
+        const request = req as Request & { auth: { email: string; role: Role } };
+        const email = request.auth.email;
+        const role = request.auth.role;
+        res.status(200).json(await houseService.getAllHouses({email, role}));
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json(error.message);
+        }
+    }
+});
 
 /**
  * @swagger
  * /houses/{id}:
  *   get:
+ *     security:
+ *       - BearerAuth: []
  *     summary: Get house by ID
  *     tags: [Houses]
  *     parameters:
@@ -103,24 +121,11 @@ const houseRouter = express.Router();
  *                   type: string
  *                   description: Error message
  */
-
-houseRouter.get("/", async (req: Request, res: Response) => {
-    try {
-        const email = req.query.email as string;
-        const role = req.query.role as string;
-        res.status(200).json(await houseService.getAllHouses({email, role}));
-    }
-    catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json(error.message);
-        }
-    }
-});
-
 houseRouter.get("/:id", async (req: Request, res: Response) => {
     try {
-        const email = req.query.email as string;
-        const role = req.query.role as string;
+                const request = req as Request & { auth: { email: string; role: Role } };
+                const email = request.auth.email;
+                const role = request.auth.role;
 
         res.status(200).json(await houseService.getHouse(parseInt(req.params.id), {email, role}));
     }
