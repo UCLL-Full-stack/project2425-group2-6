@@ -74,7 +74,7 @@ const EmployeeOrdersOverview: React.FC<Props> = ({ email }) => {
                 <tr key={order.orderId} className="border-t">
                   <td className="px-4 py-10">{order.status}</td>
                   <td className="px-4 py-10">
-                    {order.customer.firstName} {order.customer.lastName}
+                    {order.customer.firstName} {order.customer.lastName} ({order.customer.email})
                   </td>
                   <td className="px-4 py-10">
                     {order.house.houseNumber} {order.house.street}, {order.house.city},{" "}

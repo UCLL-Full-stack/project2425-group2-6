@@ -8,6 +8,13 @@ import useInterval from "use-interval";
 const OrderIdOverviewPageAdmin: React.FC = () => {
   const router = useRouter();
   const { orderId } = router.query;
+  const [role, setRole] = useState<string>('');
+
+  useEffect(() => {
+    const role = sessionStorage.getItem('role') || '';
+    setRole(role);
+  }, []);
+  
 
   // Local state for employees and selected employees
   const [employees, setEmployees] = useState<any[]>([]); 
@@ -80,7 +87,12 @@ const OrderIdOverviewPageAdmin: React.FC = () => {
   }
 
   return (
-    <div className="p-10">
+    <>
+      {role !== 'admin' ? (
+        <p className="text-center">Access Denied</p>
+      ) : (
+        <div>
+          <div className="p-10">
       <h2 className="font-bold text-center text-xl">Order Details - ID: {order.orderId}</h2>
 
 {/* Order Info */}
@@ -175,6 +187,7 @@ const OrderIdOverviewPageAdmin: React.FC = () => {
       <div className="mt-5 p-5 border rounded-lg shadow-sm">
         <h3 className="text-lg font-semibold">Customer</h3>
         <p><strong>Name:</strong> {order.customer.firstName} {order.customer.lastName}</p>
+        <p><strong>Email:</strong> {order.customer.email}</p>
       </div>
 
       {/* Assigned Employees Table */}
@@ -259,6 +272,9 @@ const OrderIdOverviewPageAdmin: React.FC = () => {
     </div>
       
       </div>
+        </div>
+      )}
+    </>
   );
 }
 
