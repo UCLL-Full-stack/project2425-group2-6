@@ -8,17 +8,25 @@ import { Room } from "../model/room";
 import RoomDb from "./Room.db";
 import database from "../util/database";
 
-const getAllOrders = async (): Promise<Array<Order>> => {
-    const ordersPrisma = await database.order.findMany({
-        include: {
-            customer: true,
-            house: true,
-            employees: true,
-        }
-    });
-    return ordersPrisma.map((orderPrisma) => Order.from(orderPrisma));
-}
+const getAllOrders = async () => {  
 
+  const rooms = await database.room.findMany({
+    include: {
+      house: true,
+      order: {
+        include: {
+          customer: true, // Include customer details
+          employees: true, // Include employee details
+          house: true,    // Include house details
+          rooms: true,    // Include all rooms
+        },
+      },
+    },
+  });
+  
+  return rooms; // Return raw data as retrieved from the database
+
+};
 const getOrderByCustomerEmail = async (email: string): Promise<Array<Order>> => {
     //console.log("Fetching customer by email:", email);
     const customer = await CustomerDb.getCustomerByEmail(email);
