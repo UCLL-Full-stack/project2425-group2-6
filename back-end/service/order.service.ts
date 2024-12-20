@@ -140,7 +140,8 @@ const getOrderById = async (orderId: number) => {
       customer: {
         firstName: firstRoomOrder.order.customer.firstName,
         lastName: firstRoomOrder.order.customer.lastName,
-      },
+        email: firstRoomOrder.order.customer.email,
+    },
       employees: firstRoomOrder.order.employees.map((employee) => ({
         firstName: employee.firstName,
         lastName: employee.lastName,

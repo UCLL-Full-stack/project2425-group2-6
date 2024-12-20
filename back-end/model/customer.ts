@@ -86,8 +86,8 @@ export class Customer {
     }
 
     public setBirthday(birthday: Date) {
-        if (!birthday || isNaN(birthday.getTime())) {
-            throw new Error("Birthday must be a valid date.");
+        if (!birthday){
+            throw new Error("Birthday must not be empty.");
         }
 
         this.birthday = birthday
