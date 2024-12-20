@@ -9,7 +9,7 @@
         "schema": "repository/prisma/schema.prisma"
     },
     "scripts": {
-        "start": "node dist/app.js",
+        "start": "nodemon app.ts",
         "dev": "nodemon app.ts",
         "build": "tsc",
         "test": "jest"
