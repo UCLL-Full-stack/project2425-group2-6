@@ -232,9 +232,9 @@ const getOrderById = async (orderId: number) => {
 
   const modifyOrderStatus = async (orderId: number, status: string) => {
 
-    if (status.toLowerCase() !== "pending" && status.toLowerCase() !== "completed") {
-      throw new Error("Invalid order status. Please provide a valid status: 'pending', 'in progress', or 'completed'");
-    }
+    // if (status.toLowerCase() !== "pending" && status.toLowerCase() !== "completed") {
+    //   throw new Error("Invalid order status. Please provide a valid status: 'pending', 'in progress', or 'completed'");
+    // }
 
     try {
 

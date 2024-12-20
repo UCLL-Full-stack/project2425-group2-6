@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import customerService from "../service/customer.service";
 import { nextDay } from 'date-fns';
-import { authenticateDTO, createCustomerDto } from '../types';
+import { authenticateDTO, createCustomerDto, Role } from '../types';
 
 const customerRouter = express.Router();
 
@@ -103,7 +103,9 @@ const customerRouter = express.Router();
  */
 customerRouter.get("/", async (req: Request, res: Response) => {
     try {
-        const { email, role } = req.params;
+        const request = req as Request & { auth: { email: string; role: Role } };
+                        const email = request.auth.email;
+                        const role = request.auth.role;
         res.status(200).json(await customerService.getAllCustomers({email, role}));
     }
     catch (error) {
@@ -198,8 +200,9 @@ customerRouter.post("/login", async (req: Request, res: Response, next: NextFunc
         const response = await customerService.authenticate(credentials);
         res.status(200).json({message: "Authentication successful", ...response});
     } catch (error) {
-
-        next(error);
+        if (error instanceof Error){
+            res.status(400).json({ error: "error", errorMessage: error.message });
+        }
  }
 });
 

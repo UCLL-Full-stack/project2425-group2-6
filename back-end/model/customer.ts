@@ -90,10 +90,6 @@ export class Customer {
             throw new Error("Birthday must be a valid date.");
         }
 
-        if (birthday.getTime() > new Date().getTime()) {
-            throw new Error("Birthday must be in the past.");
-        }
-
         this.birthday = birthday
     }
 

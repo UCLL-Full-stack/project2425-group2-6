@@ -1,37 +1,55 @@
 import React, { useState, useEffect } from "react";
 import OrderService from "@/services/order.service";
+import useInterval from "use-interval";
+import useSWR, { mutate } from "swr";
 
 type Props = {
   email: string;
 };
 
 const EmployeeOrdersOverview: React.FC<Props> = ({ email }) => {
-  const [orders, setOrders] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        setLoading(true);
-        const fetchedOrders = await OrderService.getOrdersByEmployeeEmail(email);
-        setOrders(fetchedOrders);
-      } catch (err: any) {
-        setError(err.message || "Something went wrong");
-      } finally {
-        setLoading(false);
-      }
-    };
+  // SWR to fetch orders for the employee
+  const fetchOrders = async (email: string) => {
+    if (swrError) {
+      setError(swrError.message || "Failed to fetch orders.");
+    }
+    try {
+      const orders = await OrderService.getOrdersByEmployeeEmail(email);
+      return orders; // Return fetched orders
+    } catch (err: any) {
+      throw new Error(err.message || "Failed to fetch orders.");
+    }
+  };
 
-    fetchOrders();
-  }, [email]);
+  // Using SWR to fetch the orders by employee email
+  const { data: orders, error: swrError, isLoading } = useSWR(
+    email ? [`ordersByEmployee`, email] : null,
+    () => fetchOrders(email)
+  );
 
-  if (loading) {
+  // Polling the data every 3 seconds using useInterval
+  useInterval(() => {
+    if (email) {
+      mutate([`ordersByEmployee`, email]); // Trigger SWR mutate to refresh orders
+    }
+  }, 3000);
+
+
+  // Loading state while orders are being fetched
+  if (isLoading) {
     return <p className="text-center">Loading...</p>;
   }
 
+  // Display error message if fetching fails
   if (error) {
     return <p className="text-center text-red-500">Error: {error}</p>;
+  }
+
+  // Display a message if no orders found
+  if (!orders || orders.length === 0) {
+    return <p className="text-center">No orders found.</p>;
   }
 
   return (

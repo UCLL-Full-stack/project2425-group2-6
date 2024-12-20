@@ -2,43 +2,52 @@ import { useEffect, useState } from "react";
 import OrderService from "@/services/order.service";
 import EmployeeService from "@/services/employee.service";
 import { useRouter } from "next/router";
+import useSWR, { mutate } from "swr";
+import useInterval from "use-interval";
 
 const OrderIdOverviewPageAdmin: React.FC = () => {
   const router = useRouter();
-  const { orderId } = router.query; // Get orderId from the query string
+  const { orderId } = router.query;
 
-  const [order, setOrder] = useState<any>(null); // Store the fetched order data
-  const [loading, setLoading] = useState<boolean>(true); // Loading state
-  const [error, setError] = useState<string | null>(null); // Error handling
-  const [employees, setEmployees] = useState<any[]>([]); // Store employee list
+  // Local state for employees and selected employees
+  const [employees, setEmployees] = useState<any[]>([]); 
   const [selectedEmployees, setSelectedEmployees] = useState<string[]>([]); // Track selected employees' emails
+  const [error, setError] = useState<string | null>(null);
 
-  // Fetch order data based on the orderId from the URL
-  const fetchOrderDetails = async () => {
-    if (!orderId) return; // If orderId is not yet available, return
-
+  // Fetch order details based on orderId using SWR
+  const fetchOrderDetails = async (orderId: string) => {
+    fetchEmployees(); // Fetch employees for the order
     try {
-      setLoading(true);
-      const fetchedOrder = await OrderService.getOrderById(orderId); // Fetch order by ID
-      setOrder(fetchedOrder);
+      const fetchedOrder = await OrderService.getOrderById(orderId);
+      return fetchedOrder; // Return fetched order details
     } catch (err: any) {
-      setError(err.message || "Something went wrong");
-    } finally {
-      setLoading(false);
+      throw new Error(err.message || 'Something went wrong fetching order details');
     }
   };
 
-  // Fetch all employees
   const fetchEmployees = async () => {
     try {
-      const employeeList = await EmployeeService.getAllEmployees(); // Fetch all employees
-      setEmployees(employeeList);
+      const employeeList = await EmployeeService.getAllEmployees();
+      setEmployees(employeeList); // Store employees
     } catch (err: any) {
-      console.error("Error fetching employees:", err.message);
+      console.error('Error fetching employees:', err.message);
     }
   };
 
-  // Handle toggling employees in the order
+  // useSWR to handle order fetching
+  const { data: order, error: orderError, isLoading: orderLoading } = useSWR(
+    orderId ? [`orderDetails`, orderId] : null,
+    () => fetchOrderDetails(orderId as string)
+  );
+
+  // Polling with useInterval to periodically refresh order data
+  useInterval(() => {
+    if (orderId) {
+      mutate([`orderDetails`, orderId]); // Trigger mutate to refresh data
+    }
+  }, 3000); // Refresh every 3 seconds
+
+  // Handle toggling employees for the order
   const handleAddRemoveEmployee = async () => {
     if (!orderId) return;
 
@@ -49,27 +58,21 @@ const OrderIdOverviewPageAdmin: React.FC = () => {
         })
       );
 
-      // console.log("Employee toggle responses:", responses);
-
       // Refresh the order data after changes
-      await fetchOrderDetails();
-      setSelectedEmployees([]); // Clear the selection after updating
+      await mutate([`orderDetails`, orderId]);
+      setSelectedEmployees([]); // Clear selection after update
     } catch (err: any) {
-      console.error("Error updating employees:", err.message);
+      console.error('Error updating employees:', err.message);
     }
   };
 
-  useEffect(() => {
-    fetchOrderDetails();
-    fetchEmployees();
-  }, [orderId]); // Re-run the effect when orderId changes
-
-  if (loading) {
-    return <p className="text-center">Loading...</p>;
+  // Handle errors
+  if (orderError) {
+    setError(orderError.message || 'Error fetching order details');
   }
 
-  if (error) {
-    return <p className="text-center text-red-500">Error: {error}</p>;
+  if (orderLoading) {
+    return <p className="text-center">Loading...</p>;
   }
 
   if (!order) {
@@ -90,12 +93,12 @@ const OrderIdOverviewPageAdmin: React.FC = () => {
       <input
         type="radio"
         name="orderStatus"
-        value="Pending"
+        value="pending"
         checked={order?.status?.toLowerCase() === "pending"} // Use optional chaining to avoid errors
         onChange={async (e) => {
           if (e.target.checked) {
             try {
-              const updatedOrder = await OrderService.modifyOrderStatus(order.orderId, "Pending");
+              const updatedOrder = await OrderService.modifyOrderStatus(order.orderId, "pending");
               setOrder((prevOrder: any) => ({
                 ...prevOrder,
                 status: updatedOrder.status
@@ -115,12 +118,12 @@ const OrderIdOverviewPageAdmin: React.FC = () => {
       <input
         type="radio"
         name="orderStatus"
-        value="Approved"
+        value="approved"
         checked={order?.status?.toLowerCase() === "approved"} // Use optional chaining to avoid errors
         onChange={async (e) => {
           if (e.target.checked) {
             try {
-              const updatedOrder = await OrderService.modifyOrderStatus(order.orderId, "Approved");
+              const updatedOrder = await OrderService.modifyOrderStatus(order.orderId, "approved");
               setOrder((prevOrder: any) => ({
                 ...prevOrder,
                 status: updatedOrder.status

@@ -59,7 +59,7 @@ const getAllOrders = async () => {
 
   try {
       // Send the request with email and role as query parameters
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders/`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
           method: 'GET',
           headers: {
               'Content-Type': 'application/json',
@@ -178,10 +178,6 @@ const deleteOrder = async (orderId: string | number) => {
 
 const modifyOrderStatus = async (orderId: number, status: string) => {
   const token = getAccessToken();
-  
-  if (status.toLowerCase() !== "pending" || status.toLowerCase() !== "approved") {
-    throw new Error("Invalid order status. Please provide a valid order status.");
-  }
   
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders/status/${orderId}`, {

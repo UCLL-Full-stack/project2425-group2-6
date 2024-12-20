@@ -132,13 +132,13 @@ export class Order {
     }
 
     setStartDate(startDate: Date): this {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0); // Normalize to midnight
-        if (startDate <= today) {
-            throw new Error("Start date must be in the future.");
+        if (!startDate) {
+            throw new Error("Start date is required.");
         }
+
+        
         this.startDate = startDate;
-        return this;
+        return this; 
     }
 
     public setPrice(price: number): this {

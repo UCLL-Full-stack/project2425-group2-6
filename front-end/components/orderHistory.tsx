@@ -1,40 +1,46 @@
 import OrderService from '@/services/order.service';
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
+import useSWR, { mutate } from 'swr';
+import useInterval from 'use-interval';
 
 type orderHistoryProps = {
   email: string;
 };
 
 const OrderHistory: React.FC<orderHistoryProps> = ({ email }) => {
-  const [orders, setOrders] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        setLoading(true);
-        const fetchedOrders = await OrderService.getAllOrders();
-
-        // Ensure fetchedOrders is an array; if not, fallback to an empty array
-        if (!Array.isArray(fetchedOrders)) {
-          throw new Error('Not authorized to view orders');
-        }
-
-        setOrders(fetchedOrders);
-      } catch (err: any) {
-        setError(err.message || 'Something went wrong while fetching orders.');
-        setOrders([]); // Fallback to an empty array to avoid runtime errors
-      } finally {
-        setLoading(false);
+  // Function to fetch orders from the OrderService
+  const fetchOrders = async () => {
+    if (swrError) {
+      setError(swrError.message || 'Something went wrong while fetching orders.');
+    }
+    try {
+      const fetchedOrders = await OrderService.getAllOrders();
+      
+      // Ensure fetchedOrders is an array
+      if (!Array.isArray(fetchedOrders)) {
+        throw new Error('Not authorized to view orders');
       }
-    };
 
-    fetchOrders();
-  }, [email]);
+      return fetchedOrders;
+    } catch (err: any) {
+      throw new Error(err.message || 'Something went wrong while fetching orders.');
+    }
+  };
 
-  if (loading) {
+  // Use SWR to fetch the orders
+  const { data: orders, error: swrError, isLoading } = useSWR('getAllOrders', fetchOrders);
+
+  // Polling orders data every 3 seconds
+  useInterval(() => {
+    mutate('getAllOrders'); // Trigger SWR mutate to refresh orders
+  }, 3000);
+
+
+  // Loading state
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center h-20">
         <p className="text-blue-500 text-lg font-medium">Loading orders...</p>
@@ -42,10 +48,20 @@ const OrderHistory: React.FC<orderHistoryProps> = ({ email }) => {
     );
   }
 
+  // Error state
   if (error) {
     return (
       <div className="flex justify-center items-center h-20">
         <p className="text-red-500 text-lg font-medium">{error}</p>
+      </div>
+    );
+  }
+
+  // Display orders if available
+  if (!orders || orders.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-20">
+        <p className="text-gray-500 text-lg font-medium">No orders found.</p>
       </div>
     );
   }

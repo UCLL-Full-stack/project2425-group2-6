@@ -1,57 +1,69 @@
 import { useEffect, useState } from "react";
 import OrderService from "@/services/order.service";
 import { useRouter } from "next/router";
+import useInterval from "use-interval";
+import useSWR, { mutate } from "swr";
 
 
 const OrderIdOverviewPage: React.FC = () => {
-    const [order, setOrder] = useState<any | null>(null);
-      const [loading, setLoading] = useState<boolean>(true);
-      const [error, setError] = useState<string | null>(null);
-    
-      const router = useRouter();
-      const { orderId } = router.query;
-    
-      useEffect(() => {
-        const fetchOrderById = async () => {
-          if (!router.isReady) return; // Ensure query parameters are ready
-          try {
-            setLoading(true);
-            const fetchedOrder = await OrderService.getOrderById(Number(orderId));
-            setOrder(fetchedOrder);
-          } catch (err: any) {
-            console.error("Error fetching order:", err);
-            setError(err.message || "Failed to fetch the order.");
-          } finally {
-            setLoading(false);
-          }
-        };
-    
-        fetchOrderById();
-      }, [orderId, router.isReady]);
-    
-      if (loading) {
-        return (
-          <div className="flex justify-center items-center h-screen">
-            <p className="text-blue-500 text-lg font-semibold">Loading order details...</p>
-          </div>
-        );
-      }
-    
-      if (error) {
-        return (
-          <div className="flex justify-center items-center h-screen">
-            <p className="text-red-500 text-lg font-semibold">{error}</p>
-          </div>
-        );
-      }
-    
-      if (!order) {
-        return (
-          <div className="flex justify-center items-center h-screen">
-            <p className="text-gray-500 text-lg font-semibold">Order not found.</p>
-          </div>
-        );
-      }
+  const router = useRouter();
+  const { orderId } = router.query;
+
+  // Local state for error handling
+  const [error, setError] = useState<string | null>(null);
+
+  // SWR to fetch order details based on orderId
+  const fetchOrderById = async (orderId: string) => {
+    if (orderError) {
+      setError(orderError.message || "Failed to fetch the order.");
+    }
+    try {
+      const fetchedOrder = await OrderService.getOrderById(Number(orderId));
+      return fetchedOrder; // Return the fetched order
+    } catch (err: any) {
+      throw new Error(err.message || "Failed to fetch the order.");
+    }
+  };
+
+  const { data: order, error: orderError, isLoading } = useSWR(
+    orderId ? [`orderDetails`, orderId] : null,
+    () => fetchOrderById(orderId as string)
+  );
+
+  // Polling with useInterval to refresh the order data every 3 seconds
+  useInterval(() => {
+    if (orderId) {
+      mutate([`orderDetails`, orderId]); // Trigger SWR mutate to refresh order data
+    }
+  }, 3000);
+
+
+  // Loading state while fetching
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-blue-500 text-lg font-semibold">Loading order details...</p>
+      </div>
+    );
+  }
+
+  // Error state if fetching fails
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-red-500 text-lg font-semibold">{error}</p>
+      </div>
+    );
+  }
+
+  // If no order is found
+  if (!order) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-gray-500 text-lg font-semibold">Order not found.</p>
+      </div>
+    );
+  }
     
       return (
         <>
