@@ -11,13 +11,13 @@ const services = [
 
 const ServiceComponent: React.FC = () => {
     return (
-        <div className="service-container p-8 bg-gray-100">
-            <h1 className="text-4xl font-bold text-center mb-8">Our Services</h1>
-            <div className="service-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="service-container p-8 bg-gradient-to-r ">
+            <h1 className="text-5xl font-extrabold text-center mb-12 text-blue-900">Our Services</h1>
+            <div className="service-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 ">
                 {services.map(service => (
-                    <div key={service.id} className="service-card bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                        <h2 className="text-2xl font-semibold mb-4">{service.name}</h2>
-                        <p className="text-gray-700 mb-2">{service.description}</p>
+                    <div key={service.id} className="service-card bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 transform hover:-translate-y-2">
+                        <h2 className="text-3xl font-bold mb-4 text-blue-800">{service.name}</h2>
+                        <p className="text-gray-700 mb-4">{service.description}</p>
                         <p className="text-gray-600">{service.details}</p>
                     </div>
                 ))}

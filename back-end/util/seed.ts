@@ -14,11 +14,11 @@ const main = async () => {
 
     const JohnDoe = await prisma.customer.create({
         data: {
-            firstName: 'user1',
-            lastName: 'test',
-            email: 'test@gmail.com',
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'user@gmail.com',
             birthday: new Date('1990-01-01'),
-            password: "$2b$12$P8y/GvJMDl2o.wsMRjfugePo97s1k59SlRpf/AAUaDDe/zwly4X/a", //user1
+            password: "$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu", //user1
         }
     });
 

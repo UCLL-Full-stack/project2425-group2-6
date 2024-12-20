@@ -20,7 +20,7 @@ const Dropdown: React.FC<DropdownProps> = ({ title, items, onSelect }) => {
   };
 
   return (
-    <div className="p-4 bg-gray-50 flex flex-col items-center">
+    <div className="p-4 flex flex-col items-center">
       <div className={styles.dropdown}>
         <div className="flex justify-center">
             <h1 className="text-xl font-bold pb-2">{title}</h1>

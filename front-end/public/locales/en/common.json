@@ -20,5 +20,19 @@
         },
         "mindset" : "We understand that every project is unique, and we work closely with our clients to ensure their vision is brought to life. From initial consultation to project completion, we are committed to exceeding expectations and delivering results that stand the test of time.",
         "pickUs" : "Choose Renovy for your next renovation project and experience the perfect blend of tradition and innovation. Let us help you create a home that is not only beautiful but also functional and sustainable for years to come." 
-    } 
+    },
+    "footer" : {
+        "cp" : "Renovy. All rights reserved."
+    },
+    "nav": {
+        "about": "About Us",
+        "services": "Services",
+        "projects": "Projects",
+        "orders": "Orders",
+        "language": {
+            "language": "Language",
+            "en": "English",
+            "fr": "French"
+        }
+    }
 }

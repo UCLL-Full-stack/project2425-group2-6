@@ -7,7 +7,8 @@ import AccountHeading from '@/components/accountHeading';
 import AccountSignedIn from '@/components/accountSignedIn';
 import AccountNotSignedIn from '@/components/accountNotSignedIn';
 import AccountPageComponent from '@/components/accountPageComponent';
-
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTranslation } from 'react-i18next';
 const Account: React.FC = () => {
 
   return (
@@ -19,3 +20,9 @@ const Account: React.FC = () => {
 };
 
 export default Account;
+
+export const getServerSideProps = async ({ locale }: { locale: string }) => ({
+  props: {
+    ...(await serverSideTranslations(locale ?? "en", ["common"])),
+  },
+});

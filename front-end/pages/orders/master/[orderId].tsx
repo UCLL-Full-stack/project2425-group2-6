@@ -5,6 +5,9 @@ import Header from "@/components/header";
 import OrderIdOverviewPage from "@/components/dynamicOrderIdOverview";
 import OrderIdOverviewPageAdmin from "@/components/dynamicAllOrdersAdmin";
 
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTranslation } from 'react-i18next';
+
 const OrderByIdMaster: React.FC = () => {
   return (
     <>
@@ -15,3 +18,9 @@ const OrderByIdMaster: React.FC = () => {
 };
 
 export default OrderByIdMaster;
+
+export const getServerSideProps = async ({ locale }: { locale: string }) => ({
+  props: {
+    ...(await serverSideTranslations(locale ?? "en", ["common"])),
+  },
+});
