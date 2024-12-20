@@ -14,11 +14,11 @@ const main = async () => {
 
     const JohnDoe = await prisma.customer.create({
         data: {
-            firstName: 'Daniel',
-            lastName: 'Doe',
+            firstName: 'user1',
+            lastName: 'test',
             email: 'test@gmail.com',
             birthday: new Date('1990-01-01'),
-            password: '$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu',
+            password: "$2b$12$P8y/GvJMDl2o.wsMRjfugePo97s1k59SlRpf/AAUaDDe/zwly4X/a", //user1
         }
     });
 
@@ -28,7 +28,7 @@ const main = async () => {
             lastName: "Smith",
             email: "jane.smith@example.com",
             birthday: new Date("1985-05-15"),
-            password: "$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu",
+            password: "$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu", //test
 
         }
     });
@@ -39,7 +39,7 @@ const main = async () => {
             lastName: "Johnson",
             email: "alice.johnson@example.com",
             birthday: new Date("1992-09-10"),
-            password: "$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu",
+            password: "$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu", //test
 
         }
     });
@@ -50,7 +50,7 @@ const main = async () => {
             lastName: "Brown",
             email: "bobbrown@example.com",
             birthday: new Date("1980-12-25"),
-            password: "$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu",
+            password: "$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu", //test
 
         }
     });
@@ -63,7 +63,7 @@ const main = async () => {
             lastName: "Scott",
             email: "admin@gmail.com",
             birthday: new Date("1964-03-15"),
-            password: "$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu",
+            password: "$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu", //test
             role: "admin",  
             experience: 20,
             domain: "Sales",
@@ -78,7 +78,7 @@ const main = async () => {
             lastName: "Schrute",
             email: "dwight.schrute@example.com",
             birthday: new Date("1970-01-20"),
-            password: "$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu",
+            password: "$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu", //test
             role: "admin",
             experience: 15,
             domain: "Sales",
@@ -93,7 +93,7 @@ const main = async () => {
             lastName: "Halpert",
             email: "jim.halpert@example.com",
             birthday: new Date("1978-10-01"),
-            password: "$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu",
+            password: "$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu", //test
             experience: 10,
             domain: "Sales",
             licenseType: "B",
@@ -107,7 +107,7 @@ const main = async () => {
             lastName: "Beesly",
             email: "pam.beesly@example.com",
             birthday: new Date("1979-03-25"),
-            password: "$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu",
+            password: "$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu", //test
             experience: 8,
             domain: "Reception",
             licenseType: "C",
@@ -121,7 +121,7 @@ const main = async () => {
             lastName: "Hudson",
             email: "stanley.hudson@example.com",
             birthday: new Date("1958-02-19"),
-            password: "$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu",
+            password: "$2b$12$mxbR1gCTLWNlTFvCyAnbxOJL2Hz.DfhDP.gYJDe13zLZGadgD2tmu", //test
             experience: 30,
             domain: "Sales",
             licenseType: "B",
@@ -141,7 +141,7 @@ const house1 = await prisma.house.create({
         createdAt: new Date(),
     },
     include: {
-        rooms: true, // Include the related rooms in the response
+        rooms: true, 
     },
 });
 
@@ -156,7 +156,7 @@ const house1 = await prisma.house.create({
             createdAt: new Date(),
         },
         include: {
-            rooms: true, // Include the related rooms in the response
+            rooms: true, 
         },
     });
 
@@ -171,7 +171,7 @@ const house1 = await prisma.house.create({
             createdAt: new Date(),
         },
         include: {
-            rooms: true, // Include the related rooms in the response
+            rooms: true, 
         },
     });
 
@@ -186,7 +186,7 @@ const house1 = await prisma.house.create({
             createdAt: new Date(),
         },
         include: {
-            rooms: true, // Include the related rooms in the response
+            rooms: true, 
         },
     });
 
@@ -201,7 +201,7 @@ const house1 = await prisma.house.create({
             createdAt: new Date(),
         },
         include: {
-            rooms: true, // Include the related rooms in the response
+            rooms: true, 
         },
     });
 
@@ -209,14 +209,14 @@ const house1 = await prisma.house.create({
         data: {
             houseNumber: "303",
             street: "Maple St",
-            city: "Tel Aviv",
+            city: "Rome",
             zip: "69999",
-            country: "Israel",
+            country: "Italy",
             type: "detached",
             createdAt: new Date(),
         },
         include: {
-            rooms: true, // Include the related rooms in the response
+            rooms: true, 
         },
     });
 
@@ -231,7 +231,7 @@ const house1 = await prisma.house.create({
             createdAt: new Date(),
         },
         include: {
-            rooms: true, // Include the related rooms in the response
+            rooms: true, 
         },
     });
 
@@ -246,17 +246,15 @@ const house1 = await prisma.house.create({
             createdAt: new Date(),
         },
         include: {
-            rooms: true, // Include the related rooms in the response
+            rooms: true, 
         },
     });
-
-    // ----------------- Rooms -----------------
     
     // ----------------- Rooms -----------------
 const livingRoom1 = await prisma.room.create({
     data: {
         name: "Living Room",
-        workDescription: "Spacious and well-lit living area",
+        workDescription: "Wall mounted TV and sound system",
         house: {
             connect: { id: house1.id },
         },
@@ -270,7 +268,7 @@ const livingRoom1 = await prisma.room.create({
                 orderDate: new Date('2023-12-15'),
                 employees: {
                     connect: [
-                        { id: employee1.id },
+                        { id: employee3.id },
                     ]
                 }
             },
@@ -285,7 +283,7 @@ const livingRoom1 = await prisma.room.create({
 const kitchen1 = await prisma.room.create({
     data: {
         name: "Kitchen",
-        workDescription: "Modern kitchen with appliances",
+        workDescription: "Replace vintage appliances with modern ones",
         house: {
             connect: { id: house1.id },
         },
@@ -299,8 +297,8 @@ const kitchen1 = await prisma.room.create({
                 orderDate: new Date('2023-12-16'),
                 employees: {
                     connect: [
-                        { id: employee1.id },
-                        { id: employee2.id }
+                        { id: employee3.id },
+                        { id: employee4.id }
                     ]
                 }
             },
@@ -315,7 +313,7 @@ const kitchen1 = await prisma.room.create({
 const bedroom1 = await prisma.room.create({
     data: {
         name: "Bedroom 1",
-        workDescription: "Cozy bedroom with a balcony",
+        workDescription: "A balcony",
         house: {
             connect: { id: house2.id },
         },
@@ -329,7 +327,7 @@ const bedroom1 = await prisma.room.create({
                 orderDate: new Date('2023-12-17'),
                 employees: {
                     connect: [
-                        { id: employee1.id }
+                        { id: employee5.id }
                     ]
                 }
             },
@@ -344,7 +342,7 @@ const bedroom1 = await prisma.room.create({
 const bedroom2 = await prisma.room.create({
     data: {
         name: "Bedroom 2",
-        workDescription: "Guest bedroom",
+        workDescription: "Bright bedroom with steam shower",
         house: {
             connect: { id: house2.id },
         },
@@ -358,7 +356,7 @@ const bedroom2 = await prisma.room.create({
                 orderDate: new Date('2023-12-18'),
                 employees: {
                     connect : [
-                        { id: employee2.id }
+                        { id: employee3.id }
                     ]
                 }
             },
@@ -373,7 +371,7 @@ const bedroom2 = await prisma.room.create({
 const masterBedroom = await prisma.room.create({
     data: {
         name: "Master Bedroom",
-        workDescription: "Spacious master bedroom",
+        workDescription: "Chandelier and walk-in closet",
         house: {
             connect: { id: house3.id },
         },
@@ -386,8 +384,10 @@ const masterBedroom = await prisma.room.create({
                 price: 40000,
                 orderDate: new Date('2023-12-19'),
                 employees: {
-                    connect : [
-                        { id: employee1.id }
+                    connect: [
+                        { id: employee3.id },
+                        { id: employee4.id },
+                        { id: employee4.id }
                     ]
                 }
             },
@@ -416,7 +416,9 @@ const bathroom = await prisma.room.create({
                 orderDate: new Date('2023-12-20'),
                 employees : {
                     connect : [
-                        { id: employee2.id }
+                        { id: employee2.id },
+                        { id: employee4.id },
+                        { id: employee5.id }
                     ]
                 }
             },
@@ -427,232 +429,6 @@ const bathroom = await prisma.room.create({
         house: true,
     },
 });
-
-// Add similar blocks for the remaining rooms and houses, creating associated orders for each room.
-
-    
-    
-    // await prisma.room.create({
-    //     data: {
-    //         name: "Living Room",
-    //         workDescription: "Spacious and well-lit living area",
-    //         house: {
-    //             connect: { id: house1.id },
-    //         },
-    //     },
-    // });
-
-    // await prisma.room.create({
-    //     data: {
-    //         name: "Kitchen",
-    //         workDescription: "Modern kitchen with appliances",
-    //         house: {
-    //             connect: { id: house1.id },
-    //         },
-    //     },
-    // });
-
-    // await prisma.room.create({
-    //     data: {
-    //         name: "Bedroom 1",
-    //         workDescription: "Cozy bedroom with a balcony",
-    //         house: {
-    //             connect: { id: house2.id },
-    //         },
-    //     },
-    // });
-
-    // await prisma.room.create({
-    //     data: {
-    //         name: "Bedroom 2",
-    //         workDescription: "Guest bedroom",
-    //         house: {
-    //             connect: { id: house2.id },
-    //         },
-    //     },
-    // });
-
-    // await prisma.room.create({
-    //     data: {
-    //         name: "Living Room",
-    //         workDescription: "Open-plan living area",
-    //         house: {
-    //             connect: { id: house2.id },
-    //         },
-    //     },
-    // });
-
-    // await prisma.room.create({
-    //     data: {
-    //         name: "Master Bedroom",
-    //         workDescription: "Spacious master bedroom",
-    //         house: {
-    //             connect: { id: house3.id },
-    //         },
-    //     },
-    // });
-
-    // await prisma.room.create({
-    //     data: {
-    //         name: "Bathroom",
-    //         workDescription: "Full bathroom with shower and tub",
-    //         house: {
-    //             connect: { id: house3.id },
-    //         },
-    //     },
-    // });
-
-    // await prisma.room.create({
-    //     data: {
-    //         name: "Living Room",
-    //         workDescription: "Sunlit living room",
-    //         house: {
-    //             connect: { id: house4.id },
-    //         },
-    //     },
-    // });
-
-    // await prisma.room.create({
-    //     data: {
-    //         name: "Bedroom",
-    //         workDescription: "Cozy single bedroom",
-    //         house: {
-    //             connect: { id: house4.id },
-    //         },
-    //     },
-    // });
-
-    // await prisma.room.create({
-    //     data: {
-    //         name: "Living Room",
-    //         workDescription: "Stylish living space",
-    //         house: {
-    //             connect: { id: house5.id },
-    //         },
-    //     },
-    // });
-
-    // await prisma.room.create({
-    //     data: {
-    //         name: "Bedroom 1",
-    //         workDescription: "Master bedroom with en-suite",
-    //         house: {
-    //             connect: { id: house5.id },
-    //         },
-    //     },
-    // });
-
-    // await prisma.room.create({
-    //     data: {
-    //         name: "Bedroom 2",
-    //         workDescription: "Children's bedroom",
-    //         house: {
-    //             connect: { id: house5.id },
-    //         },
-    //     },
-    // });
-
-    // await prisma.room.create({
-    //     data: {
-    //         name: "Living Room",
-    //         workDescription: "Open-plan living area",
-    //         house: {
-    //             connect: { id: house6.id },
-    //         },
-    //     },
-    // });
-
-    // await prisma.room.create({
-    //     data: {
-    //         name: "Kitchen",
-    //         workDescription: "Fully equipped kitchen",
-    //         house: {
-    //             connect: { id: house6.id },
-    //         },
-    //     },
-    // });
-
-    // await prisma.room.create({
-    //     data: {
-    //         name: "Bedroom",
-    //         workDescription: "Compact bedroom",
-    //         house: {
-    //             connect: { id: house7.id },
-    //         },
-    //     },
-    // });
-
-    // await prisma.room.create({
-    //     data: {
-    //         name: "Bathroom",
-    //         workDescription: "Modern bathroom",
-    //         house: {
-    //             connect: { id: house7.id },
-    //         },
-    //     },
-    // });
-
-    // await prisma.room.create({
-    //     data: {
-    //         name: "Living Room",
-    //         workDescription: "Terraced living room",
-    //         house: {
-    //             connect: { id: house8.id },
-    //         },
-    //     },
-    // });
-
-    // await prisma.room.create({
-    //     data: {
-    //         name: "Bedroom",
-    //         workDescription: "Large bedroom with terrace access",
-    //         house: {
-    //             connect: { id: house8.id },
-    //         },
-    //     },
-    // });
-
-
-    // // ----------------- Create Orders -----------------
-
-    // // Order 1: John Doe for House 1, managed by Michael Scott
-    // await prisma.order.create({
-    //     data: {
-    //         houseId: house1.id,
-    //         customerId: JohnDoe.id,
-    //         employeeId: employee1.id,
-    //         startDate: new Date('2025-01-01'),
-    //         status: 'pending',
-    //         price: 500000,
-    //         orderDate: new Date('2023-12-01'),
-    //     }
-    // });
-
-    // // Order 2: Jane Smith for House 2, managed by Dwight Schrute
-    // await prisma.order.create({
-    //     data: {
-    //         houseId: house2.id,
-    //         customerId: JaneSmith.id,
-    //         employeeId: employee2.id,
-    //         startDate: new Date('2025-02-01'),
-    //         status: 'pending',
-    //         price: 200000,
-    //         orderDate: new Date('2023-12-05')
-    //     }
-    // });
-
-    // // Order 3: Alice Johnson for House 1, managed by Michael Scott
-    // await prisma.order.create({
-    //     data: {
-    //         houseId: house1.id,
-    //         customerId: AliceJohnson.id,
-    //         employeeId: employee1.id,
-    //         startDate: new Date('2025-03-01'),
-    //         status: 'pending',
-    //         price: 550000,
-    //         orderDate: new Date('2023-12-10')
-    //     }
-    // });
 
 }
 
