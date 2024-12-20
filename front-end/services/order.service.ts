@@ -18,31 +18,28 @@ const createOrder = async (prepOrderDto : prepOrderDto) => {
 
 const getAccessToken = (): { message: string, token: string, email: string, fullname: string, role: string } | null => {
   try {
-      const loggedInUser = sessionStorage.getItem('loggedInUser');
-
-      if (!loggedInUser) {
-          console.error("No logged-in user found in session storage.");
-          return null; // No user data found in session storage
+      
+      const message = sessionStorage.getItem('message');
+      const token = sessionStorage.getItem('token');
+      const email = sessionStorage.getItem('email');
+      const fullname = sessionStorage.getItem('fullname');
+      const role = sessionStorage.getItem('role');
+      
+      if (!message || !token || !email || !fullname || !role) {
+          throw new Error("No user data found in session storage");
       }
 
-      const parsedUser = JSON.parse(loggedInUser);
-      console.log("Parsed user data:", parsedUser);
 
-      if (parsedUser && typeof parsedUser.token === 'string') {
           return {
-              message: parsedUser.message,
-              token: parsedUser.token,
-              email: parsedUser.email,
-              fullname: parsedUser.fullname,
-              role: parsedUser.role
-          };
+              message: message,
+              token: token,
+              email: email,
+              fullname: fullname,
+              role: role
       }
-
-      console.error("User data is invalid or missing required fields.");
-      return null; // User data is not available or invalid
-  } catch (error) {
+      } catch (error) {
       console.error('Error retrieving user data from session storage:', error);
-      return null; // Handle potential parsing errors gracefully
+      throw new Error("Failed to retrieve user data from session storage");
   }
 };
 

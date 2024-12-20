@@ -26,6 +26,10 @@ const LogIn = () => {
       const data = await CustomerService.logIn(loginData);
       console.log('Login Success:', data);
 
+      for (const variable in data){
+        sessionStorage.setItem(variable, data[variable]);
+      }
+
       // Store the token and user information in session storage
       sessionStorage.setItem('loggedInUser', JSON.stringify(data));
 
