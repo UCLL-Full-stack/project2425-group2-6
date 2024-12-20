@@ -8,7 +8,7 @@ type HelloMessageProps = {
 const HelloMessage: React.FC<HelloMessageProps> = ({ firstName }) => {
     return (
         <div className={styles.helloMessage}>
-            {firstName ? <h2 className='font-bold text-center text-xl'>Hello, {firstName}. What can we do you?</h2> : <h2 className='font-bold text-center text-xl'>To display page content you must be signed in!</h2>}
+            {firstName ? <h2 className='font-bold text-center text-xl'>Hello, {firstName}. What can we do for you?</h2> : <h2 className='font-bold text-center text-xl'>To display page content you must be signed in!</h2>}
         </div>
     );
 };
